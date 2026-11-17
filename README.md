@@ -2,7 +2,7 @@
 
 VastFix is a proposed web application for reporting and resolving campus infrastructure issues. It is the final-year group project of seven Information and Communication Technology students at the University of Science and Technology of Hanoi (USTH) for the 2026–2027 academic year.
 
-**Project status:** Planning. The team has not started the application yet. The target submission date is **12 January 2027**.
+**Project status:** Initial database foundation implemented and verified locally; web/API/AI integration is next. The target submission date is **12 January 2027**.
 
 ## Problem
 
@@ -55,4 +55,11 @@ The team plans to build a small, reviewed campus issue dataset with difficult no
 
 ## Repository status
 
-This repository currently contains project information only. Setup instructions, architecture decisions, source code, tests, and deployment files will be added as the team develops them.
+The Checkpoint 1 database foundation is in [`database-starter/`](database-starter/README.md): Prisma schema, initial migration, repeatable demo seed, and local PostgreSQL Compose configuration.
+
+- [Team handoff for Chúc and Thành Lê](database-starter/TEAM_HANDOFF.md)
+- [Local verification results](database-starter/VERIFICATION.md)
+- [Approved API contract v1](docs/VastFix_API_Contract_v1_Da_chot_2026-11-16.md)
+- [Report-Issue design](docs/VastFix_Report_Issue_ERD_Draft_2026-11-11.md)
+
+The web API, authentication, runtime authorization, AI service, and merge/unmerge operations are not implemented in this database starter.

@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  REPORTER
+  STAFF
+  MANAGER
+}
+
+enum LocationKind {
+  INDOOR
+  OUTDOOR
+}
+
+enum IssueStatus {
+  SUBMITTED
+  TRIAGED
+  ASSIGNED
+  IN_PROGRESS
+  AWAITING_REVIEW
+  CLOSED
+}
+
+enum Priority {
+  P0
+  P1
+  P2
+}
+
+model User {
+  id        String       @id @default(uuid()) @db.Uuid
+  email     String       @unique
+  role      Role         @default(REPORTER)
+  locale    String       @default("vi")
+  createdAt DateTime     @default(now()) @db.Timestamptz(3)
+  reports   Report[]
+  assigned  Issue[]      @relation("Assignee")
+  events    IssueEvent[]
+}
+
+model Building {
+  id     String  @id @default(uuid()) @db.Uuid
+  code   String  @unique
+  nameVi String
+  nameEn String
+  floors Floor[]
+}
+
+model Floor {
+  id         String   @id @default(uuid()) @db.Uuid
+  buildingId String   @db.Uuid
+  code       String
+  nameVi     String
+  nameEn     String
+  building   Building @relation(fields: [buildingId], references: [id], onDelete: Restrict)
+  areas      Area[]
+
+  @@unique([buildingId, code])
+}
+
+model Area {
+  id      String   @id @default(uuid()) @db.Uuid
+  floorId String   @db.Uuid
+  code    String
+  nameVi  String
+  nameEn  String
+  floor   Floor    @relation(fields: [floorId], references: [id], onDelete: Restrict)
+  reports Report[]
+
+  @@unique([floorId, code])
+}
+
+model Category {
+  id               String   @id @default(uuid()) @db.Uuid
+  code             String   @unique
+  nameVi           String
+  nameEn           String
+  proposedReports  Report[]
+  confirmedIssues  Issue[]
+}
+
+// Original submission. Application code must not overwrite/move it during merges.
+// Only areaId is stored: floor and building are derived from Area -> Floor -> Building.
+model Report {
+  id                 String       @id @default(uuid()) @db.Uuid
+  reporterId         String       @db.Uuid
+  description        String       @db.Text
+  descriptionLang    String?
+  proposedCategoryId String?      @db.Uuid
+  locationKind       LocationKind
+  areaId             String?      @db.Uuid
+  locationDetail     String?      @db.Text
+  latitude           Float?
+  longitude          Float?
+  locationSnapshot   Json
+  submittedAt        DateTime     @default(now()) @db.Timestamptz(3)
+  reporter           User         @relation(fields: [reporterId], references: [id], onDelete: Restrict)
+  proposedCategory   Category?    @relation(fields: [proposedCategoryId], references: [id], onDelete: Restrict)
+  area               Area?        @relation(fields: [areaId], references: [id], onDelete: Restrict)
+  issue              Issue?
+
+  @@index([areaId, submittedAt])
+  @@index([reporterId, submittedAt])
+}
+
+model Issue {
+  id                  String      @id @default(uuid()) @db.Uuid
+  originReportId      String      @unique @db.Uuid
+  confirmedCategoryId String?     @db.Uuid
+  status              IssueStatus @default(SUBMITTED)
+  priority            Priority?
+  assigneeId          String?     @db.Uuid
+  dueAt               DateTime?   @db.Timestamptz(3)
+  reviewRequired      Boolean     @default(false)
+  recurrenceOfIssueId String?     @db.Uuid
+  createdAt           DateTime    @default(now()) @db.Timestamptz(3)
+  closedAt            DateTime?   @db.Timestamptz(3)
+  originReport        Report      @relation(fields: [originReportId], references: [id], onDelete: Restrict)
+  confirmedCategory   Category?   @relation(fields: [confirmedCategoryId], references: [id], onDelete: Restrict)
+  assignee            User?       @relation("Assignee", fields: [assigneeId], references: [id], onDelete: Restrict)
+  recurrenceOf        Issue?      @relation("Recurrence", fields: [recurrenceOfIssueId], references: [id], onDelete: Restrict)
+  recurrences         Issue[]     @relation("Recurrence")
+  events              IssueEvent[]
+
+  @@index([status, createdAt])
+  @@index([assigneeId, status])
+}
+
+model IssueEvent {
+  id          String   @id @default(uuid()) @db.Uuid
+  issueId     String   @db.Uuid
+  actorUserId String   @db.Uuid
+  eventType   String
+  details     Json
+  occurredAt  DateTime @default(now()) @db.Timestamptz(3)
+  issue       Issue    @relation(fields: [issueId], references: [id], onDelete: Restrict)
+  actor       User     @relation(fields: [actorUserId], references: [id], onDelete: Restrict)
+
+  @@index([issueId, occurredAt])
+}
