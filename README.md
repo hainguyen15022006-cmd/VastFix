@@ -63,3 +63,11 @@ The Checkpoint 1 database foundation is in [`database-starter/`](database-starte
 - [Report-Issue design](docs/VastFix_Report_Issue_ERD_Draft_2026-11-11.md)
 
 The web API, authentication, runtime authorization, AI service, and merge/unmerge operations are not implemented in this database starter.
+
+## Local web foundation
+
+The Next.js application runs from the repository root. Follow the [step-by-step web setup](docs/Web_Foundation_Step_by_Step.md) to install dependencies, start PostgreSQL and open the development-only database check page.
+
+The existing schema, migrations and seed in `database-starter/` remain the database source of truth. Root package scripts expose these commands for the web application. `database-starter/` can still be run independently with its original instructions and lockfile.
+
+The new scaffold includes a home page, `/api/health` and a development-only `/dev/database` check. Authentication and the reporting/manager APIs still need implementation.
