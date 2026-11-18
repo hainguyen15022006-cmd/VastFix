@@ -42,6 +42,16 @@ model User {
   reports   Report[]
   assigned  Issue[]      @relation("Assignee")
   events    IssueEvent[]
+  demoSessions DemoSession[]
+}
+
+model DemoSession {
+  tokenHash String   @id
+  userId    String   @db.Uuid
+  expiresAt DateTime @db.Timestamptz(3)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([expiresAt])
 }
 
 model Building {
