@@ -34,6 +34,8 @@ enum Priority {
 }
 
 model User {
+  performedMerges IssueMerge[] @relation("MergeActor")
+  reversedMerges IssueMerge[] @relation("ReverseActor")
   id        String       @id @default(uuid()) @db.Uuid
   email     String       @unique
   role      Role         @default(REPORTER)
@@ -120,6 +122,8 @@ model Report {
 }
 
 model Issue {
+  outgoingMerges IssueMerge[] @relation("MergeSource")
+  incomingMerges IssueMerge[] @relation("MergeTarget")
   id                  String      @id @default(uuid()) @db.Uuid
   originReportId      String      @unique @db.Uuid
   confirmedCategoryId String?     @db.Uuid
@@ -153,4 +157,19 @@ model IssueEvent {
   actor       User     @relation(fields: [actorUserId], references: [id], onDelete: Restrict)
 
   @@index([issueId, occurredAt])
+}
+
+model IssueMerge {
+  id String @id @default(uuid()) @db.Uuid
+  sourceIssueId String @db.Uuid
+  targetIssueId String @db.Uuid
+  mergedByUserId String @db.Uuid
+  reversedByUserId String? @db.Uuid
+  mergedAt DateTime @default(now()) @db.Timestamptz(3)
+  reversedAt DateTime? @db.Timestamptz(3)
+  reason String
+  source Issue @relation("MergeSource", fields: [sourceIssueId], references: [id], onDelete: Restrict)
+  target Issue @relation("MergeTarget", fields: [targetIssueId], references: [id], onDelete: Restrict)
+  actor User @relation("MergeActor", fields: [mergedByUserId], references: [id], onDelete: Restrict)
+  reversedBy User? @relation("ReverseActor", fields: [reversedByUserId], references: [id], onDelete: Restrict)
 }
