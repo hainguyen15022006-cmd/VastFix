@@ -71,3 +71,9 @@ The Next.js application runs from the repository root. Follow the [step-by-step 
 The existing schema, migrations and seed in `database-starter/` remain the database source of truth. Root package scripts expose these commands for the web application. `database-starter/` can still be run independently with its original instructions and lockfile.
 
 The new scaffold includes a home page, `/api/health` and a development-only `/dev/database` check. Authentication and the reporting/manager APIs still need implementation.
+
+## Manager frontend and shared interface
+
+The shared Vietnamese/English shell and manager queue are available at `/vi/manager/issues` and `/en/manager/issues`. See [Sơn's frontend handoff](docs/Son_Frontend_Handoff.md) for setup, shared components, API expectations and UI tests.
+
+This frontend calls the approved manager API and shows loading, empty, access-denied and error states. The foundation does not yet implement that API or authentication, so the normal local queue currently shows an unavailable state. Browser test fixtures are isolated from application code; they are not a substitute for backend integration.
