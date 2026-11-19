@@ -25,9 +25,9 @@ From the repository root, with Python 3.11+:
 ```powershell
 python -m venv .venv
 .venv\Scripts\python.exe -m pip install -r ai-service\requirements-dev.txt
-.venv\Scripts\python.exe evaluation\cong-thanh\build_dataset.py
-.venv\Scripts\python.exe -m pytest -q evaluation\cong-thanh\test_dataset.py
-.venv\Scripts\python.exe evaluation\cong-thanh\evaluate.py --api
+.venv\Scripts\python.exe evaluation\duplicate-detection\build_dataset.py
+.venv\Scripts\python.exe -m pytest -q evaluation\duplicate-detection\test_dataset.py
+.venv\Scripts\python.exe evaluation\duplicate-detection\evaluate.py --api
 ```
 
 Run Thành Lê's existing contract tests from `ai-service`:

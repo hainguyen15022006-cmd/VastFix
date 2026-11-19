@@ -21,7 +21,7 @@ Cases C01–C22 cover cross-language matches, same-location hard negatives, diff
 ## Executed tests
 
 - `python build_dataset.py`: completed; generated file matched a second deterministic rebuild.
-- `pytest -q evaluation/cong-thanh/test_dataset.py`: **6 passed**. Tests include JSON parsing, unique IDs, UTC timestamps, location hierarchy and wire schema, category references, label partition, candidate references, eligibility, empty candidates, and deterministic evaluation.
+- `pytest -q evaluation/duplicate-detection/test_dataset.py`: **6 passed**. Tests include JSON parsing, unique IDs, UTC timestamps, location hierarchy and wire schema, category references, label partition, candidate references, eligibility, empty candidates, and deterministic evaluation.
 - From `ai-service`, `pytest -q tests/test_contract.py`: **14 passed**. These include ranking limits, duplicate report IDs, reason codes, empty candidates, and invalid payloads.
 - `python evaluate.py --api`: completed on all 21 provisional cases; no response invariant errors. FastAPI `TestClient` was used. A Starlette warning about the `httpx` TestClient integration appeared; it did not fail tests.
 
