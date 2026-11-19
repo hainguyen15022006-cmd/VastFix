@@ -2,7 +2,7 @@
 
 VastFix is a proposed web application for reporting and resolving campus infrastructure issues. It is the final-year group project of seven Information and Communication Technology students at the University of Science and Technology of Hanoi (USTH) for the 2026–2027 academic year.
 
-**Project status:** Initial database foundation implemented and verified locally; web/API/AI integration is next. The target submission date is **12 January 2027**.
+**Project status:** The Checkpoint 1 database foundation and FastAPI duplicate-ranking service are available. The target submission date is **12 January 2027**.
 
 ## Problem
 
@@ -61,8 +61,9 @@ The Checkpoint 1 database foundation is in [`database-starter/`](database-starte
 - [Local verification results](database-starter/VERIFICATION.md)
 - [Approved API contract v1](docs/VastFix_API_Contract_v1_Da_chot_2026-11-16.md)
 - [Report-Issue design](docs/VastFix_Report_Issue_ERD_Draft_2026-11-11.md)
+- [Checkpoint 1 FastAPI service and duplicate-ranking spike](ai-service/README.md)
 
-The web API, authentication, runtime authorization, AI service, and merge/unmerge operations are not implemented in this database starter.
+The FastAPI service runs separately from the database starter. It consumes candidate reports selected by the Next.js backend.
 
 ## Local web foundation
 
@@ -70,4 +71,4 @@ The Next.js application runs from the repository root. Follow the [step-by-step 
 
 The existing schema, migrations and seed in `database-starter/` remain the database source of truth. Root package scripts expose these commands for the web application. `database-starter/` can still be run independently with its original instructions and lockfile.
 
-The new scaffold includes a home page, `/api/health` and a development-only `/dev/database` check. Authentication and the reporting/manager APIs still need implementation.
+The scaffold includes a home page, `/api/health` and a development-only `/dev/database` check. The report, duplicate-suggestion and manager-queue APIs with development demo sessions are described in [Chuc_Checkpoint1.md](docs/Chuc_Checkpoint1.md). Verified email sign-in is not implemented yet.
