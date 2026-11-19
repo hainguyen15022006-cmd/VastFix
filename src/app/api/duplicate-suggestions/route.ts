@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { body, handle, isRecord, json } from "@/lib/api";
-import { currentUser } from "@/lib/demo-session";
+import { currentUser } from "@/lib/current-user";
 import { positiveSetting, prepareCandidates } from "@/lib/duplicate-candidates";
 
 const reasons = new Set(["SAME_BUILDING", "SAME_FLOOR", "SAME_AREA", "SIMILAR_DESCRIPTION", "SAME_CATEGORY", "RECENT_REPORT"]);

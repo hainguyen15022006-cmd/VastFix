@@ -38,6 +38,10 @@ model User {
   reversedMerges IssueMerge[] @relation("ReverseActor")
   id        String       @id @default(uuid()) @db.Uuid
   email     String       @unique
+  name      String       @default("")
+  emailVerified Boolean  @default(false)
+  image     String?
+  updatedAt DateTime     @default(now()) @updatedAt @db.Timestamptz(3)
   role      Role         @default(REPORTER)
   locale    String       @default("vi")
   createdAt DateTime     @default(now()) @db.Timestamptz(3)
@@ -45,6 +49,64 @@ model User {
   assigned  Issue[]      @relation("Assignee")
   events    IssueEvent[]
   demoSessions DemoSession[]
+  sessions Session[]
+  accounts Account[]
+  roleChanges UserRoleEvent[] @relation("RoleSubject")
+  roleActions UserRoleEvent[] @relation("RoleActor")
+}
+
+model Session {
+  id String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  token String @unique
+  expiresAt DateTime @db.Timestamptz(3)
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}
+
+model Account {
+  id String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  accountId String
+  providerId String
+  accessToken String? @db.Text
+  refreshToken String? @db.Text
+  idToken String? @db.Text
+  accessTokenExpiresAt DateTime? @db.Timestamptz(3)
+  refreshTokenExpiresAt DateTime? @db.Timestamptz(3)
+  scope String?
+  password String? @db.Text
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([providerId, accountId])
+  @@index([userId])
+}
+
+model Verification {
+  id String @id @default(uuid()) @db.Uuid
+  identifier String
+  value String @db.Text
+  expiresAt DateTime @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+  @@index([identifier])
+}
+
+model UserRoleEvent {
+  id String @id @default(uuid()) @db.Uuid
+  subjectUserId String @db.Uuid
+  actorUserId String? @db.Uuid
+  fromRole Role
+  toRole Role
+  reason String
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  subject User @relation("RoleSubject", fields: [subjectUserId], references: [id], onDelete: Restrict)
+  actor User? @relation("RoleActor", fields: [actorUserId], references: [id], onDelete: Restrict)
 }
 
 model DemoSession {

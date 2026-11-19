@@ -9,6 +9,11 @@ export default function Home() {
         <h1>Bắt đầu từ một nền tảng chung.</h1>
         <p className="lead">Ứng dụng Next.js đã có khung để nhóm tiếp tục phát triển phần báo sự cố và quản lý xử lý.</p>
       </section>
+      <section className="panel" aria-labelledby="account-heading">
+        <h2 id="account-heading">Tài khoản VastFix</h2>
+        <p>Đăng ký bằng email USTH và xác minh email để sử dụng tài khoản.</p>
+        <nav className="auth-links" aria-label="Tài khoản"><Link className="button" href="/register">Đăng ký</Link><Link href="/login">Đăng nhập</Link><Link href="/account">Tài khoản của tôi</Link></nav>
+      </section>
       <section className="panel" aria-labelledby="next-step">
         <h2 id="next-step">Kiểm tra kết nối dữ liệu</h2>
         <p>Trong môi trường phát triển, mở trang kiểm tra để xác nhận web đọc được các bảng và dữ liệu mẫu trong PostgreSQL.</p>

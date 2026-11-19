@@ -38,3 +38,16 @@ tbody th { font-weight: 400; }
 th:last-child, td:last-child { text-align: right; }
 @media (max-width: 480px) { .shell { width: calc(100% - 32px); padding-top: 20px; } .brand { align-items: flex-start; flex-direction: column; gap: 4px; } .panel { padding: 20px; } .intro { padding-top: 28px; } }
 @media (prefers-reduced-motion: reduce) { .button { transition: none; } }
+.panel + .panel { margin-top: 20px; }
+.auth-shell { max-width: 640px; }
+.auth-form { display: flex; flex-direction: column; gap: 12px; }
+.auth-form label { display: flex; flex-direction: column; gap: 6px; font-weight: 700; }
+.auth-form input { width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid #8295a3; border-radius: 6px; background: white; color: var(--ink); font: inherit; }
+.auth-form input:focus-visible, button:focus-visible { outline: 3px solid #bb5b15; outline-offset: 3px; }
+.auth-form .note { margin: -6px 0 4px; }
+button { font: inherit; cursor: pointer; border: none; }
+button:disabled { opacity: .65; cursor: wait; }
+.text-button { min-height: 44px; background: transparent; color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+.auth-links { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; }
+dt { font-weight: 700; margin-top: 16px; }
+dd { margin: 2px 0 0; overflow-wrap: anywhere; }

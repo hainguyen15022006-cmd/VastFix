@@ -70,4 +70,4 @@ The Next.js application runs from the repository root. Follow the [step-by-step 
 
 The existing schema, migrations and seed in `database-starter/` remain the database source of truth. Root package scripts expose these commands for the web application. `database-starter/` can still be run independently with its original instructions and lockfile.
 
-The new scaffold includes a home page, `/api/health` and a development-only `/dev/database` check. Authentication and the reporting/manager APIs still need implementation.
+The app includes reporting/manager APIs, duplicate suggestions, and an authentication foundation. Email verification is tested locally with Mailpit; actual external email delivery still needs SMTP configuration. Follow the [authentication walkthrough](docs/Auth_Implementation_Step_by_Step.md) and [verification record](docs/Auth_Verification_2026-11-19.md). Full workflow UI and merge/unmerge operations remain in development.
