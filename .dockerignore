@@ -1,0 +1,10 @@
+.git
+node_modules
+.next
+database-starter/node_modules
+database-starter/generated
+ai-service
+.env
+.env.*
+!.env.example
+*.log

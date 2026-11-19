@@ -15,7 +15,13 @@
     "db:migrate": "prisma migrate dev --config database-starter/prisma7.config.ts",
     "db:seed": "tsx database-starter/prisma/seed.ts",
     "db:verify": "tsx database-starter/scripts/verify.ts",
-    "db:studio": "prisma studio --config database-starter/prisma7.config.ts"
+    "db:studio": "prisma studio --config database-starter/prisma7.config.ts",
+    "demo:env": "node scripts/setup-demo-env.mjs",
+    "stack:up": "docker compose up -d --build --wait",
+    "stack:ps": "docker compose ps -a",
+    "stack:logs": "docker compose logs --tail=100",
+    "stack:down": "docker compose down",
+    "check:integration": "node --env-file=.env scripts/check-integration.mjs"
   },
   "dependencies": {
     "next": "16.4.6",
