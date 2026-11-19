@@ -29,11 +29,18 @@ export async function prepareCandidates(input: Record<string, unknown>, locale: 
         longitude: { gte: place.longitude - 0.001, lte: place.longitude + 0.001 } });
     }
     regions.push({ locationKind: "OUTDOOR", OR: nearby });
+    // Pins are optional. Without them, free-text place names cannot reliably
+    // define a region, so fill the remaining budget from open outdoor issues
+    // in this campus pilot and let the AI rank descriptions/location signals.
+    if (place.latitude === null && place.longitude === null) {
+      regions.push({ locationKind: "OUTDOOR" });
+    }
   }
 
-  async function fetchRegion(region: Prisma.ReportWhereInput, take: number) {
+  async function fetchRegion(region: Prisma.ReportWhereInput, take: number, excludedIds: string[]) {
     return db.issue.findMany({
-      where: { status: { not: "CLOSED" }, outgoingMerges: { none: { reversedAt: null } }, originReport: region },
+      where: { status: { not: "CLOSED" }, outgoingMerges: { none: { reversedAt: null } },
+        id: { notIn: excludedIds }, originReport: region },
       orderBy: [{ createdAt: "desc" }, { id: "asc" }], take,
       select: { id: true, confirmedCategory: { select: { code: true } }, originReport: { select: {
         id: true, description: true, submittedAt: true, locationDetail: true, latitude: true, longitude: true,
@@ -44,7 +51,7 @@ export async function prepareCandidates(input: Record<string, unknown>, locale: 
   const rows: Awaited<ReturnType<typeof fetchRegion>> = [];
   for (const region of regions) {
     if (rows.length >= limit) break;
-    rows.push(...await fetchRegion(region, limit - rows.length));
+    rows.push(...await fetchRegion(region, limit - rows.length, rows.map(row => row.id)));
   }
   const candidates = rows.map(({ id, confirmedCategory, originReport: report }) => {
     const area = report.area;

@@ -41,7 +41,9 @@ Gọi `POST /api/dev/session` với JSON gồm `email` và `password`. Ba email 
 
 `POST /api/duplicate-suggestions` nhận cùng JSON và dùng cùng phiên với `POST /api/reports`. Next.js gửi ứng viên tới `POST /duplicates` trên `FASTAPI_BASE_URL` (mặc định http://127.0.0.1:8000). Đặt URL nội bộ do Thành Lê cung cấp trong môi trường của web. Sau khi lấy code, chạy `npm run db:generate`, `npm run db:deploy` rồi khởi động lại web.
 
-Cấu hình pilot dùng tối đa 50 ứng viên (đổi bằng `DUPLICATE_CANDIDATE_LIMIT`). Trong nhà lấy theo thứ tự cùng khu vực, cùng tầng, cùng tòa, mới nhất trong mỗi nhóm. Ngoài trời lấy vị trí có cùng mô tả không phân biệt hoa thường hoặc có chênh lệch tối đa 0,001 độ theo mỗi trục tọa độ. Đây là lựa chọn ban đầu để nhóm đánh giá. Dịch vụ AI chọn ứng viên phù hợp và trả tối đa 5 gợi ý. Timeout mặc định là 5000 ms (`DUPLICATE_TIMEOUT_MS`).
+Cấu hình pilot dùng tối đa 50 ứng viên (đổi bằng `DUPLICATE_CANDIDATE_LIMIT`). Trong nhà lấy theo thứ tự cùng khu vực, cùng tầng, cùng tòa, mới nhất trong mỗi nhóm. Ngoài trời ưu tiên vị trí có cùng mô tả không phân biệt hoa thường hoặc có chênh lệch tối đa 0,001 độ theo mỗi trục tọa độ. Khi người dùng không gửi tọa độ, số chỗ còn lại trong cùng giới hạn được bổ sung bằng các Issue ngoài trời còn mở của pilot một khuôn viên, mới nhất trước; không bắt người dùng viết vị trí giống hệt để AI có cơ hội xét ứng viên. Các ứng viên không lặp, tổng không vượt giới hạn và luôn loại phiếu đóng/nguồn đang gộp. Nếu có tọa độ thì vẫn giữ bộ lọc vị trí gần, không mở rộng toàn khuôn viên. Đây là lựa chọn pilot cần Công Thành/Thành Lê đo lại độ bao phủ và độ nhầm; mô tả khác vị trí có thể vào tập ứng viên, AI chỉ đề xuất chứ không tự xác nhận trùng. Dịch vụ AI trả tối đa 5 gợi ý. Timeout mặc định là 5000 ms (`DUPLICATE_TIMEOUT_MS`).
+
+Hàng đợi quản lý chỉ hiển thị Issue SUBMITTED không đang gộp làm nguồn. Hủy quan hệ gộp có thể làm nguồn xuất hiện lại; Report gốc không được sửa. Chưa có API merge/unmerge đầy đủ: các cập nhật gộp/hủy gộp trong script dưới đây chỉ dựng dữ liệu kiểm thử, không thay thế quy trình có phân quyền và nhật ký.
 
 #### Kiểm thử trong Git Bash
 
