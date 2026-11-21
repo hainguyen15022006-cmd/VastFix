@@ -2,7 +2,7 @@
 
 VastFix is a proposed web application for reporting and resolving campus infrastructure issues. It is the final-year group project of seven Information and Communication Technology students at the University of Science and Technology of Hanoi (USTH) for the 2026–2027 academic year.
 
-**Project status:** Planning. The team has not started the application yet. The target submission date is **12 January 2027**.
+**Branch status:** Checkpoint 1 reporter and manager interfaces are integrated with the reporting APIs and authentication foundation. The target submission date is **12 January 2027**.
 
 ## Problem
 
@@ -55,4 +55,30 @@ The team plans to build a small, reviewed campus issue dataset with difficult no
 
 ## Repository status
 
-This repository currently contains project information only. Setup instructions, architecture decisions, source code, tests, and deployment files will be added as the team develops them.
+The Checkpoint 1 database foundation is in [`database-starter/`](database-starter/README.md): Prisma schema, initial migration, repeatable demo seed, and local PostgreSQL Compose configuration.
+
+- [Team handoff for Chúc and Thành Lê](database-starter/TEAM_HANDOFF.md)
+- [Local verification results](database-starter/VERIFICATION.md)
+- [Approved API contract v1](docs/VastFix_API_Contract_v1_Da_chot_2026-11-16.md)
+- [Report-Issue design](docs/VastFix_Report_Issue_ERD_Draft_2026-11-11.md)
+
+The web API, authentication, runtime authorization, AI service, and merge/unmerge operations are not implemented in this database starter.
+
+## Local web foundation
+
+The Next.js application runs from the repository root. Follow the [step-by-step web setup](docs/Web_Foundation_Step_by_Step.md) to install dependencies, start PostgreSQL and open the development-only database check page.
+
+The existing schema, migrations and seed in `database-starter/` remain the database source of truth. Root package scripts expose these commands for the web application. `database-starter/` can still be run independently with its original instructions and lockfile.
+
+The app includes reporting/manager APIs, duplicate suggestions, and an authentication foundation. Email verification is tested locally with Mailpit; actual external email delivery still needs SMTP configuration. Follow the [authentication walkthrough](docs/Auth_Implementation_Step_by_Step.md) and [verification record](docs/Auth_Verification_2026-11-19.md). Full workflow UI and merge/unmerge operations remain in development.
+
+## Reporter frontend and shared interface
+
+Dương's reporting form is available at `/vi/reports/new` and `/en/reports/new`. It uses Sơn's shared shell and translations, Chúc's report/suggestion APIs, and Hải Anh's authentication foundation. The manager queue is available at `/vi/manager/issues`.
+
+- [Dương: setup, scope and integration handoff](docs/Duong_Frontend_Handoff.md)
+- [Dương: verification results](docs/Duong_Frontend_Verification.md)
+- [Supplemental report-options catalog API](docs/Report_Options_API_v1.md)
+- [Sơn: shared components and original frontend handoff](docs/Son_Frontend_Handoff.md)
+
+Build with `npm run build`; run browser checks with `npm run test:ui` and the isolated PostgreSQL integration with `npm run test:reporter-flow`. See the handoff for prerequisites. The integration harness uses fixture AI responses and does not assess ranking quality. Existing v1 report payloads, schema and seed are unchanged by the reporter feature.

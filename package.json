@@ -1,0 +1,51 @@
+{
+  "name": "vastfix",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.11.0 <25"
+  },
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "npm run db:generate && next build",
+    "start": "next start --hostname 127.0.0.1",
+    "typecheck": "npm run db:generate && next typegen && tsc --noEmit",
+    "db:validate": "prisma validate --config database-starter/prisma7.config.ts",
+    "db:generate": "prisma generate --config database-starter/prisma7.config.ts",
+    "db:deploy": "prisma migrate deploy --config database-starter/prisma7.config.ts",
+    "db:migrate": "prisma migrate dev --config database-starter/prisma7.config.ts",
+    "db:seed": "tsx database-starter/prisma/seed.ts",
+    "db:verify": "tsx database-starter/scripts/verify.ts",
+    "db:studio": "prisma studio --config database-starter/prisma7.config.ts",
+    "auth:bootstrap-manager": "tsx scripts/bootstrap-manager.ts",
+    "auth:setup": "node scripts/setup-auth-env.mjs",
+    "test:ui": "playwright test",
+    "test:reporter-flow": "node scripts/check-reporter-flow.mjs"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "7.10.1",
+    "@prisma/client": "7.10.1",
+    "better-auth": "^1.7.26",
+    "dotenv": "^17.0.0",
+    "next": "16.4.6",
+    "next-intl": "4.15.1",
+    "nodemailer": "^10.6.0",
+    "pg": "^8.16.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1",
+    "@types/node": "^24.0.0",
+    "@types/nodemailer": "^8.0.2",
+    "@types/pg": "^8.15.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "embedded-postgres": "17.12.0-beta.19",
+    "prisma": "7.10.1",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}

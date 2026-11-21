@@ -1,0 +1,12 @@
+CREATE TABLE "IssueMerge" (
+  "id" UUID PRIMARY KEY,
+  "sourceIssueId" UUID NOT NULL REFERENCES "Issue"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+  "targetIssueId" UUID NOT NULL REFERENCES "Issue"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+  "mergedByUserId" UUID NOT NULL REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+  "reversedByUserId" UUID REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+  "mergedAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "reversedAt" TIMESTAMPTZ(3),
+  "reason" TEXT NOT NULL,
+  CHECK ("sourceIssueId" <> "targetIssueId")
+);
+CREATE UNIQUE INDEX "IssueMerge_active_source" ON "IssueMerge" ("sourceIssueId") WHERE "reversedAt" IS NULL;
