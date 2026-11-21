@@ -2,7 +2,7 @@
 
 VastFix is a proposed web application for reporting and resolving campus infrastructure issues. It is the final-year group project of seven Information and Communication Technology students at the University of Science and Technology of Hanoi (USTH) for the 2026–2027 academic year.
 
-**Project status:** The Checkpoint 1 database foundation and FastAPI duplicate-ranking service are available. The target submission date is **12 January 2027**.
+**Project status:** Checkpoint 1 reporter and manager interfaces are integrated with the reporting APIs, authentication foundation and FastAPI duplicate-ranking service. The target submission date is **12 January 2027**.
 
 ## Problem
 
@@ -71,4 +71,19 @@ The Next.js application runs from the repository root. Follow the [step-by-step 
 
 The existing schema, migrations and seed in `database-starter/` remain the database source of truth. Root package scripts expose these commands for the web application. `database-starter/` can still be run independently with its original instructions and lockfile.
 
-The scaffold includes a home page, `/api/health` and a development-only `/dev/database` check. The report, duplicate-suggestion and manager-queue APIs with development demo sessions are described in [Chuc_Checkpoint1.md](docs/Chuc_Checkpoint1.md). Verified email sign-in is not implemented yet.
+The app includes reporting/manager APIs, duplicate suggestions, and an authentication foundation. Email verification is tested locally with Mailpit; actual external email delivery still needs SMTP configuration. Follow the [authentication walkthrough](docs/Auth_Implementation_Step_by_Step.md) and [verification record](docs/Auth_Verification_2026-11-19.md). Full workflow UI and merge/unmerge operations remain in development.
+
+## Reporter frontend and shared interface
+
+Dương's reporting form is available at `/vi/reports/new` and `/en/reports/new`. It uses Sơn's shared shell and translations, Chúc's report/suggestion APIs, and Hải Anh's authentication foundation. The manager queue is available at `/vi/manager/issues`.
+
+- [Dương: setup, scope and integration handoff](docs/Duong_Frontend_Handoff.md)
+- [Dương: verification results](docs/Duong_Frontend_Verification.md)
+- [Supplemental report-options catalog API](docs/Report_Options_API_v1.md)
+- [Sơn: shared components and original frontend handoff](docs/Son_Frontend_Handoff.md)
+
+Build with `npm run build`; run browser checks with `npm run test:ui` and the isolated PostgreSQL integration with `npm run test:reporter-flow`. See the handoff for prerequisites. The integration harness uses fixture AI responses and does not assess ranking quality. Existing v1 report payloads, schema and seed are unchanged by the reporter feature.
+
+## Shared stack (Docker Compose)
+
+`npm run stack:up` builds and starts PostgreSQL, migrations and seed, Mailpit, the FastAPI service and the web app; `npm run check:integration` runs the end-to-end checks. See [Hoang_Anh_Checkpoint1.md](docs/Hoang_Anh_Checkpoint1.md).

@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { ApiError, handle, isRecord, json, uuid } from "@/lib/api";
-import { currentUser } from "@/lib/demo-session";
+import { currentUser } from "@/lib/current-user";
 import { getDb } from "@/lib/db";
 
 const pageSize = 25;
@@ -15,7 +15,8 @@ export function GET(request: NextRequest) {
       throw new ApiError(400, "BAD_REQUEST", "Bộ lọc hoặc con trỏ không hợp lệ");
     }
     const issues = await getDb().issue.findMany({
-      where: { status: "SUBMITTED" }, orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      where: { status: "SUBMITTED", outgoingMerges: { none: { reversedAt: null } } },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
       take: pageSize + 1, include: { originReport: true },
     });

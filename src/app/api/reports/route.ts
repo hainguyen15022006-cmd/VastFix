@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { body, handle, json } from "@/lib/api";
-import { currentUser } from "@/lib/demo-session";
+import { currentUser } from "@/lib/current-user";
 import { getDb } from "@/lib/db";
 import { validateReportInput } from "@/lib/report-input";
 
