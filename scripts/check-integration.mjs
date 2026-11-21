@@ -2,6 +2,7 @@
 // Sau `npm run stack:up`, chạy:  npm run check:integration
 // Tùy chọn (thêm sau `--`):
 //   --write      tạo Report thật qua API (ghi vào DB của bản chung) rồi kiểm tra hàng đợi quản lý
+//   --auth       đăng ký 1 tài khoản thử @usth.edu.vn, xác minh qua Mailpit, đăng nhập phiên thật
 //   --fallback   tạm dừng service ai bằng Docker Compose, kiểm tra aiStatus "unavailable" và vẫn gửi được Report
 //   --report <file.md>   ghi bảng kết quả ra Markdown
 // Biến môi trường: WEB_URL (mặc định http://127.0.0.1:3000), AI_URL (mặc định http://127.0.0.1:8000),
@@ -13,12 +14,14 @@ import { readFileSync, writeFileSync } from "node:fs";
 
 const WEB = (process.env.WEB_URL ?? "http://127.0.0.1:3000").replace(/\/$/, "");
 const AI = (process.env.AI_URL ?? "http://127.0.0.1:8000").replace(/\/$/, "");
-for (const url of [WEB, AI]) {
+const MAIL = (process.env.MAIL_URL ?? "http://127.0.0.1:8025").replace(/\/$/, "");
+for (const url of [WEB, AI, MAIL]) {
   if (!["127.0.0.1", "localhost"].includes(new URL(url).hostname)) throw new Error("Chỉ chạy trên máy local");
 }
 const args = process.argv.slice(2);
 const WRITE = args.includes("--write") || args.includes("--fallback");
 const FALLBACK = args.includes("--fallback");
+const AUTH = args.includes("--auth");
 const reportIdx = args.indexOf("--report");
 const REPORT_FILE = reportIdx >= 0 ? args[reportIdx + 1] : null;
 
@@ -42,15 +45,17 @@ const results = [];
 const cookies = {};
 
 async function call(method, url, { body, role } = {}) {
-  const headers = {};
+  // Better Auth yêu cầu Origin; phiên demo của Chúc không cần (và chỉ nhận đúng origin của chính server).
+  const headers = url.includes("/api/auth/") ? { origin: WEB } : {};
   if (body !== undefined) headers["content-type"] = "application/json";
   if (role && cookies[role]) headers.cookie = cookies[role];
   const started = Date.now();
-  const res = await fetch(url, { method, headers, body: body === undefined ? undefined : JSON.stringify(body), signal: AbortSignal.timeout(15_000) });
+  const res = await fetch(url, { method, headers, body: body === undefined ? undefined : JSON.stringify(body), redirect: "manual", signal: AbortSignal.timeout(15_000) });
   const text = await res.text();
   let json = null;
   try { json = JSON.parse(text); } catch { /* không phải JSON */ }
-  return { status: res.status, text, json, ms: Date.now() - started, setCookie: res.headers.get("set-cookie") };
+  const allCookies = res.headers.getSetCookie().map((c) => c.split(";")[0]).join("; ");
+  return { status: res.status, text, json, ms: Date.now() - started, setCookie: allCookies || null };
 }
 
 const isUuid = (v) => typeof v === "string" && /^[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}$/i.test(v);
@@ -91,8 +96,8 @@ const pass = (detail) => ({ result: PASS, detail });
 const fail = (detail) => ({ result: FAIL, detail });
 
 // ---- 1. Ba thành phần sống ----
-await test("WEB-01", "Trang đầu Next.js mở được", "Hải Anh", async () => {
-  const r = await call("GET", `${WEB}/`);
+await test("WEB-01", "Trang đầu Next.js mở được (/vi)", "Hải Anh + Sơn", async () => {
+  const r = await call("GET", `${WEB}/vi`);
   return r.status === 200 && r.text.includes("VastFix") ? pass(`HTTP 200, ${r.ms} ms`) : fail(short(r));
 });
 await test("WEB-02", "Next.js kết nối PostgreSQL (/api/health)", "Hải Anh", async () => {
@@ -135,7 +140,7 @@ await test("AUTH-00", "Đăng nhập demo 3 vai qua /api/dev/session", "Chúc", 
   }
   return pass(roles.join(", "));
 });
-const loggedIn = () => Object.keys(cookies).length === 3;
+const loggedIn = () => ["reporter", "staff", "manager"].every((r) => cookies[r]);
 
 await test("AUTH-06", "REPORTER và STAFF bị chặn ở hàng đợi quản lý (403, không lộ items)", "Chúc", async () => {
   if (!loggedIn()) return { result: SKIP, detail: "chưa đăng nhập được" };
@@ -163,6 +168,30 @@ await test("API-01", "Gợi ý trùng qua web: ≤5, đúng field, H2-03 trên H
   const ids = (r.json.suggestions ?? []).map((s) => s.reportId);
   if (!ranking(ids)) problems.push("H2-03 (R-001) không xếp trên H2-04");
   return problems.length ? fail([...new Set(problems)].join("; ")) : pass(`${ids.length} gợi ý, H2-03 trên H2-04, ${r.ms} ms`);
+});
+
+
+// ---- Giao diện Sơn/Dương (chỉ kiểm tra trang trả về được, nội dung động do test Playwright của hai bạn kiểm tra) ----
+await test("UI-01", "Trang /vi, /en, form báo sự cố và hàng đợi quản lý mở được", "Sơn + Dương", async () => {
+  const pages = ["/vi", "/en", "/vi/reports/new", "/en/reports/new", "/vi/manager/issues", "/en/manager/issues", "/login", "/register"];
+  const bad = [];
+  for (const path of pages) {
+    const r = await call("GET", `${WEB}${path}`);
+    if (r.status !== 200) bad.push(`${path} → ${r.status}`);
+  }
+  return bad.length ? fail(bad.join(", ")) : pass(`${pages.length} trang HTTP 200`);
+});
+await test("UI-02", "/ tự chuyển sang trang theo ngôn ngữ", "Sơn", async () => {
+  const r = await call("GET", `${WEB}/`);
+  return (r.status >= 300 && r.status < 400) || (r.status === 200 && r.text.includes("VastFix")) ? pass(`HTTP ${r.status}`) : fail(short(r));
+});
+await test("OPT-01", "GET /api/report-options cho form: có A1 → tầng 2 → hành lang giữa", "Dương", async () => {
+  if (!loggedIn()) return { result: SKIP, detail: "chưa đăng nhập được" };
+  const r = await call("GET", `${WEB}/api/report-options`, { role: "reporter" });
+  if (r.status !== 200) return fail(short(r));
+  const a1 = r.json.buildings?.find((b) => b.id === DEMO_INPUT.location.buildingId);
+  const ok = a1?.floors?.some((f) => f.id === DEMO_INPUT.location.floorId && f.areas?.some((a) => a.id === DEMO_INPUT.location.areaId));
+  return ok ? pass(`${r.json.buildings.length} tòa, ${r.json.categories?.length ?? 0} danh mục`) : fail("thiếu cây vị trí seed");
 });
 
 async function createReport(tag) {
@@ -210,19 +239,65 @@ if (FALLBACK) {
       return pass(`aiStatus=unavailable sau ${s.ms} ms; Report 201; quản lý thấy Issue`);
     } finally {
       execFileSync("docker", ["compose", "start", "ai"], { stdio: "ignore" });
+      // Đợi AI sống lại để các ca sau không bị ảnh hưởng.
+      for (let i = 0; i < 40; i++) {
+        if (await fetch(`${AI}/health`).then((r) => r.ok).catch(() => false)) break;
+        await new Promise((r) => setTimeout(r, 500));
+      }
     }
   });
 }
 
+
+// ---- 5. Đăng nhập thật (Better Auth + Mailpit) ----
+if (AUTH) {
+  await test("AUTH-R1", "Đăng ký @usth.edu.vn, xác minh qua Mailpit, đăng nhập thật, quyền REPORTER", "Hải Anh", async () => {
+    const email = `check-${crypto.randomUUID()}@usth.edu.vn`;
+    const password = `${crypto.randomUUID()}-check`;
+    const outside = await call("POST", `${WEB}/api/auth/sign-up/email`, { body: { name: "Outside", email: `x-${crypto.randomUUID()}@example.com`, password } });
+    if (outside.status !== 400) return fail(`email ngoài USTH không bị chặn: ${short(outside)}`);
+    const reg = await call("POST", `${WEB}/api/auth/sign-up/email`, { body: { name: "Integration check", email, password, role: "MANAGER" } });
+    if (reg.status !== 200) return fail(`đăng ký: ${short(reg)}`);
+    const early = await call("POST", `${WEB}/api/auth/sign-in/email`, { body: { email, password } });
+    if (early.status !== 403) return fail(`chưa xác minh mà đăng nhập được: HTTP ${early.status}`);
+    let message;
+    for (let i = 0; i < 10 && !message; i++) {
+      const inbox = await (await fetch(`${MAIL}/api/v1/messages`)).json();
+      message = inbox.messages?.find((m) => m.To?.some((t) => t.Address === email));
+      if (!message) await new Promise((r) => setTimeout(r, 500));
+    }
+    if (!message) return fail("không thấy thư xác minh trong Mailpit");
+    const body = await (await fetch(`${MAIL}/api/v1/message/${message.ID}`)).json();
+    const link = body.Text?.match(/https?:\/\/\S+/)?.[0];
+    if (!link || new URL(link).origin !== WEB) return fail(`link xác minh sai địa chỉ: ${link}`);
+    const verify = await fetch(link, { redirect: "manual" });
+    if (verify.status >= 400) return fail(`xác minh HTTP ${verify.status}`);
+    const login = await call("POST", `${WEB}/api/auth/sign-in/email`, { body: { email, password } });
+    if (login.status !== 200 || !login.setCookie) return fail(`đăng nhập: ${short(login)}`);
+    cookies.real = login.setCookie;
+    const me = await call("GET", `${WEB}/api/me`, { role: "real" });
+    if (me.json?.user?.role !== "REPORTER") return fail(`vai sau đăng ký: ${me.json?.user?.role} (tự xin MANAGER phải bị bỏ qua)`);
+    const queue = await call("GET", `${WEB}/api/manager/issues?status=SUBMITTED`, { role: "real" });
+    if (queue.status !== 403) return fail(`REPORTER thật xem được hàng đợi: HTTP ${queue.status}`);
+    const sug = await call("POST", `${WEB}/api/duplicate-suggestions`, { body: DEMO_INPUT, role: "real" });
+    if (sug.status !== 200 || sug.json?.aiStatus !== "ok") return fail(`gợi ý bằng phiên thật: ${short(sug)}`);
+    await call("POST", `${WEB}/api/auth/sign-out`, { body: {}, role: "real" });
+    const after = await call("GET", `${WEB}/api/me`, { role: "real" });
+    delete cookies.real;
+    if (after.status !== 401) return fail(`sau đăng xuất vẫn còn phiên: HTTP ${after.status}`);
+    return pass("chặn email ngoài, chặn đăng nhập trước xác minh, thư tới Mailpit, vai REPORTER, 403 hàng đợi, gợi ý ok, đăng xuất 401");
+  });
+}
+
 // Thu hồi phiên demo.
-for (const role of Object.keys(cookies)) await call("DELETE", `${WEB}/api/dev/session`, { role }).catch(() => {});
+for (const role of ["reporter", "staff", "manager"].filter((r) => cookies[r])) await call("DELETE", `${WEB}/api/dev/session`, { role }).catch(() => {});
 
 // ---- In kết quả ----
 const when = new Date().toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
 const lines = [
   `# Kiểm tra tích hợp VastFix — ${when} (giờ Việt Nam)`,
   "",
-  `Web: ${WEB} · AI: ${AI}${WRITE ? " · có ghi DB" : ""}${FALLBACK ? " · có thử AI tắt" : ""}`,
+  `Web: ${WEB} · AI: ${AI}${WRITE ? " · có ghi DB" : ""}${FALLBACK ? " · có thử AI tắt" : ""}${AUTH ? " · có đăng nhập thật" : ""}`,
   "",
   "| Mã | Kiểm tra | Owner khi lỗi | Kết quả | Chi tiết |",
   "| --- | --- | --- | --- | --- |",

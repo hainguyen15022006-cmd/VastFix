@@ -18,7 +18,7 @@
     "db:seed": "tsx database-starter/prisma/seed.ts",
     "db:verify": "tsx database-starter/scripts/verify.ts",
     "db:studio": "prisma studio --config database-starter/prisma7.config.ts",
-    "demo:env": "node scripts/setup-demo-env.mjs",
+    "demo:env": "node scripts/setup-auth-env.mjs && node scripts/setup-demo-env.mjs",
     "stack:up": "docker compose up -d --build --wait",
     "stack:ps": "docker compose ps -a",
     "stack:logs": "docker compose logs --tail=100",

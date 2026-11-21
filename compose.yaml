@@ -1,5 +1,6 @@
 # Bản chạy chung VastFix Checkpoint 1 — Hoàng Anh.
-# PostgreSQL + migration/seed + FastAPI (ai-service của Thành Lê) + web Next.js (API của Chúc).
+# PostgreSQL + migration/seed + Mailpit + FastAPI (ai-service của Thành Lê)
+# + web Next.js (API của Chúc, auth của Hải Anh, giao diện của Sơn và Dương).
 # Lần đầu: npm run demo:env   rồi:  docker compose up -d --build --wait
 # Chỉ dùng cho máy phát triển. Mật khẩu DB là giá trị dev công khai giống compose.database.yaml.
 name: vastfix
@@ -35,6 +36,12 @@ services:
         condition: service_healthy
     restart: "no"
 
+  # Hộp thư thử (giống compose.mail.yaml của Hải Anh). Xem thư xác minh tại http://127.0.0.1:8025
+  mailpit:
+    image: axllent/mailpit:v1.27.4
+    ports:
+      - "127.0.0.1:${VASTFIX_MAIL_UI_PORT:-8025}:8025"
+
   # Giữ nguyên Dockerfile và healthcheck trong ai-service/ của Thành Lê; baseline mặc định.
   ai:
     build: ./ai-service
@@ -55,6 +62,14 @@ services:
       # Tên biến theo docs/Chuc_Checkpoint1.md. Next.js gọi AI qua mạng nội bộ Compose.
       FASTAPI_BASE_URL: http://ai:8000
       DUPLICATE_TIMEOUT_MS: "5000"
+      # Đăng nhập thật (Better Auth, docs/Auth_Implementation_Step_by_Step.md). Thư xác minh vào Mailpit.
+      BETTER_AUTH_URL: http://127.0.0.1:${VASTFIX_WEB_PORT:-3000}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?Chạy npm run demo:env trước}
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+      SMTP_SECURE: "false"
+      MAIL_FROM: VastFix Dev <noreply@vastfix.test>
+      # Phiên demo của Chúc vẫn bật cho bản chung (chỉ development + loopback) để kiểm tra tự động.
       VASTFIX_DEMO_AUTH: "1"
       VASTFIX_DEMO_REPORTER_PASSWORD: ${VASTFIX_DEMO_REPORTER_PASSWORD:?Chạy npm run demo:env trước}
       VASTFIX_DEMO_STAFF_PASSWORD: ${VASTFIX_DEMO_STAFF_PASSWORD:?Chạy npm run demo:env trước}
@@ -66,6 +81,8 @@ services:
         condition: service_completed_successfully
       # AI không chặn web khởi động: AI tắt thì web vẫn chạy và báo gợi ý tạm không khả dụng.
       ai:
+        condition: service_started
+      mailpit:
         condition: service_started
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
