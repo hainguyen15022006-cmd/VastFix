@@ -16,7 +16,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <p className="vf-nav-label">{t("workspace")}</p>
         <nav aria-label={t("navigation")} className="vf-nav">
           <Link href="/" aria-current={pathname === "/" ? "page" : undefined}><Icon name="home" />{t("home")}</Link>
+          <Link href="/reports/new" aria-current={pathname.startsWith("/reports") ? "page" : undefined}><Icon name="pin" />{t("report")}</Link>
           <Link href="/manager/issues" aria-current={pathname.startsWith("/manager") ? "page" : undefined}><Icon name="inbox" />{t("queue")}</Link>
+          <a href="/account"><Icon name="shield" />{t("account")}</a>
         </nav>
         <p className="vf-sidebar-note">{t("footer")}</p>
       </aside>
