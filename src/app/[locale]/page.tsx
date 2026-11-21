@@ -12,6 +12,12 @@ export default async function Home() {
         <p className="vf-lead">{t("description")}</p>
       </section>
       <section className="vf-welcome-card">
+        <span className="vf-icon-tile"><Icon name="pin" /></span>
+        <h2>{t("reportTitle")}</h2>
+        <p>{t("reportDescription")}</p>
+        <Link className="vf-button vf-primary" href="/reports/new">{t("openReport")}</Link>
+      </section>
+      <section className="vf-welcome-card">
         <span className="vf-icon-tile"><Icon name="inbox" /></span>
         <h2>{t("managerTitle")}</h2>
         <p>{t("managerDescription")}</p>

@@ -2,7 +2,7 @@
 
 VastFix is a proposed web application for reporting and resolving campus infrastructure issues. It is the final-year group project of seven Information and Communication Technology students at the University of Science and Technology of Hanoi (USTH) for the 2026–2027 academic year.
 
-**Project status:** Initial database foundation implemented and verified locally; web/API/AI integration is next. The target submission date is **12 January 2027**.
+**Branch status:** Checkpoint 1 reporter and manager interfaces are integrated with the reporting APIs and authentication foundation. The target submission date is **12 January 2027**.
 
 ## Problem
 
@@ -70,10 +70,15 @@ The Next.js application runs from the repository root. Follow the [step-by-step 
 
 The existing schema, migrations and seed in `database-starter/` remain the database source of truth. Root package scripts expose these commands for the web application. `database-starter/` can still be run independently with its original instructions and lockfile.
 
-The new scaffold includes a home page, `/api/health` and a development-only `/dev/database` check. Authentication and the reporting/manager APIs still need implementation.
+The app includes reporting/manager APIs, duplicate suggestions, and an authentication foundation. Email verification is tested locally with Mailpit; actual external email delivery still needs SMTP configuration. Follow the [authentication walkthrough](docs/Auth_Implementation_Step_by_Step.md) and [verification record](docs/Auth_Verification_2026-11-19.md). Full workflow UI and merge/unmerge operations remain in development.
 
-## Manager frontend and shared interface
+## Reporter frontend and shared interface
 
-The shared Vietnamese/English shell and manager queue are available at `/vi/manager/issues` and `/en/manager/issues`. See [Sơn's frontend handoff](docs/Son_Frontend_Handoff.md) for setup, shared components, API expectations and UI tests.
+Dương's reporting form is available at `/vi/reports/new` and `/en/reports/new`. It uses Sơn's shared shell and translations, Chúc's report/suggestion APIs, and Hải Anh's authentication foundation. The manager queue is available at `/vi/manager/issues`.
 
-This frontend calls the approved manager API and shows loading, empty, access-denied and error states. The foundation does not yet implement that API or authentication, so the normal local queue currently shows an unavailable state. Browser test fixtures are isolated from application code; they are not a substitute for backend integration.
+- [Dương: setup, scope and integration handoff](docs/Duong_Frontend_Handoff.md)
+- [Dương: verification results](docs/Duong_Frontend_Verification.md)
+- [Supplemental report-options catalog API](docs/Report_Options_API_v1.md)
+- [Sơn: shared components and original frontend handoff](docs/Son_Frontend_Handoff.md)
+
+Build with `npm run build`; run browser checks with `npm run test:ui` and the isolated PostgreSQL integration with `npm run test:reporter-flow`. See the handoff for prerequisites. The integration harness uses fixture AI responses and does not assess ranking quality. Existing v1 report payloads, schema and seed are unchanged by the reporter feature.

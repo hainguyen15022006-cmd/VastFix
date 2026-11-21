@@ -156,8 +156,8 @@ test("production keeps development DB page private and health route unlocalized"
   await expect(page.getByRole("link", { name: "Mở trang kiểm tra DB" })).toHaveCount(0);
 });
 
-test("missing real backend is shown honestly without demo fallback", async ({ page }) => {
+test("integrated real backend requires a session without demo fallback", async ({ page }) => {
   await page.goto("/vi/manager/issues");
-  await expect(page.getByRole("heading", { name: "Chưa thể tải hàng đợi", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Cần đăng nhập", exact: true })).toBeVisible();
   await expect(page.getByRole("table")).toHaveCount(0);
 });
