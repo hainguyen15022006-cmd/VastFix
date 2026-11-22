@@ -1,0 +1,95 @@
+# Bản chạy chung VastFix Checkpoint 1 — Hoàng Anh.
+# PostgreSQL + migration/seed + Mailpit + FastAPI (ai-service của Thành Lê)
+# + web Next.js (API của Chúc, auth của Hải Anh, giao diện của Sơn và Dương).
+# Lần đầu: npm run demo:env   rồi:  docker compose up -d --build --wait
+# Chỉ dùng cho máy phát triển. Mật khẩu DB là giá trị dev công khai giống compose.database.yaml.
+name: vastfix
+
+x-db-url: &db_url postgresql://vastfix_dev:vastfix_dev_only@db:5432/vastfix_dev?schema=public
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: vastfix_dev
+      POSTGRES_USER: vastfix_dev
+      POSTGRES_PASSWORD: vastfix_dev_only
+    ports:
+      - "127.0.0.1:${VASTFIX_DB_PORT:-5434}:5432"
+    volumes:
+      - vastfix_stack_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vastfix_dev -d vastfix_dev"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  # Chạy một lần mỗi lần "up": áp các migration đã có, nạp seed (upsert theo ID cố định), verify.
+  migrate:
+    build: .
+    image: vastfix-web:local
+    command: ["sh", "-c", "npm run db:deploy && npm run db:seed && npm run db:verify"]
+    environment:
+      DATABASE_URL: *db_url
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  # Hộp thư thử (giống compose.mail.yaml của Hải Anh). Xem thư xác minh tại http://127.0.0.1:8025
+  mailpit:
+    image: axllent/mailpit:v1.27.4
+    ports:
+      - "127.0.0.1:${VASTFIX_MAIL_UI_PORT:-8025}:8025"
+
+  # Giữ nguyên Dockerfile và healthcheck trong ai-service/ của Thành Lê; baseline mặc định.
+  ai:
+    build: ./ai-service
+    image: vastfix-ai:local
+    ports:
+      - "127.0.0.1:${VASTFIX_AI_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "from urllib.request import urlopen; urlopen('http://127.0.0.1:8000/health', timeout=2).close()"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  web:
+    build: .
+    image: vastfix-web:local
+    environment:
+      DATABASE_URL: *db_url
+      # Tên biến theo docs/Chuc_Checkpoint1.md. Next.js gọi AI qua mạng nội bộ Compose.
+      FASTAPI_BASE_URL: http://ai:8000
+      DUPLICATE_TIMEOUT_MS: "5000"
+      # Đăng nhập thật (Better Auth, docs/Auth_Implementation_Step_by_Step.md). Thư xác minh vào Mailpit.
+      BETTER_AUTH_URL: http://127.0.0.1:${VASTFIX_WEB_PORT:-3000}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?Chạy npm run demo:env trước}
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+      SMTP_SECURE: "false"
+      MAIL_FROM: VastFix Dev <noreply@vastfix.test>
+      # Phiên demo của Chúc vẫn bật cho bản chung (chỉ development + loopback) để kiểm tra tự động.
+      VASTFIX_DEMO_AUTH: "1"
+      VASTFIX_DEMO_REPORTER_PASSWORD: ${VASTFIX_DEMO_REPORTER_PASSWORD:?Chạy npm run demo:env trước}
+      VASTFIX_DEMO_STAFF_PASSWORD: ${VASTFIX_DEMO_STAFF_PASSWORD:?Chạy npm run demo:env trước}
+      VASTFIX_DEMO_MANAGER_PASSWORD: ${VASTFIX_DEMO_MANAGER_PASSWORD:?Chạy npm run demo:env trước}
+    ports:
+      - "127.0.0.1:${VASTFIX_WEB_PORT:-3000}:3000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      # AI không chặn web khởi động: AI tắt thì web vẫn chạy và báo gợi ý tạm không khả dụng.
+      ai:
+        condition: service_started
+      mailpit:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+volumes:
+  vastfix_stack_pgdata:

@@ -1,0 +1,32 @@
+{
+  "health": {
+    "status": "ok",
+    "model_version": "multilingual-e5-small-q8-v1"
+  },
+  "response": {
+    "request_id": "44444444-4444-4444-8444-444444444444",
+    "suggestions": [
+      {
+        "report_id": "55555555-5555-4555-8555-555555555555",
+        "score": 0.951865,
+        "reason_codes": [
+          "SAME_AREA",
+          "SIMILAR_DESCRIPTION",
+          "SAME_CATEGORY",
+          "RECENT_REPORT"
+        ]
+      },
+      {
+        "report_id": "50000000-0000-4000-8000-000000000002",
+        "score": 0.840444,
+        "reason_codes": [
+          "SAME_AREA",
+          "SIMILAR_DESCRIPTION",
+          "SAME_CATEGORY",
+          "RECENT_REPORT"
+        ]
+      }
+    ],
+    "model_version": "multilingual-e5-small-q8-v1"
+  }
+}

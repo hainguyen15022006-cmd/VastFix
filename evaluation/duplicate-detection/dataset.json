@@ -1,0 +1,1366 @@
+{
+  "schema_version": 1,
+  "provenance": "SYNTHETIC_CODEX_2026-11-19",
+  "categories": [
+    {
+      "code": "ELECTRICAL",
+      "source": "synthetic evaluation catalog"
+    },
+    {
+      "code": "PLUMBING",
+      "source": "synthetic evaluation catalog"
+    },
+    {
+      "code": "HVAC",
+      "source": "synthetic evaluation catalog"
+    },
+    {
+      "code": "IT",
+      "source": "synthetic evaluation catalog"
+    },
+    {
+      "code": "CIVIL",
+      "source": "synthetic evaluation catalog"
+    },
+    {
+      "code": "CLEANING",
+      "source": "synthetic evaluation catalog"
+    }
+  ],
+  "places": {
+    "a1_hall2": {
+      "building": "A1",
+      "floor": "2",
+      "area": "HALL",
+      "kind": "INDOOR"
+    },
+    "a1_lab2": {
+      "building": "A1",
+      "floor": "2",
+      "area": "LAB",
+      "kind": "INDOOR"
+    },
+    "a1_hall3": {
+      "building": "A1",
+      "floor": "3",
+      "area": "HALL",
+      "kind": "INDOOR"
+    },
+    "a1_toilet2": {
+      "building": "A1",
+      "floor": "2",
+      "area": "TOILET",
+      "kind": "INDOOR"
+    },
+    "a2_hall2": {
+      "building": "A2",
+      "floor": "2",
+      "area": "HALL",
+      "kind": "INDOOR"
+    },
+    "b1_hall1": {
+      "building": "B1",
+      "floor": "1",
+      "area": "HALL",
+      "kind": "INDOOR"
+    },
+    "b1_room1": {
+      "building": "B1",
+      "floor": "1",
+      "area": "ROOM",
+      "kind": "INDOOR"
+    },
+    "gate": {
+      "building": null,
+      "floor": null,
+      "area": null,
+      "kind": "OUTDOOR"
+    },
+    "yard": {
+      "building": null,
+      "floor": null,
+      "area": null,
+      "kind": "OUTDOOR"
+    }
+  },
+  "reports": [
+    {
+      "key": "light03_vi",
+      "report_id": "d56063f7-6c42-52a6-a35e-646807fb544e",
+      "issue_id": "dabe2864-bfdc-5789-b86c-0c1e33ccf0b4",
+      "incident_key": "light03_nov",
+      "language": "vi",
+      "description": "Đèn H2-03 ở hành lang tầng 2 tòa A1 không sáng",
+      "category_code": "ELECTRICAL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "ff9a87b7-2271-529d-89df-7e341344b989",
+        "detail": "H2-03"
+      },
+      "created_at": "2026-11-18T08:00:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "light03_en",
+      "report_id": "feb34570-3dc7-5a10-bcf2-8d3fa299e826",
+      "issue_id": "f7c1e276-7c46-5d63-8785-5ca6ba426f83",
+      "incident_key": "light03_nov",
+      "language": "en",
+      "description": "Light H2-03 in the A1 second-floor corridor is out",
+      "category_code": "ELECTRICAL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "ff9a87b7-2271-529d-89df-7e341344b989",
+        "detail": "H2-03"
+      },
+      "created_at": "2026-11-18T08:30:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "light03_typo",
+      "report_id": "52f99590-f71d-5959-a677-f644b18cc192",
+      "issue_id": "59d7ca91-edb5-5cd3-aa65-576ff42114b9",
+      "incident_key": "light03_nov",
+      "language": "vi",
+      "description": "den H2-03 hanh lang tang 2 khong sang",
+      "category_code": "ELECTRICAL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "ff9a87b7-2271-529d-89df-7e341344b989",
+        "detail": "H2-03"
+      },
+      "created_at": "2026-11-18T09:00:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "light04",
+      "report_id": "b027c2f4-a43e-577d-9afd-9cba4b8415c0",
+      "issue_id": "6dc9a9e5-80b9-5427-8d07-f519bf0e5196",
+      "incident_key": "light04_nov",
+      "language": "vi",
+      "description": "Đèn H2-04 ở hành lang tầng 2 tòa A1 không sáng",
+      "category_code": "ELECTRICAL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "ff9a87b7-2271-529d-89df-7e341344b989",
+        "detail": "H2-04"
+      },
+      "created_at": "2026-11-18T08:05:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "light03_flicker",
+      "report_id": "cf6ee5b8-72de-5e97-a295-a61ef2d27c69",
+      "issue_id": "c6d4ae2a-2e5c-51b5-97d8-649bb4ef17fc",
+      "incident_key": "light03_flicker",
+      "language": "vi",
+      "description": "Đèn H2-03 hành lang tầng 2 nhấp nháy nhưng vẫn sáng",
+      "category_code": "ELECTRICAL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "ff9a87b7-2271-529d-89df-7e341344b989",
+        "detail": "H2-03"
+      },
+      "created_at": "2026-11-18T08:10:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "light03_old",
+      "report_id": "fdf19fc4-ae1a-5bfa-b9e5-87184c412620",
+      "issue_id": "da37355c-a2b5-5bfb-9bfb-21b848e0c1ad",
+      "incident_key": "light03_oct",
+      "language": "vi",
+      "description": "Đèn H2-03 hành lang tầng 2 không sáng",
+      "category_code": "ELECTRICAL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "ff9a87b7-2271-529d-89df-7e341344b989",
+        "detail": "H2-03"
+      },
+      "created_at": "2026-10-01T08:00:00Z",
+      "issue_status": "CLOSED",
+      "closed_at": "2026-10-03T10:00:00Z",
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "light03_old_en",
+      "report_id": "46a20995-ff82-5251-89a4-d5fc88217f25",
+      "issue_id": "14057c4e-abe0-5bd7-932f-3b8053fae199",
+      "incident_key": "light03_oct",
+      "language": "en",
+      "description": "The H2-03 corridor lamp is dark",
+      "category_code": "ELECTRICAL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "ff9a87b7-2271-529d-89df-7e341344b989",
+        "detail": "H2-03"
+      },
+      "created_at": "2026-10-01T09:00:00Z",
+      "issue_status": "CLOSED",
+      "closed_at": "2026-10-03T10:00:00Z",
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "light03_recur",
+      "report_id": "cb83d961-8eeb-551c-92be-94a8f9ece522",
+      "issue_id": "13c9d038-c989-553e-b3de-ad84529a38bb",
+      "incident_key": "light03_nov",
+      "language": "vi",
+      "description": "Bóng H2-03 lại tắt ở hành lang A1 tầng hai",
+      "category_code": "ELECTRICAL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "ff9a87b7-2271-529d-89df-7e341344b989",
+        "detail": "H2-03"
+      },
+      "created_at": "2026-11-18T10:00:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "light03_merged",
+      "report_id": "ca025e8a-5069-5cb8-a89b-3d3b75f70ef8",
+      "issue_id": "f4c50276-efce-5524-9989-5b70dd892473",
+      "incident_key": "light03_nov",
+      "language": "en",
+      "description": "H2-03 ceiling light has stopped working",
+      "category_code": "ELECTRICAL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "ff9a87b7-2271-529d-89df-7e341344b989",
+        "detail": "H2-03"
+      },
+      "created_at": "2026-11-18T08:40:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": true,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "light03_a2",
+      "report_id": "3fee1d06-d73e-5a67-b9e1-8e57964e03e9",
+      "issue_id": "434b810d-a477-5f4e-816f-d25bae8bf685",
+      "incident_key": "light03_a2",
+      "language": "vi",
+      "description": "Đèn H2-03 hành lang tầng 2 tòa A2 không sáng",
+      "category_code": "ELECTRICAL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "da265383-16dd-5398-94d3-a24871554fa9",
+        "floor_id": "d031cab4-8df8-5621-ac67-4e7581e2edff",
+        "area_id": "3a9a12c2-eddc-5e31-84ee-eadd78776c4e",
+        "detail": "H2-03"
+      },
+      "created_at": "2026-11-18T08:15:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "light03_floor3",
+      "report_id": "181fdb27-a919-5fc4-9eb3-ec788e15749f",
+      "issue_id": "d8a58b99-e3ad-5893-b81a-d61593851228",
+      "incident_key": "light03_floor3",
+      "language": "vi",
+      "description": "Đèn H2-03 hành lang tầng 3 tòa A1 không sáng",
+      "category_code": "ELECTRICAL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "18ea6351-1a94-5b61-ad49-1d57826779ab",
+        "area_id": "b6087e31-d1a1-504b-8865-0a2c4d995ca9",
+        "detail": "H2-03"
+      },
+      "created_at": "2026-11-18T08:20:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "projector",
+      "report_id": "07bbcc1c-138d-553c-992f-c0cf50ef20bd",
+      "issue_id": "0bb8ffa4-fe55-5a83-b317-4f72f66adf10",
+      "incident_key": "projector",
+      "language": "en",
+      "description": "Projector P-2 in A1 lab 2 shows no image",
+      "category_code": "IT",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "23c09558-d146-570a-a2e7-a78998dfcd1b",
+        "detail": "projector P-2"
+      },
+      "created_at": "2026-11-18T07:00:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "projector_vi",
+      "report_id": "4af9e271-8ec3-57a5-9c1b-1489f4bec8dd",
+      "issue_id": "5a97c677-77de-5d7e-8234-4cd34dca2366",
+      "incident_key": "projector",
+      "language": "vi",
+      "description": "Máy chiếu P-2 trong phòng thực hành A1 không lên hình",
+      "category_code": "IT",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "23c09558-d146-570a-a2e7-a78998dfcd1b",
+        "detail": "projector P-2"
+      },
+      "created_at": "2026-11-18T07:45:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "projector_remote",
+      "report_id": "e59f6bb1-7d70-5d4b-82d1-8c5549d4df95",
+      "issue_id": "8223e172-a092-5d3c-888b-6bb7b73b0c97",
+      "incident_key": "projector_remote",
+      "language": "en",
+      "description": "Projector P-2 remote in A1 lab 2 has dead batteries",
+      "category_code": "IT",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "23c09558-d146-570a-a2e7-a78998dfcd1b",
+        "detail": "projector P-2 remote"
+      },
+      "created_at": "2026-11-18T07:20:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "ac_leak",
+      "report_id": "ad4aa8b1-773a-5ec8-bdec-594dce4bf0d0",
+      "issue_id": "0ba53be9-dc93-5363-85ce-e1ac5e6c23ba",
+      "incident_key": "ac_leak",
+      "language": "vi",
+      "description": "Điều hòa AC-2 phòng thực hành A1 chảy nước",
+      "category_code": "HVAC",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "23c09558-d146-570a-a2e7-a78998dfcd1b",
+        "detail": "AC-2"
+      },
+      "created_at": "2026-11-18T06:00:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "ac_leak_en",
+      "report_id": "8bc268fc-c3da-5358-be80-9f886f149566",
+      "issue_id": "a6016737-db8d-5915-b0f4-9c114ad6f6db",
+      "incident_key": "ac_leak",
+      "language": "en",
+      "description": "Water drips from AC-2 in the A1 lab",
+      "category_code": "HVAC",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "23c09558-d146-570a-a2e7-a78998dfcd1b",
+        "detail": "AC-2"
+      },
+      "created_at": "2026-11-18T07:30:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "ac_noise",
+      "report_id": "fc7f1417-7899-57f6-bafa-2b623bdd8713",
+      "issue_id": "33bfb3fa-e8e1-5929-8308-5a61aff08c2e",
+      "incident_key": "ac_noise",
+      "language": "vi",
+      "description": "Điều hòa AC-2 phòng thực hành A1 kêu to",
+      "category_code": "HVAC",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "23c09558-d146-570a-a2e7-a78998dfcd1b",
+        "detail": "AC-2"
+      },
+      "created_at": "2026-11-18T06:10:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "tap",
+      "report_id": "64c33cc9-059a-5d75-a302-ac2dc2e9bc24",
+      "issue_id": "52011791-e275-5507-86ea-84e519a3f14b",
+      "incident_key": "tap",
+      "language": "vi",
+      "description": "Vòi rửa số 1 nhà vệ sinh A1 tầng 2 rò nước",
+      "category_code": "PLUMBING",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "cafa0af0-6aba-5c10-b8c4-914e80c0a5a6",
+        "detail": "vòi rửa số 1"
+      },
+      "created_at": "2026-11-18T05:00:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "tap_en",
+      "report_id": "1498ed8c-834d-55aa-8b0e-0e2aba5a41c6",
+      "issue_id": "d56117b2-4c11-5fff-b24a-4cbf62261198",
+      "incident_key": "tap",
+      "language": "en",
+      "description": "Sink tap 1 leaks in the A1 second-floor restroom",
+      "category_code": "PLUMBING",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "cafa0af0-6aba-5c10-b8c4-914e80c0a5a6",
+        "detail": "sink tap 1"
+      },
+      "created_at": "2026-11-18T05:40:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "tap2",
+      "report_id": "0c5568ce-77b4-5e1d-9d08-9481af725eb2",
+      "issue_id": "a4a8bae6-eda3-5800-93d9-1c00f4a6f5ce",
+      "incident_key": "tap2",
+      "language": "vi",
+      "description": "Vòi rửa số 2 nhà vệ sinh A1 tầng 2 rò nước",
+      "category_code": "PLUMBING",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "cafa0af0-6aba-5c10-b8c4-914e80c0a5a6",
+        "detail": "vòi rửa số 2"
+      },
+      "created_at": "2026-11-18T05:10:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "drain",
+      "report_id": "ed9f3912-6478-5926-9446-13754b72a8e8",
+      "issue_id": "eeb154ce-a3a1-5d08-9abc-18dcb354f20a",
+      "incident_key": "drain",
+      "language": "vi",
+      "description": "Nước đọng do cống sàn nhà vệ sinh A1 tầng 2 bị tắc",
+      "category_code": "PLUMBING",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "cafa0af0-6aba-5c10-b8c4-914e80c0a5a6",
+        "detail": "thoát sàn"
+      },
+      "created_at": "2026-11-18T05:15:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "wifi",
+      "report_id": "fe48db08-f8f6-5e8f-9853-7adffcb404bd",
+      "issue_id": "510579b2-a78f-5d5e-a6bf-1a2e0f53fb63",
+      "incident_key": "wifi",
+      "language": "en",
+      "description": "Wi-Fi in B1 room 101 disconnects repeatedly",
+      "category_code": "IT",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "55561867-12a4-582a-93e5-e0ca88071a91",
+        "floor_id": "8c3eff89-e9aa-54d3-b273-0059497512b4",
+        "area_id": "6fff0909-9ffa-59e3-9040-9c91e58d9933",
+        "detail": "Wi-Fi room 101"
+      },
+      "created_at": "2026-11-18T04:00:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "wifi_vi",
+      "report_id": "bab6bc16-9918-50ec-8090-f6cfdeca8778",
+      "issue_id": "f4b748c7-40e0-5ada-b2ba-8ea3f52d23d5",
+      "incident_key": "wifi",
+      "language": "vi",
+      "description": "Mạng wifi phòng 101 B1 rớt liên tục",
+      "category_code": "IT",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "55561867-12a4-582a-93e5-e0ca88071a91",
+        "floor_id": "8c3eff89-e9aa-54d3-b273-0059497512b4",
+        "area_id": "6fff0909-9ffa-59e3-9040-9c91e58d9933",
+        "detail": "Wi-Fi room 101"
+      },
+      "created_at": "2026-11-18T04:30:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "wifi_room102",
+      "report_id": "7674a2f3-2b56-50f2-9924-61248b11436a",
+      "issue_id": "f5cfb4c0-2d65-5dd8-bef8-d1d61b838d63",
+      "incident_key": "wifi_room102",
+      "language": "en",
+      "description": "Wi-Fi in B1 room 102 disconnects repeatedly",
+      "category_code": "IT",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "55561867-12a4-582a-93e5-e0ca88071a91",
+        "floor_id": "8c3eff89-e9aa-54d3-b273-0059497512b4",
+        "area_id": "6fff0909-9ffa-59e3-9040-9c91e58d9933",
+        "detail": "Wi-Fi room 102"
+      },
+      "created_at": "2026-11-18T04:10:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "door",
+      "report_id": "1bce4f29-0f3c-5698-86df-2c0e56293983",
+      "issue_id": "a80f219d-2183-5b05-bd43-53f480720651",
+      "incident_key": "door",
+      "language": "vi",
+      "description": "Cửa D1 hành lang B1 tầng một không đóng kín",
+      "category_code": "CIVIL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "55561867-12a4-582a-93e5-e0ca88071a91",
+        "floor_id": "8c3eff89-e9aa-54d3-b273-0059497512b4",
+        "area_id": "fc1d5609-7dc3-5a18-9a4a-5710750def29",
+        "detail": "cửa D1"
+      },
+      "created_at": "2026-11-18T03:00:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "door_en",
+      "report_id": "c25a8726-7083-505f-9c6e-a859bd9615a8",
+      "issue_id": "5186c63e-af6e-508b-ac36-5a577ec376f4",
+      "incident_key": "door",
+      "language": "en",
+      "description": "Door D1 on B1 ground floor does not latch",
+      "category_code": "CIVIL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "55561867-12a4-582a-93e5-e0ca88071a91",
+        "floor_id": "8c3eff89-e9aa-54d3-b273-0059497512b4",
+        "area_id": "fc1d5609-7dc3-5a18-9a4a-5710750def29",
+        "detail": "door D1"
+      },
+      "created_at": "2026-11-18T03:35:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "door_en_again",
+      "report_id": "d2d96a50-6206-580c-8e2f-de7a0b3e6a29",
+      "issue_id": "dd204a12-5646-570d-bf68-5e9846e4f0c9",
+      "incident_key": "door",
+      "language": "en",
+      "description": "The D1 hallway door in B1 still will not close",
+      "category_code": "CIVIL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "55561867-12a4-582a-93e5-e0ca88071a91",
+        "floor_id": "8c3eff89-e9aa-54d3-b273-0059497512b4",
+        "area_id": "fc1d5609-7dc3-5a18-9a4a-5710750def29",
+        "detail": "door D1"
+      },
+      "created_at": "2026-11-18T03:50:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "door2",
+      "report_id": "c60abaeb-e665-5a18-ae2f-06b04888c014",
+      "issue_id": "da3e4b00-8d91-5b8c-be0c-85a5a214ef69",
+      "incident_key": "door2",
+      "language": "en",
+      "description": "Door D2 on B1 ground floor does not latch",
+      "category_code": "CIVIL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "55561867-12a4-582a-93e5-e0ca88071a91",
+        "floor_id": "8c3eff89-e9aa-54d3-b273-0059497512b4",
+        "area_id": "fc1d5609-7dc3-5a18-9a4a-5710750def29",
+        "detail": "door D2"
+      },
+      "created_at": "2026-11-18T03:10:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "gate_light",
+      "report_id": "55c5d03b-14ab-57f3-82a6-6e6137877751",
+      "issue_id": "ed429e9e-782a-5966-9181-f8f7e233cecf",
+      "incident_key": "gate_light",
+      "language": "vi",
+      "description": "Đèn ở cổng chính 18-2 không sáng",
+      "category_code": "ELECTRICAL",
+      "location": {
+        "kind": "OUTDOOR",
+        "detail": "cổng chính 18-2",
+        "latitude": null,
+        "longitude": null
+      },
+      "created_at": "2026-11-18T02:00:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "gate_light_en",
+      "report_id": "dafb2c78-d3d2-5faf-83e8-44f497f94a0b",
+      "issue_id": "5408ed3a-7132-582c-96ab-b4425cf9120f",
+      "incident_key": "gate_light",
+      "language": "en",
+      "description": "The light at the main 18-2 gate is out",
+      "category_code": "ELECTRICAL",
+      "location": {
+        "kind": "OUTDOOR",
+        "detail": "cổng chính 18-2",
+        "latitude": null,
+        "longitude": null
+      },
+      "created_at": "2026-11-18T02:30:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "gate_camera",
+      "report_id": "ea81f9a4-8ba7-584e-952e-580d3829db7d",
+      "issue_id": "6a5af753-347b-56ce-862d-67612c7a4e88",
+      "incident_key": "gate_camera",
+      "language": "vi",
+      "description": "Camera ở cổng chính 18-2 không hoạt động",
+      "category_code": "IT",
+      "location": {
+        "kind": "OUTDOOR",
+        "detail": "cổng chính 18-2",
+        "latitude": null,
+        "longitude": null
+      },
+      "created_at": "2026-11-18T02:10:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "yard_puddle",
+      "report_id": "eca5f681-18e2-5477-9bad-ff13ae33d164",
+      "issue_id": "2ecb786f-bdbf-527a-936d-3598a5dd95ac",
+      "incident_key": "yard_puddle",
+      "language": "vi",
+      "description": "Nước đọng trên sân trước A1 do ống tưới rò",
+      "category_code": "PLUMBING",
+      "location": {
+        "kind": "OUTDOOR",
+        "detail": "sân trước A1",
+        "latitude": null,
+        "longitude": null
+      },
+      "created_at": "2026-11-18T01:00:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "yard_puddle_en",
+      "report_id": "6a11a401-de25-567b-9f89-df888c41ea1e",
+      "issue_id": "72c14664-bca1-5650-a7a7-d504484d4f5b",
+      "incident_key": "yard_puddle",
+      "language": "en",
+      "description": "Irrigation pipe leaks onto the yard in front of A1",
+      "category_code": "PLUMBING",
+      "location": {
+        "kind": "OUTDOOR",
+        "detail": "sân trước A1",
+        "latitude": null,
+        "longitude": null
+      },
+      "created_at": "2026-11-18T02:40:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "yard_litter",
+      "report_id": "f6924e13-16e7-58d3-9194-24b6e9b5e410",
+      "issue_id": "73a8bcdc-acb2-5296-b3f3-6a80964b441f",
+      "incident_key": "yard_litter",
+      "language": "en",
+      "description": "Litter has accumulated in the yard in front of A1",
+      "category_code": "CLEANING",
+      "location": {
+        "kind": "OUTDOOR",
+        "detail": "sân trước A1",
+        "latitude": null,
+        "longitude": null
+      },
+      "created_at": "2026-11-18T01:10:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "hall_dirty",
+      "report_id": "f8174fcf-e336-5769-96eb-383e63e55ab1",
+      "issue_id": "7ac94cf1-471c-5c6f-a132-1f9e92438e74",
+      "incident_key": "hall_dirty",
+      "language": "vi",
+      "description": "Hành lang giữa A1 tầng 2 có rác cần dọn",
+      "category_code": "CLEANING",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "ff9a87b7-2271-529d-89df-7e341344b989",
+        "detail": "hành lang giữa"
+      },
+      "created_at": "2026-11-18T00:00:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "hall_dirty_en",
+      "report_id": "23662ddf-ef86-5691-affa-0ea84294e334",
+      "issue_id": "fe06597d-1bdc-5194-b4eb-9f35a6eafcf0",
+      "incident_key": "hall_dirty",
+      "language": "en",
+      "description": "There is litter in the middle corridor on A1 floor 2",
+      "category_code": "CLEANING",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "ff9a87b7-2271-529d-89df-7e341344b989",
+        "detail": "hành lang giữa"
+      },
+      "created_at": "2026-11-18T00:30:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "hall_wet",
+      "report_id": "ef62cd04-0faf-5235-929b-fc3a34aba3e2",
+      "issue_id": "a75d9137-8045-5636-8a81-bb4711dd16ee",
+      "incident_key": "hall_wet",
+      "language": "vi",
+      "description": "Hành lang giữa A1 tầng 2 bị ướt cần lau",
+      "category_code": "CLEANING",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "ff9a87b7-2271-529d-89df-7e341344b989",
+        "detail": "hành lang giữa"
+      },
+      "created_at": "2026-11-18T00:15:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "short_light",
+      "report_id": "f4cb4b72-fda3-5303-88e7-0e350952a5a3",
+      "issue_id": "02da4161-c13e-54c5-88c9-58c511355ebc",
+      "incident_key": "light03_nov",
+      "language": "vi",
+      "description": "H2-03 hỏng",
+      "category_code": "ELECTRICAL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "ff9a87b7-2271-529d-89df-7e341344b989",
+        "detail": "H2-03"
+      },
+      "created_at": "2026-11-18T11:00:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "ambiguous",
+      "report_id": "c7677a7b-95a8-5246-bb84-b906b216a6be",
+      "issue_id": "401da72c-ee48-5605-ba6b-6ca1f0ac42cf",
+      "incident_key": "unknown",
+      "language": "vi",
+      "description": "Đèn hỏng",
+      "category_code": "ELECTRICAL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "ff9a87b7-2271-529d-89df-7e341344b989",
+        "detail": null
+      },
+      "created_at": "2026-11-18T11:10:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "new_no_candidates",
+      "report_id": "6b1abeaa-866a-5a96-bc2d-b7e776a01558",
+      "issue_id": "1857e6ee-8438-5f48-b4c0-a77aa16fc2c2",
+      "incident_key": "isolated",
+      "language": "en",
+      "description": "Window W7 is cracked",
+      "category_code": "CIVIL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "55561867-12a4-582a-93e5-e0ca88071a91",
+        "floor_id": "8c3eff89-e9aa-54d3-b273-0059497512b4",
+        "area_id": "6fff0909-9ffa-59e3-9040-9c91e58d9933",
+        "detail": "window W7"
+      },
+      "created_at": "2026-11-18T12:00:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    },
+    {
+      "key": "lab_socket",
+      "report_id": "0342886c-1c44-590f-8a91-e6eafc0bf86d",
+      "issue_id": "2e2ae7a1-0b83-5e64-ab81-07457d75205b",
+      "incident_key": "socket",
+      "language": "en",
+      "description": "Socket S1 in A1 lab has no power",
+      "category_code": "ELECTRICAL",
+      "location": {
+        "kind": "INDOOR",
+        "building_id": "c432290d-010a-5e5a-ba95-c97bd52a1415",
+        "floor_id": "a4286294-ff44-5b1b-aca7-50b6951a8ae3",
+        "area_id": "23c09558-d146-570a-a2e7-a78998dfcd1b",
+        "detail": "socket S1"
+      },
+      "created_at": "2026-11-18T07:30:00Z",
+      "issue_status": "SUBMITTED",
+      "closed_at": null,
+      "merged_source": false,
+      "provenance": "SYNTHETIC_CODEX_2026-11-19"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "C01",
+      "query_id": "feb34570-3dc7-5a10-bcf2-8d3fa299e826",
+      "candidate_ids": [
+        "d56063f7-6c42-52a6-a35e-646807fb544e",
+        "b027c2f4-a43e-577d-9afd-9cba4b8415c0",
+        "cf6ee5b8-72de-5e97-a295-a61ef2d27c69"
+      ],
+      "expected_relevant_ids": [
+        "d56063f7-6c42-52a6-a35e-646807fb544e"
+      ],
+      "expected_negative_ids": [
+        "b027c2f4-a43e-577d-9afd-9cba4b8415c0",
+        "cf6ee5b8-72de-5e97-a295-a61ef2d27c69"
+      ],
+      "scenario": "vi-en",
+      "rationale": "Same H2-03 outage; H2-04 is another lamp and flickering is another fault.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C02",
+      "query_id": "52f99590-f71d-5959-a677-f644b18cc192",
+      "candidate_ids": [
+        "d56063f7-6c42-52a6-a35e-646807fb544e",
+        "feb34570-3dc7-5a10-bcf2-8d3fa299e826",
+        "b027c2f4-a43e-577d-9afd-9cba4b8415c0"
+      ],
+      "expected_relevant_ids": [
+        "d56063f7-6c42-52a6-a35e-646807fb544e",
+        "feb34570-3dc7-5a10-bcf2-8d3fa299e826"
+      ],
+      "expected_negative_ids": [
+        "b027c2f4-a43e-577d-9afd-9cba4b8415c0"
+      ],
+      "scenario": "vi-vi typo",
+      "rationale": "Unaccented typo describes the same H2-03 outage.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C03",
+      "query_id": "cb83d961-8eeb-551c-92be-94a8f9ece522",
+      "candidate_ids": [
+        "d56063f7-6c42-52a6-a35e-646807fb544e",
+        "feb34570-3dc7-5a10-bcf2-8d3fa299e826",
+        "fdf19fc4-ae1a-5bfa-b9e5-87184c412620",
+        "ca025e8a-5069-5cb8-a89b-3d3b75f70ef8",
+        "b027c2f4-a43e-577d-9afd-9cba4b8415c0"
+      ],
+      "expected_relevant_ids": [
+        "d56063f7-6c42-52a6-a35e-646807fb544e",
+        "feb34570-3dc7-5a10-bcf2-8d3fa299e826",
+        "ca025e8a-5069-5cb8-a89b-3d3b75f70ef8"
+      ],
+      "expected_negative_ids": [
+        "fdf19fc4-ae1a-5bfa-b9e5-87184c412620",
+        "b027c2f4-a43e-577d-9afd-9cba4b8415c0"
+      ],
+      "scenario": "closed recurrence merged",
+      "rationale": "October repair is a separate occurrence; merged source is incident-level relevant but backend-ineligible.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C04",
+      "query_id": "cb83d961-8eeb-551c-92be-94a8f9ece522",
+      "candidate_ids": [
+        "fdf19fc4-ae1a-5bfa-b9e5-87184c412620",
+        "46a20995-ff82-5251-89a4-d5fc88217f25"
+      ],
+      "expected_relevant_ids": [],
+      "expected_negative_ids": [
+        "fdf19fc4-ae1a-5bfa-b9e5-87184c412620",
+        "46a20995-ff82-5251-89a4-d5fc88217f25"
+      ],
+      "scenario": "closed only",
+      "rationale": "Both October reports refer to a repaired occurrence, not the November outage.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C05",
+      "query_id": "feb34570-3dc7-5a10-bcf2-8d3fa299e826",
+      "candidate_ids": [
+        "3fee1d06-d73e-5a67-b9e1-8e57964e03e9",
+        "181fdb27-a919-5fc4-9eb3-ec788e15749f",
+        "b027c2f4-a43e-577d-9afd-9cba4b8415c0"
+      ],
+      "expected_relevant_ids": [],
+      "expected_negative_ids": [
+        "3fee1d06-d73e-5a67-b9e1-8e57964e03e9",
+        "181fdb27-a919-5fc4-9eb3-ec788e15749f",
+        "b027c2f4-a43e-577d-9afd-9cba4b8415c0"
+      ],
+      "scenario": "different building floor equipment",
+      "rationale": "Same identifiers or wording in another place do not identify this incident.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C06",
+      "query_id": "4af9e271-8ec3-57a5-9c1b-1489f4bec8dd",
+      "candidate_ids": [
+        "07bbcc1c-138d-553c-992f-c0cf50ef20bd",
+        "e59f6bb1-7d70-5d4b-82d1-8c5549d4df95",
+        "ad4aa8b1-773a-5ec8-bdec-594dce4bf0d0"
+      ],
+      "expected_relevant_ids": [
+        "07bbcc1c-138d-553c-992f-c0cf50ef20bd"
+      ],
+      "expected_negative_ids": [
+        "e59f6bb1-7d70-5d4b-82d1-8c5549d4df95",
+        "ad4aa8b1-773a-5ec8-bdec-594dce4bf0d0"
+      ],
+      "scenario": "vi-en same location",
+      "rationale": "Projector image failure is the same occurrence; remote battery fault differs.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C07",
+      "query_id": "8bc268fc-c3da-5358-be80-9f886f149566",
+      "candidate_ids": [
+        "ad4aa8b1-773a-5ec8-bdec-594dce4bf0d0",
+        "fc7f1417-7899-57f6-bafa-2b623bdd8713",
+        "07bbcc1c-138d-553c-992f-c0cf50ef20bd"
+      ],
+      "expected_relevant_ids": [
+        "ad4aa8b1-773a-5ec8-bdec-594dce4bf0d0"
+      ],
+      "expected_negative_ids": [
+        "fc7f1417-7899-57f6-bafa-2b623bdd8713",
+        "07bbcc1c-138d-553c-992f-c0cf50ef20bd"
+      ],
+      "scenario": "vi-en same equipment different issue",
+      "rationale": "Water leak and loud noise are distinct AC-2 faults.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C08",
+      "query_id": "1498ed8c-834d-55aa-8b0e-0e2aba5a41c6",
+      "candidate_ids": [
+        "64c33cc9-059a-5d75-a302-ac2dc2e9bc24",
+        "0c5568ce-77b4-5e1d-9d08-9481af725eb2",
+        "ed9f3912-6478-5926-9446-13754b72a8e8"
+      ],
+      "expected_relevant_ids": [
+        "64c33cc9-059a-5d75-a302-ac2dc2e9bc24"
+      ],
+      "expected_negative_ids": [
+        "0c5568ce-77b4-5e1d-9d08-9481af725eb2",
+        "ed9f3912-6478-5926-9446-13754b72a8e8"
+      ],
+      "scenario": "vi-en hard negative",
+      "rationale": "Tap 1 leak matches; tap 2 and drain are different objects.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C09",
+      "query_id": "bab6bc16-9918-50ec-8090-f6cfdeca8778",
+      "candidate_ids": [
+        "fe48db08-f8f6-5e8f-9853-7adffcb404bd",
+        "7674a2f3-2b56-50f2-9924-61248b11436a",
+        "1bce4f29-0f3c-5698-86df-2c0e56293983"
+      ],
+      "expected_relevant_ids": [
+        "fe48db08-f8f6-5e8f-9853-7adffcb404bd"
+      ],
+      "expected_negative_ids": [
+        "7674a2f3-2b56-50f2-9924-61248b11436a",
+        "1bce4f29-0f3c-5698-86df-2c0e56293983"
+      ],
+      "scenario": "vi-en room distinction",
+      "rationale": "Room 101 outage differs from room 102 despite matching symptoms.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C10",
+      "query_id": "c25a8726-7083-505f-9c6e-a859bd9615a8",
+      "candidate_ids": [
+        "1bce4f29-0f3c-5698-86df-2c0e56293983",
+        "c60abaeb-e665-5a18-ae2f-06b04888c014"
+      ],
+      "expected_relevant_ids": [
+        "1bce4f29-0f3c-5698-86df-2c0e56293983"
+      ],
+      "expected_negative_ids": [
+        "c60abaeb-e665-5a18-ae2f-06b04888c014"
+      ],
+      "scenario": "vi-en hard negative",
+      "rationale": "Door D1 and D2 have similar faults but are separate objects.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C11",
+      "query_id": "dafb2c78-d3d2-5faf-83e8-44f497f94a0b",
+      "candidate_ids": [
+        "55c5d03b-14ab-57f3-82a6-6e6137877751",
+        "ea81f9a4-8ba7-584e-952e-580d3829db7d",
+        "eca5f681-18e2-5477-9bad-ff13ae33d164"
+      ],
+      "expected_relevant_ids": [
+        "55c5d03b-14ab-57f3-82a6-6e6137877751"
+      ],
+      "expected_negative_ids": [
+        "ea81f9a4-8ba7-584e-952e-580d3829db7d",
+        "eca5f681-18e2-5477-9bad-ff13ae33d164"
+      ],
+      "scenario": "outdoor vi-en",
+      "rationale": "Same gate light; camera and yard faults are unrelated.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C12",
+      "query_id": "6a11a401-de25-567b-9f89-df888c41ea1e",
+      "candidate_ids": [
+        "eca5f681-18e2-5477-9bad-ff13ae33d164",
+        "f6924e13-16e7-58d3-9194-24b6e9b5e410",
+        "ea81f9a4-8ba7-584e-952e-580d3829db7d"
+      ],
+      "expected_relevant_ids": [
+        "eca5f681-18e2-5477-9bad-ff13ae33d164"
+      ],
+      "expected_negative_ids": [
+        "f6924e13-16e7-58d3-9194-24b6e9b5e410",
+        "ea81f9a4-8ba7-584e-952e-580d3829db7d"
+      ],
+      "scenario": "outdoor vi-en",
+      "rationale": "Same leaking irrigation pipe; litter and camera are unrelated.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C13",
+      "query_id": "23662ddf-ef86-5691-affa-0ea84294e334",
+      "candidate_ids": [
+        "f8174fcf-e336-5769-96eb-383e63e55ab1",
+        "ef62cd04-0faf-5235-929b-fc3a34aba3e2"
+      ],
+      "expected_relevant_ids": [
+        "f8174fcf-e336-5769-96eb-383e63e55ab1"
+      ],
+      "expected_negative_ids": [
+        "ef62cd04-0faf-5235-929b-fc3a34aba3e2"
+      ],
+      "scenario": "vi-en same area different issue",
+      "rationale": "Litter and water are distinct issues in one area.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C14",
+      "query_id": "f4cb4b72-fda3-5303-88e7-0e350952a5a3",
+      "candidate_ids": [
+        "d56063f7-6c42-52a6-a35e-646807fb544e",
+        "b027c2f4-a43e-577d-9afd-9cba4b8415c0",
+        "cf6ee5b8-72de-5e97-a295-a61ef2d27c69"
+      ],
+      "expected_relevant_ids": [
+        "d56063f7-6c42-52a6-a35e-646807fb544e"
+      ],
+      "expected_negative_ids": [
+        "b027c2f4-a43e-577d-9afd-9cba4b8415c0",
+        "cf6ee5b8-72de-5e97-a295-a61ef2d27c69"
+      ],
+      "scenario": "short description",
+      "rationale": "The asset ID and scenario establish the same outage despite little text.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C15",
+      "query_id": "6b1abeaa-866a-5a96-bc2d-b7e776a01558",
+      "candidate_ids": [],
+      "expected_relevant_ids": [],
+      "expected_negative_ids": [],
+      "scenario": "empty candidates",
+      "rationale": "No prior candidate is supplied.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C16",
+      "query_id": "c7677a7b-95a8-5246-bb84-b906b216a6be",
+      "candidate_ids": [
+        "d56063f7-6c42-52a6-a35e-646807fb544e",
+        "b027c2f4-a43e-577d-9afd-9cba4b8415c0"
+      ],
+      "expected_relevant_ids": [],
+      "expected_negative_ids": [
+        "d56063f7-6c42-52a6-a35e-646807fb544e",
+        "b027c2f4-a43e-577d-9afd-9cba4b8415c0"
+      ],
+      "scenario": "ambiguous",
+      "rationale": "The description does not identify a lamp or occurrence; human review is needed.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "UNCERTAIN"
+    },
+    {
+      "case_id": "C17",
+      "query_id": "feb34570-3dc7-5a10-bcf2-8d3fa299e826",
+      "candidate_ids": [
+        "fdf19fc4-ae1a-5bfa-b9e5-87184c412620",
+        "46a20995-ff82-5251-89a4-d5fc88217f25"
+      ],
+      "expected_relevant_ids": [],
+      "expected_negative_ids": [
+        "fdf19fc4-ae1a-5bfa-b9e5-87184c412620",
+        "46a20995-ff82-5251-89a4-d5fc88217f25"
+      ],
+      "scenario": "closed prior occurrence",
+      "rationale": "October repair is a previous incident even with identical equipment.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C18",
+      "query_id": "cb83d961-8eeb-551c-92be-94a8f9ece522",
+      "candidate_ids": [
+        "ca025e8a-5069-5cb8-a89b-3d3b75f70ef8",
+        "d56063f7-6c42-52a6-a35e-646807fb544e"
+      ],
+      "expected_relevant_ids": [
+        "ca025e8a-5069-5cb8-a89b-3d3b75f70ef8",
+        "d56063f7-6c42-52a6-a35e-646807fb544e"
+      ],
+      "expected_negative_ids": [],
+      "scenario": "merged source",
+      "rationale": "Both reports describe the same outage; only the unmerged Issue is backend-eligible.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C19",
+      "query_id": "0342886c-1c44-590f-8a91-e6eafc0bf86d",
+      "candidate_ids": [
+        "ad4aa8b1-773a-5ec8-bdec-594dce4bf0d0",
+        "07bbcc1c-138d-553c-992f-c0cf50ef20bd",
+        "fc7f1417-7899-57f6-bafa-2b623bdd8713"
+      ],
+      "expected_relevant_ids": [],
+      "expected_negative_ids": [
+        "ad4aa8b1-773a-5ec8-bdec-594dce4bf0d0",
+        "07bbcc1c-138d-553c-992f-c0cf50ef20bd",
+        "fc7f1417-7899-57f6-bafa-2b623bdd8713"
+      ],
+      "scenario": "en-en no duplicate",
+      "rationale": "A socket fault differs from the other lab equipment faults.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C20",
+      "query_id": "feb34570-3dc7-5a10-bcf2-8d3fa299e826",
+      "candidate_ids": [
+        "d56063f7-6c42-52a6-a35e-646807fb544e",
+        "3fee1d06-d73e-5a67-b9e1-8e57964e03e9",
+        "181fdb27-a919-5fc4-9eb3-ec788e15749f",
+        "b027c2f4-a43e-577d-9afd-9cba4b8415c0",
+        "cf6ee5b8-72de-5e97-a295-a61ef2d27c69",
+        "f8174fcf-e336-5769-96eb-383e63e55ab1"
+      ],
+      "expected_relevant_ids": [
+        "d56063f7-6c42-52a6-a35e-646807fb544e"
+      ],
+      "expected_negative_ids": [
+        "3fee1d06-d73e-5a67-b9e1-8e57964e03e9",
+        "181fdb27-a919-5fc4-9eb3-ec788e15749f",
+        "b027c2f4-a43e-577d-9afd-9cba4b8415c0",
+        "cf6ee5b8-72de-5e97-a295-a61ef2d27c69",
+        "f8174fcf-e336-5769-96eb-383e63e55ab1"
+      ],
+      "scenario": "mixed ranking",
+      "rationale": "One true duplicate competes with similar descriptions and nearby issues.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C21",
+      "query_id": "d2d96a50-6206-580c-8e2f-de7a0b3e6a29",
+      "candidate_ids": [
+        "c25a8726-7083-505f-9c6e-a859bd9615a8",
+        "1bce4f29-0f3c-5698-86df-2c0e56293983",
+        "c60abaeb-e665-5a18-ae2f-06b04888c014"
+      ],
+      "expected_relevant_ids": [
+        "c25a8726-7083-505f-9c6e-a859bd9615a8",
+        "1bce4f29-0f3c-5698-86df-2c0e56293983"
+      ],
+      "expected_negative_ids": [
+        "c60abaeb-e665-5a18-ae2f-06b04888c014"
+      ],
+      "scenario": "en-en and en-vi",
+      "rationale": "Both D1 descriptions are the same latch fault; D2 is another door.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    },
+    {
+      "case_id": "C22",
+      "query_id": "d2d96a50-6206-580c-8e2f-de7a0b3e6a29",
+      "candidate_ids": [
+        "c25a8726-7083-505f-9c6e-a859bd9615a8",
+        "c60abaeb-e665-5a18-ae2f-06b04888c014"
+      ],
+      "expected_relevant_ids": [
+        "c25a8726-7083-505f-9c6e-a859bd9615a8"
+      ],
+      "expected_negative_ids": [
+        "c60abaeb-e665-5a18-ae2f-06b04888c014"
+      ],
+      "scenario": "en-en hard negative",
+      "rationale": "D1 and D2 are separate doors despite similar English descriptions.",
+      "provenance": "SYNTHETIC_CODEX_2026-11-19",
+      "review_status": "PROVISIONAL"
+    }
+  ]
+}
