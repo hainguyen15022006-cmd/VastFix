@@ -62,3 +62,8 @@ Sau đó: npm run check:integration -- --fallback --auth; npm run check:stack-br
 Test trình duyệt cần Chrome hoặc Playwright Chromium. Nó tạo tài khoản và báo cáo tổng hợp có đánh dấu, bao gồm 26 phiếu để kiểm tra phân trang. Dùng stack/volume local riêng nếu cần giữ dữ liệu demo sạch. Dừng bằng npm run stack:down; không dùng down -v nếu muốn giữ dữ liệu.
 
 Các kiểm tra của lượt sửa dùng DB/SMTP local riêng; không sửa dữ liệu DB gốc ở cổng 5433 và không gửi thư tới hộp USTH thật. Các nhánh thành viên được giữ nguyên khi tích hợp main.
+
+
+CẬP NHẬT DUYỆT NHÃN NGÀY 23/11/2026
+
+Theo yêu cầu Hải Anh giao AI duyệt bộ dữ liệu, đã hoàn tất một lượt duyệt 41 mô tả và 61 cặp: 14 tình huống AI_REVIEWED, 8 tình huống UNCERTAIN, không có HUMAN_REVIEWED. Bản nguồn và các kết quả lịch sử ở trên được giữ nguyên. Bản duyệt mới, lý do cho từng cặp và thông tin cần bổ sung nằm tại evaluation/duplicate-detection/AI_Label_Review_2026-11-23.txt và dataset.ai-reviewed.json. Điểm mới dùng 9 ca dương có nhãn đầy đủ, không so trực tiếp với 16 ca dương provisional của lượt trước.

@@ -1,0 +1,495 @@
+{
+  "schema_version": 1,
+  "reviewer_type": "AI",
+  "reviewer": "OpenAI assistant",
+  "reviewed_at": "2026-11-22T17:10:15Z",
+  "source_file": "dataset.json",
+  "source_sha256": "eaaa33c1ef04d23e8b41d9f5e24bdf8cdd1c7502ba67484385d2dc352ba3a2e7",
+  "rubric_refs": [
+    "docs/VastFix_Report_Issue_ERD_Draft_2026-11-11.md:O10",
+    "evaluation/duplicate-detection/README.md:Label meaning"
+  ],
+  "scope": "Review of all 41 synthetic reports and all 22 explicit candidate lists; not a human, blind, independent or field validation. Hidden incident_key is not used to resolve missing observable detail.",
+  "cases": [
+    {
+      "case_id": "C01",
+      "query_key": "light03_en",
+      "notes_vi": "Giữ quan hệ trùng với báo cáo mất sáng H2-03, nhưng chưa thể coi nhấp nháy là một sự cố độc lập.",
+      "needed_information_vi": "Cần lịch sử sửa/khôi phục hoặc xác nhận hai triệu chứng có cùng lần xử lý.",
+      "pair_decisions": [
+        {
+          "candidate_key": "light03_vi",
+          "label": "DUPLICATE",
+          "reason_vi": "Cùng H2-03, A1/tầng 2/hành lang, cùng mô tả mất sáng trong đợt đang mở."
+        },
+        {
+          "candidate_key": "light04",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "H2-04 là bóng khác H2-03 dù cùng vị trí và biểu hiện."
+        },
+        {
+          "candidate_key": "light03_flicker",
+          "label": "UNCERTAIN",
+          "reason_vi": "Cùng H2-03; nhấp nháy lúc 08:10 có thể tiến triển thành tắt lúc 08:30. Không có bản ghi đã sửa hoặc bằng chứng hai lần hỏng độc lập."
+        }
+      ]
+    },
+    {
+      "case_id": "C02",
+      "query_key": "light03_typo",
+      "notes_vi": "Chấp nhận hai diễn đạt Việt/Anh của cùng đợt H2-03; không dấu không làm đổi đối tượng.",
+      "needed_information_vi": null,
+      "pair_decisions": [
+        {
+          "candidate_key": "light03_vi",
+          "label": "DUPLICATE",
+          "reason_vi": "H2-03 và toàn bộ vị trí trùng; cùng biểu hiện không sáng, chưa có lần sửa xen giữa trong fixture."
+        },
+        {
+          "candidate_key": "light03_en",
+          "label": "DUPLICATE",
+          "reason_vi": "Light H2-03 is out và mô tả không dấu tương thích về đối tượng/vị trí/biểu hiện."
+        },
+        {
+          "candidate_key": "light04",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Mã bóng H2-04 khác H2-03."
+        }
+      ]
+    },
+    {
+      "case_id": "C03",
+      "query_key": "light03_recur",
+      "notes_vi": "Phân biệt lần hỏng tháng 10 đã kết thúc với đợt tháng 11; tách nhãn ngữ nghĩa khỏi điều kiện ứng viên.",
+      "needed_information_vi": null,
+      "pair_decisions": [
+        {
+          "candidate_key": "light03_vi",
+          "label": "DUPLICATE",
+          "reason_vi": "Cùng H2-03 và đợt 18/11 đang mở; không có khôi phục được ghi nhận giữa hai mô tả."
+        },
+        {
+          "candidate_key": "light03_en",
+          "label": "DUPLICATE",
+          "reason_vi": "Cùng vị trí và mất sáng trong đợt tháng 11 chưa kết thúc."
+        },
+        {
+          "candidate_key": "light03_old",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Đợt tháng 10 đã có closed_at ngày 03/10, trước đợt tháng 11; đây là tái phát, không phải cùng lần sự cố."
+        },
+        {
+          "candidate_key": "light03_merged",
+          "label": "DUPLICATE",
+          "reason_vi": "Cùng đợt H2-03 tháng 11 về ngữ nghĩa; merged_source=true chỉ khiến nguồn không được đưa vào gợi ý."
+        },
+        {
+          "candidate_key": "light04",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Khác bóng đèn."
+        }
+      ]
+    },
+    {
+      "case_id": "C04",
+      "query_key": "light03_recur",
+      "notes_vi": "Không dùng hai báo cáo tháng 10 làm đáp án trùng của đợt tháng 11.",
+      "needed_information_vi": null,
+      "pair_decisions": [
+        {
+          "candidate_key": "light03_old",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Đợt tháng 10 kết thúc trước khi đợt tháng 11 xảy ra."
+        },
+        {
+          "candidate_key": "light03_old_en",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Cũng thuộc đợt tháng 10 đã đóng; ngôn ngữ khác không thay đổi ranh giới lần hỏng."
+        }
+      ]
+    },
+    {
+      "case_id": "C05",
+      "query_key": "light03_en",
+      "notes_vi": "Mã thiết bị phải đi kèm tòa/tầng/khu vực; không so khớp H2-03 riêng lẻ.",
+      "needed_information_vi": null,
+      "pair_decisions": [
+        {
+          "candidate_key": "light03_a2",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "H2-03 ở A2 khác bóng H2-03 tại A1."
+        },
+        {
+          "candidate_key": "light03_floor3",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Tầng 3 khác tầng 2 trong định danh vị trí của fixture."
+        },
+        {
+          "candidate_key": "light04",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Khác mã bóng đèn."
+        }
+      ]
+    },
+    {
+      "case_id": "C06",
+      "query_key": "projector_vi",
+      "notes_vi": "Cặp máy chiếu Việt/Anh khớp, nhưng quan hệ với pin điều khiển P-2 chưa đủ căn cứ để chốt âm.",
+      "needed_information_vi": "Cần xác nhận P-2 đã được bật/kiểm tra độc lập với điều khiển và vẫn không lên hình.",
+      "pair_decisions": [
+        {
+          "candidate_key": "projector",
+          "label": "DUPLICATE",
+          "reason_vi": "Cùng P-2, cùng phòng thực hành A1 tầng 2, cùng lỗi không lên hình."
+        },
+        {
+          "candidate_key": "projector_remote",
+          "label": "UNCERTAIN",
+          "reason_vi": "Điều khiển được nêu đích danh thuộc P-2; pin hết có thể liên quan việc không bật/điều khiển máy. Chưa có thử bật bằng nút máy hoặc xác nhận hai hỏng độc lập."
+        },
+        {
+          "candidate_key": "ac_leak",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "AC-2 chảy nước là thiết bị và công việc khác máy chiếu không lên hình; không có quan hệ trực tiếp được mô tả."
+        }
+      ]
+    },
+    {
+      "case_id": "C07",
+      "query_key": "ac_leak_en",
+      "notes_vi": "Hai báo cáo rò nước AC-2 trùng; chưa thể tự kết luận tiếng ồn của cùng AC-2 là một lần sự cố khác.",
+      "needed_information_vi": "Cần kiểm tra kỹ thuật xem rò nước và tiếng ồn có cùng nguyên nhân/lần xử lý hay không.",
+      "pair_decisions": [
+        {
+          "candidate_key": "ac_leak",
+          "label": "DUPLICATE",
+          "reason_vi": "Cùng AC-2, cùng phòng A1 và cùng hiện tượng nước nhỏ/chảy ra."
+        },
+        {
+          "candidate_key": "ac_noise",
+          "label": "UNCERTAIN",
+          "reason_vi": "Cùng AC-2 trong khoảng thời gian gần nhau; chưa có dữ kiện xác nhận tiếng ồn độc lập hay cùng lần hỏng với rò nước, theo O10."
+        },
+        {
+          "candidate_key": "projector",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "P-2 không lên hình là đối tượng và hiện tượng khác AC-2 rò nước."
+        }
+      ]
+    },
+    {
+      "case_id": "C08",
+      "query_key": "tap_en",
+      "notes_vi": "Khớp vòi số 1; các ứng viên còn lại mô tả đối tượng hỏng riêng.",
+      "needed_information_vi": null,
+      "pair_decisions": [
+        {
+          "candidate_key": "tap",
+          "label": "DUPLICATE",
+          "reason_vi": "Vòi số 1 và tap 1 cùng A1/tầng 2/nhà vệ sinh, cùng rò nước."
+        },
+        {
+          "candidate_key": "tap2",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Vòi số 2 là đối tượng khác vòi số 1."
+        },
+        {
+          "candidate_key": "drain",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Mô tả ghi rõ cống sàn bị tắc; thông cống không sửa rò vòi. Có hai đối tượng và hư hỏng được nêu cụ thể, không chỉ mô tả sàn ướt chưa rõ nguyên nhân."
+        }
+      ]
+    },
+    {
+      "case_id": "C09",
+      "query_key": "wifi_vi",
+      "notes_vi": "Cặp Wi-Fi phòng 101 trùng; phòng 102 không đủ thông tin định danh hạ tầng để chốt âm.",
+      "needed_information_vi": "Cần AP/SSID hoặc sơ đồ mạng và xác nhận phạm vi ảnh hưởng phòng 101/102.",
+      "pair_decisions": [
+        {
+          "candidate_key": "wifi",
+          "label": "DUPLICATE",
+          "reason_vi": "Cùng dịch vụ Wi-Fi phòng 101 B1 và triệu chứng mất kết nối lặp lại trong đợt gần nhau."
+        },
+        {
+          "candidate_key": "wifi_room102",
+          "label": "UNCERTAIN",
+          "reason_vi": "Hai phòng có thể dùng chung AP/switch hoặc mạng. Fixture chỉ có vị trí phòng, không có AP/SSID hay bằng chứng hai sự cố độc lập."
+        },
+        {
+          "candidate_key": "door",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Cửa D1 không đóng kín khác hạng mục Wi-Fi mất kết nối."
+        }
+      ]
+    },
+    {
+      "case_id": "C10",
+      "query_key": "door_en",
+      "notes_vi": "D1 không đóng kín/không gài chốt là hai mô tả tương thích của cùng cửa trong fixture.",
+      "needed_information_vi": null,
+      "pair_decisions": [
+        {
+          "candidate_key": "door",
+          "label": "DUPLICATE",
+          "reason_vi": "Cùng D1, hành lang B1 tầng 1, cùng vấn đề đóng/giữ cửa; không có lần sửa xen giữa."
+        },
+        {
+          "candidate_key": "door2",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "D2 là cửa khác D1."
+        }
+      ]
+    },
+    {
+      "case_id": "C11",
+      "query_key": "gate_light_en",
+      "notes_vi": "Chấp nhận ánh xạ đèn ở cùng cổng 18-2 trong phạm vi fixture tổng hợp, không suy rộng với nhiều đèn thực địa.",
+      "needed_information_vi": null,
+      "pair_decisions": [
+        {
+          "candidate_key": "gate_light",
+          "label": "DUPLICATE",
+          "reason_vi": "Cùng đèn được mô tả tại cổng chính 18-2, cùng không sáng và không có chi tiết mâu thuẫn trong fixture."
+        },
+        {
+          "candidate_key": "gate_camera",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Camera và đèn là hai đối tượng; camera không hoạt động không tự được gán thành đèn hỏng."
+        },
+        {
+          "candidate_key": "yard_puddle",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Ống tưới rò tại sân A1 khác đèn cổng 18-2."
+        }
+      ]
+    },
+    {
+      "case_id": "C12",
+      "query_key": "yard_puddle_en",
+      "notes_vi": "Cùng ống tưới rò ở sân trước A1; không gộp rác và camera vào sự cố nước.",
+      "needed_information_vi": null,
+      "pair_decisions": [
+        {
+          "candidate_key": "yard_puddle",
+          "label": "DUPLICATE",
+          "reason_vi": "Cả hai mô tả nêu ống tưới rò, nước ra sân trước A1 trong cùng đợt fixture."
+        },
+        {
+          "candidate_key": "yard_litter",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Rác tích tụ cần dọn là vấn đề được mô tả riêng; sửa ống tưới không loại bỏ rác."
+        },
+        {
+          "candidate_key": "gate_camera",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Camera tại cổng là đối tượng/vị trí khác."
+        }
+      ]
+    },
+    {
+      "case_id": "C13",
+      "query_key": "hall_dirty_en",
+      "notes_vi": "Cặp rác hành lang Việt/Anh khớp; quan hệ giữa rác và sàn ướt cùng khu vực cần làm rõ.",
+      "needed_information_vi": "Cần mô tả nguyên nhân, phạm vi và liệu một lần dọn xử lý cả hai hay không.",
+      "pair_decisions": [
+        {
+          "candidate_key": "hall_dirty",
+          "label": "DUPLICATE",
+          "reason_vi": "Cùng rác tại hành lang giữa A1 tầng 2."
+        },
+        {
+          "candidate_key": "hall_wet",
+          "label": "UNCERTAIN",
+          "reason_vi": "Cùng khu vực, gần thời gian, không nêu nguồn nước hoặc nguồn rác. Có thể hai việc riêng hoặc cùng một đợt bẩn/tràn; không có căn cứ chốt độc lập theo O10."
+        }
+      ]
+    },
+    {
+      "case_id": "C14",
+      "query_key": "short_light",
+      "notes_vi": "Định danh được H2-03 nhưng chữ hỏng không phân biệt mất sáng với nhấp nháy.",
+      "needed_information_vi": "Cần bổ sung không sáng/nhấp nháy/biểu hiện cụ thể và thời điểm bắt đầu.",
+      "pair_decisions": [
+        {
+          "candidate_key": "light03_vi",
+          "label": "UNCERTAIN",
+          "reason_vi": "Có thể là cùng mất sáng, nhưng truy vấn không nêu biểu hiện để xác nhận."
+        },
+        {
+          "candidate_key": "light04",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Truy vấn ghi rõ H2-03, không phải H2-04."
+        },
+        {
+          "candidate_key": "light03_flicker",
+          "label": "UNCERTAIN",
+          "reason_vi": "Cũng có thể là lỗi nhấp nháy của H2-03; không dùng incident_key ẩn để ép thành âm."
+        }
+      ]
+    },
+    {
+      "case_id": "C15",
+      "query_key": "new_no_candidates",
+      "notes_vi": "Ca mảng ứng viên rỗng chỉ kiểm hành vi rỗng, không chứng minh khả năng phát hiện sự cố mới ngoài tập dữ liệu.",
+      "needed_information_vi": null,
+      "pair_decisions": []
+    },
+    {
+      "case_id": "C16",
+      "query_key": "ambiguous",
+      "notes_vi": "Không xác định được bóng nào; xóa nhãn âm tạm cho cả hai ứng viên.",
+      "needed_information_vi": "Cần mã bóng hoặc mô tả vị trí đủ phân biệt và thời điểm/phạm vi hỏng.",
+      "pair_decisions": [
+        {
+          "candidate_key": "light03_vi",
+          "label": "UNCERTAIN",
+          "reason_vi": "Đèn hỏng không có mã/vị trí chi tiết để khẳng định hoặc loại H2-03."
+        },
+        {
+          "candidate_key": "light04",
+          "label": "UNCERTAIN",
+          "reason_vi": "Cũng không đủ căn cứ loại H2-04."
+        }
+      ]
+    },
+    {
+      "case_id": "C17",
+      "query_key": "light03_en",
+      "notes_vi": "Cùng mã bóng không làm hai lần sự cố trước/sau lần đóng trở thành trùng.",
+      "needed_information_vi": null,
+      "pair_decisions": [
+        {
+          "candidate_key": "light03_old",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Đợt tháng 10 được kết thúc ngày 03/10, khác đợt ngày 18/11."
+        },
+        {
+          "candidate_key": "light03_old_en",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Bản tiếng Anh cũng thuộc lần tháng 10 đã kết thúc."
+        }
+      ]
+    },
+    {
+      "case_id": "C18",
+      "query_key": "light03_recur",
+      "notes_vi": "Merge ảnh hưởng tính đủ điều kiện gợi ý, không đổi sự thật hai mô tả nói về cùng sự cố.",
+      "needed_information_vi": null,
+      "pair_decisions": [
+        {
+          "candidate_key": "light03_merged",
+          "label": "DUPLICATE",
+          "reason_vi": "Cùng H2-03 mất sáng tháng 11; phải loại khỏi candidates vì là nguồn đang gộp."
+        },
+        {
+          "candidate_key": "light03_vi",
+          "label": "DUPLICATE",
+          "reason_vi": "Cùng đợt H2-03 và còn là ứng viên hợp lệ."
+        }
+      ]
+    },
+    {
+      "case_id": "C19",
+      "query_key": "lab_socket",
+      "notes_vi": "Không suy rằng mọi thiết bị cùng phòng đều là cùng sự cố ổ cắm S1.",
+      "needed_information_vi": null,
+      "pair_decisions": [
+        {
+          "candidate_key": "ac_leak",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "AC-2 rò nước khác ổ cắm S1 mất điện; không mô tả phụ thuộc trực tiếp giữa hai đối tượng."
+        },
+        {
+          "candidate_key": "projector",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "P-2 không lên hình không được mô tả là cắm vào S1 hoặc mất nguồn do S1; khác đối tượng được báo."
+        },
+        {
+          "candidate_key": "ac_noise",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "AC-2 kêu to khác hỏng ổ cắm S1."
+        }
+      ]
+    },
+    {
+      "case_id": "C20",
+      "query_key": "light03_en",
+      "notes_vi": "Khớp mất sáng H2-03 và loại thiết bị/vị trí khác; giữ chưa chắc cho nhấp nháy của cùng H2-03.",
+      "needed_information_vi": "Cần thông tin như C01 về diễn tiến hỏng và lần sửa/khôi phục.",
+      "pair_decisions": [
+        {
+          "candidate_key": "light03_vi",
+          "label": "DUPLICATE",
+          "reason_vi": "Cùng H2-03 mất sáng tại A1 tầng 2 trong đợt đang mở."
+        },
+        {
+          "candidate_key": "light03_a2",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Khác tòa, là bóng khác dù mã giống."
+        },
+        {
+          "candidate_key": "light03_floor3",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Khác tầng, là vị trí đối tượng khác trong fixture."
+        },
+        {
+          "candidate_key": "light04",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Khác bóng H2-04."
+        },
+        {
+          "candidate_key": "light03_flicker",
+          "label": "UNCERTAIN",
+          "reason_vi": "Nhấp nháy và mất sáng của cùng H2-03 có thể là hai giai đoạn một hỏng; chưa có bằng chứng tách lần xử lý."
+        },
+        {
+          "candidate_key": "hall_dirty",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "Rác cần dọn khác đối tượng đèn H2-03."
+        }
+      ]
+    },
+    {
+      "case_id": "C21",
+      "query_key": "door_en_again",
+      "notes_vi": "Các mô tả D1 tiếp tục không đóng/gài được thuộc cùng đợt closure fault trong fixture.",
+      "needed_information_vi": null,
+      "pair_decisions": [
+        {
+          "candidate_key": "door_en",
+          "label": "DUPLICATE",
+          "reason_vi": "Cùng D1, vị trí B1 và trạng thái không đóng/gài, còn mở và không có can thiệp xen giữa."
+        },
+        {
+          "candidate_key": "door",
+          "label": "DUPLICATE",
+          "reason_vi": "Mô tả tiếng Việt tương thích cùng cửa D1 và lỗi đóng cửa."
+        },
+        {
+          "candidate_key": "door2",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "D2 là cửa khác."
+        }
+      ]
+    },
+    {
+      "case_id": "C22",
+      "query_key": "door_en_again",
+      "notes_vi": "Đối chiếu tiếng Anh cho cùng D1, giữ D2 là hard negative theo định danh cửa.",
+      "needed_information_vi": null,
+      "pair_decisions": [
+        {
+          "candidate_key": "door_en",
+          "label": "DUPLICATE",
+          "reason_vi": "Cùng D1 và cùng vấn đề đóng/gài trong đợt đang mở."
+        },
+        {
+          "candidate_key": "door2",
+          "label": "NOT_DUPLICATE",
+          "reason_vi": "D2 khác D1, không gộp chỉ vì cùng câu chữ."
+        }
+      ]
+    }
+  ]
+}

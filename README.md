@@ -91,7 +91,7 @@ Build with `npm run build`; run browser checks with `npm run test:ui` and the is
 
 ## Integrated checkpoint fixes 22 November 2026
 
-The shared branch includes every member's implementation and the independent evaluation dataset. See [the integration verification record](docs/Checkpoint1_Integration_Verification_2026-11-22.txt) for the exact checks and the remaining human label review.
+The shared branch includes every member's implementation and the independent evaluation dataset. See [the integration verification record](docs/Checkpoint1_Integration_Verification_2026-11-22.txt) for the integration checks. The AI label review and remaining uncertain cases are recorded below.
 
 From the repository root with Node 24 and Docker Desktop running:
 
@@ -109,4 +109,4 @@ The Docker development server uses Webpack and explicitly permits the loopback d
 
 The repeatable seed now includes H2-03, the difficult H2-04 negative, and a different-floor plumbing negative TAP-1. A1 and these locations/categories are fictional demo catalogs, not an approved campus inventory.
 
-[Independent evaluation data and instructions](evaluation/duplicate-detection/README.md) include reproducible baseline/E5 outputs and a pinned model manifest. All current labels remain provisional or uncertain; no human approval is inferred from this merge.
+[Independent evaluation data and instructions](evaluation/duplicate-detection/README.md) include reproducible baseline/E5 outputs and a pinned model manifest. The generated source remains provisional/uncertain. A separate AI label review dated 23 November records 14 AI_REVIEWED cases and eight UNCERTAIN cases; no human approval is inferred. See [the complete label review](evaluation/duplicate-detection/AI_Label_Review_2026-11-23.txt).

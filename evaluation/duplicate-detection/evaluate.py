@@ -70,7 +70,19 @@ def validate(data):
         assert c["case_id"] not in case_ids
         case_ids.add(c["case_id"])
         assert c["provenance"] == data["provenance"]
-        assert c["review_status"] in {"PROVISIONAL", "UNCERTAIN", "HUMAN_REVIEWED"}
+        assert c["review_status"] in {"PROVISIONAL", "UNCERTAIN", "HUMAN_REVIEWED", "AI_REVIEWED"}
+        unknown = set(c.get("expected_uncertain_ids", []))
+        if c["review_status"] == "AI_REVIEWED" or "ai_review" in c:
+            review = c.get("ai_review", {})
+            assert review.get("reviewer_type") == "AI" and review.get("reviewer", "").strip()
+            checked_time(review["reviewed_at"])
+            assert review.get("notes_vi", "").strip()
+            assert review.get("case_id") == c["case_id"]
+            if c["review_status"] == "AI_REVIEWED":
+                assert review.get("decision") == "ACCEPT" and not unknown
+            else:
+                assert c["review_status"] == "UNCERTAIN" and review.get("decision") == "DEFER" and unknown
+                assert review.get("needed_information_vi", "").strip()
         if c["review_status"] == "HUMAN_REVIEWED":
             review = c.get("review", {})
             reviewers = review.get("reviewers", [])
@@ -85,7 +97,9 @@ def validate(data):
         negative = set(c["expected_negative_ids"])
         assert len(candidates) == len(set(candidates))
         assert c["query_id"] not in candidates
-        assert set(candidates) == positive | negative and not positive & negative
+        assert set(candidates) == positive | negative | unknown
+        assert not positive & negative and not positive & unknown and not negative & unknown
+        assert not unknown or c["review_status"] == "UNCERTAIN"
         assert all(x in by_id for x in candidates)
         query = by_id[c["query_id"]]
         assert all(checked_time(by_id[x]["created_at"]) < checked_time(query["created_at"]) for x in candidates), c["case_id"]
