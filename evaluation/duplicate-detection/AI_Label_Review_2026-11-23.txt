@@ -279,4 +279,3 @@ Truy vấn door_en_again: The D1 hallway door in B1 still will not close
   Lý do: Cùng D1 và cùng vấn đề đóng/gài trong đợt đang mở.
   door2 — KHÔNG TRÙNG: Door D2 on B1 ground floor does not latch
   Lý do: D2 khác D1, không gộp chỉ vì cùng câu chữ.
-
