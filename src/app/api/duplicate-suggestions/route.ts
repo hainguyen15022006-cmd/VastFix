@@ -2,13 +2,14 @@ import type { NextRequest } from "next/server";
 import { body, handle, isRecord, json } from "@/lib/api";
 import { currentUser } from "@/lib/current-user";
 import { positiveSetting, prepareCandidates } from "@/lib/duplicate-candidates";
+import { requestLocale } from "@/lib/request-locale";
 
 const reasons = new Set(["SAME_BUILDING", "SAME_FLOOR", "SAME_AREA", "SIMILAR_DESCRIPTION", "SAME_CATEGORY", "RECENT_REPORT"]);
 
 export function POST(request: NextRequest) {
   return handle(async requestId => {
     const user = await currentUser(request);
-    const { query, candidates } = await prepareCandidates(await body(request), user.locale);
+    const { query, candidates } = await prepareCandidates(await body(request), requestLocale(request, user.locale));
     if (!candidates.length) return json({ requestId, aiStatus: "ok", suggestions: [] });
     const byId = new Map(candidates.map(candidate => [candidate.wire.report_id, candidate]));
     try {

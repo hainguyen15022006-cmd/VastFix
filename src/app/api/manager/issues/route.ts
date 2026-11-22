@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 import { ApiError, handle, isRecord, json, uuid } from "@/lib/api";
 import { currentUser } from "@/lib/current-user";
 import { getDb } from "@/lib/db";
+import { requestLocale } from "@/lib/request-locale";
 
 const pageSize = 25;
 
@@ -20,7 +21,7 @@ export function GET(request: NextRequest) {
       ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
       take: pageSize + 1, include: { originReport: true },
     });
-    const lang = user.locale === "en" ? "En" : "Vi";
+    const lang = requestLocale(request, user.locale) === "en" ? "En" : "Vi";
     const items = issues.slice(0, pageSize).map(issue => {
       const report = issue.originReport;
       const snapshot = report.locationSnapshot;

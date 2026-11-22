@@ -25,7 +25,7 @@ npm.cmd run stack:up
 
 Trang chính: `/vi`, `/en`, form báo sự cố `/vi/reports/new`, hàng đợi quản lý `/vi/manager/issues`, đăng ký `/register`, đăng nhập `/login`. Đăng ký bằng địa chỉ thử `@usth.edu.vn`, mở Mailpit để bấm link xác minh. Tài khoản tự đăng ký luôn là REPORTER; muốn thử vai quản lý thì dùng `auth:bootstrap-manager` theo `Auth_Implementation_Step_by_Step.md`.
 
-Web chạy `next dev` vì phiên demo của Chúc chỉ bật khi development và host là loopback. Mở web bằng `127.0.0.1` hoặc `localhost`, không dùng IP LAN. Trang `/dev/database` cũng mở được.
+Web Docker hiện chạy `next dev --webpack` vì phiên demo của Chúc chỉ bật khi development và host là loopback. Mở web bằng `127.0.0.1` hoặc `localhost`, không dùng IP LAN. Trang `/dev/database` cũng mở được.
 
 Xem trạng thái bằng `npm.cmd run stack:ps`, log bằng `npm.cmd run stack:logs`. Dừng bằng `npm.cmd run stack:down`; lệnh này giữ dữ liệu. Không dùng `docker compose down -v` trừ khi muốn xóa sạch DB của bản chung.
 
@@ -73,6 +73,15 @@ Chạy trên Windows với Docker Desktop, image `node:24-bookworm-slim`, `postg
 
 ## Chưa có trong bản chung
 
-- Bộ dữ liệu đánh giá của Công Thành (`feat/duplicate-evaluation-dataset`) chưa ghép vì không ảnh hưởng bản chạy; ghép khi nhóm cần chạy đánh giá từ một nhánh.
+- Bộ dữ liệu Công Thành đã được ghép trong bản cập nhật 22/11 ở dưới.
 - Lint/format chưa thêm vì sẽ đổi `package-lock.json` chung; cần Hải Anh đồng ý.
 - Email thật chưa gửi ra ngoài: bản chung dùng Mailpit.
+
+
+## Cập nhật tích hợp 22/11/2026
+
+- Docker dùng Webpack để tránh lỗi hydration/vòng reload của Turbopack trong lượt review; `allowedDevOrigins` chỉ bổ sung `127.0.0.1`. Giữ nguyên guard development + loopback của phiên demo và không truyền hostname nội bộ cố định vào Next dev.
+- Image cài OpenSSL cho Prisma CLI. `.dockerignore` loại môi trường Python, mô hình tải local, kết quả test và `data/private`.
+- Thêm `npm run check:stack-browser`: Chrome chạy đăng ký/xác minh/đăng nhập thật, form với FastAPI thật, DB Report–Issue–event, hàng đợi quản lý, đổi ngôn ngữ và phân trang quá 25 phiếu. Người quản lý trong bài kiểm tra này dùng phiên demo tường minh. Script tạo dữ liệu thử có đánh dấu; dùng DB local riêng nếu cần giữ bản demo sạch.
+- Bản hiện tại đã có bộ dữ liệu Công Thành. Email thử vẫn vào Mailpit, chưa gửi tới USTH thật.
+- Bằng chứng chạy sau sửa nằm ở `docs/Checkpoint1_Integration_Verification_2026-11-22.txt`; các phần kết quả 19/11 và 21/11 phía trên là lịch sử.

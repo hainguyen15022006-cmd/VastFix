@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { Icon } from "@/components/shared/icon";
-import { fetchManagerIssues, issueStatuses, normalizeSearch, QueueError, type IssueStatus, type ManagerIssue, type ManagerIssuesResponse } from "@/lib/manager-issues";
+import { fetchManagerIssues, normalizeSearch, QueueError, type IssueStatus, type ManagerIssue, type ManagerIssuesResponse } from "@/lib/manager-issues";
 
 type QueueState = { kind: "loading" } | { kind: "ready"; data: ManagerIssuesResponse } | { kind: "error"; error: QueueError };
 
@@ -12,15 +12,26 @@ export function ManagerQueue() {
   const common = useTranslations("Common");
   const statuses = useTranslations("Status");
   const format = useFormatter();
-  const [status, setStatus] = useState<IssueStatus>("SUBMITTED");
+  const locale = useLocale();
+  const status: IssueStatus = "SUBMITTED";
   const [search, setSearch] = useState("");
   const [revision, setRevision] = useState(0);
   const [state, setState] = useState<QueueState>({ kind: "loading" });
   const [selected, setSelected] = useState<ManagerIssue | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
+  const generation = useRef(0);
+  const pageRequest = useRef<AbortController | null>(null);
+  const paging = useRef(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [pageError, setPageError] = useState<QueueError | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
+    generation.current++;
+    pageRequest.current?.abort();
+    paging.current = false;
+    setLoadingMore(false);
+    setPageError(null);
     let active = true;
     // A finite timeout prevents an indefinitely spinning queue when the network stalls.
     const timeout = setTimeout(() => {
@@ -28,13 +39,45 @@ export function ManagerQueue() {
     }, 15_000);
     setState({ kind: "loading" });
     setSelected(null);
-    fetchManagerIssues(status, controller.signal).then((data) => {
+    fetchManagerIssues(status, controller.signal, { locale }).then((data) => {
       if (active) setState({ kind: "ready", data });
     }).catch((error: unknown) => {
       if (active) setState({ kind: "error", error: error instanceof QueueError ? error : new QueueError("unavailable") });
     }).finally(() => clearTimeout(timeout));
-    return () => { active = false; clearTimeout(timeout); controller.abort(); };
-  }, [status, revision]);
+    return () => { active = false; generation.current++; clearTimeout(timeout); controller.abort(); pageRequest.current?.abort(); };
+  }, [status, locale, revision]);
+
+  async function loadMore() {
+    if (state.kind !== "ready" || !state.data.nextCursor || paging.current) return;
+    const cursor = state.data.nextCursor;
+    const current = generation.current;
+    const controller = new AbortController();
+    pageRequest.current = controller;
+    paging.current = true;
+    setLoadingMore(true); setPageError(null);
+    const timeout = setTimeout(() => controller.abort(), 15_000);
+    try {
+      const page = await fetchManagerIssues(status, controller.signal, { locale, cursor });
+      if (current !== generation.current) return;
+      if (page.nextCursor === cursor) throw new QueueError("unavailable", page.requestId);
+      setState(previous => {
+        if (previous.kind !== "ready") return previous;
+        const ids = new Set(previous.data.items.map(item => item.issueId));
+        return { kind: "ready", data: { ...page, items: [
+          ...previous.data.items, ...page.items.filter(item => !ids.has(item.issueId)),
+        ] } };
+      });
+    } catch (cause) {
+      if (current !== generation.current) return;
+      const error = cause instanceof QueueError ? cause : new QueueError("unavailable");
+      if (error.kind === "unauthenticated" || error.kind === "forbidden") {
+        setSelected(null); setState({ kind: "error", error });
+      } else setPageError(error);
+    } finally {
+      clearTimeout(timeout);
+      if (current === generation.current) { paging.current = false; setLoadingMore(false); }
+    }
+  }
 
   useEffect(() => {
     if (selected) dialog.current?.showModal();
@@ -55,7 +98,7 @@ export function ManagerQueue() {
       </section>
       <section className="vf-queue" aria-label={t("listTitle")}>
         <div className="vf-filters">
-          <label className="vf-field vf-status-filter"><span>{t("statusFilter")}</span><select value={status} onChange={(event) => { setState({ kind: "loading" }); setSelected(null); setStatus(event.target.value as IssueStatus); }}>{issueStatuses.map((value) => <option key={value} value={value}>{statuses(value)}</option>)}</select></label>
+          <div className="vf-field vf-status-filter"><label htmlFor="queue-status">{t("statusFilter")}</label><select id="queue-status" value={status} aria-describedby="queue-status-scope" disabled><option value="SUBMITTED">{statuses("SUBMITTED")}</option></select><span id="queue-status-scope">{t("statusScope")}</span></div>
           <label className="vf-field vf-search"><span>{t("searchLabel")}</span><span className="vf-input-wrap"><Icon name="search" /><input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t("searchPlaceholder")} /></span></label>
         </div>
         <div aria-live="polite" aria-atomic="true" className="vf-result-line">
@@ -71,7 +114,11 @@ export function ManagerQueue() {
           <td data-label={t("createdAt")}><time dateTime={issue.createdAt}>{date(issue.createdAt)}</time></td>
           <td><button type="button" className="vf-text-button" aria-label={t("viewIssue", { summary: issue.summary })} onClick={() => setSelected(issue)}>{t("view")}<Icon name="arrow" /></button></td>
         </tr>)}</tbody></table></div>}
-        {state.kind === "ready" && state.data.nextCursor !== null && <p className="vf-partial" role="note">{t("partial")}</p>}
+        {state.kind === "ready" && state.data.nextCursor !== null && <div className="vf-pagination">
+          <p className="vf-partial" role="note">{t("partial")}</p>
+          {pageError && <p role="alert">{t("pageError")}{pageError.requestId && <> · {common("requestId")}: <code>{pageError.requestId}</code></>}</p>}
+          <button type="button" className="vf-button" disabled={loadingMore} onClick={() => void loadMore()}>{t(loadingMore ? "loadingMore" : "loadMore")}</button>
+        </div>}
         <div className="vf-queue-footnote"><Icon name="shield" /><span>{t("privacy")}</span></div>
       </section>
       <p className="vf-timezone">{t("timezone")}</p>

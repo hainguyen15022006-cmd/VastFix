@@ -1,5 +1,7 @@
 # Dương — Form báo sự cố và gợi ý trùng
 
+Cập nhật bản chung 22/11/2026: đã ghép AI, auth an toàn khi chưa có JavaScript, phân trang hàng đợi và locale nhãn vị trí. Seed có thêm TAP-1/tầng 1/nhà vệ sinh và loại PLUMBING minh họa. Dùng README và `Checkpoint1_Integration_Verification_2026-11-22.txt` cho trạng thái main hiện tại; nội dung dưới là bàn giao nhánh gốc.
+
 Ngày: 21/11/2026. Nhánh local: `codex/duong-reporter-frontend`.
 
 ## Phần đã làm

@@ -1,0 +1,64 @@
+VASTFIX — BẢN TÍCH HỢP VÀ KIỂM CHỨNG SAU SỬA
+Thực hiện 22–23/11/2026 theo yêu cầu Hải Anh sửa bản nhóm và merge main.
+
+PHẠM VI TÍCH HỢP
+
+Bản chung gồm auth Hải Anh (07220a3), backend Chúc với bản sửa e5ebe19, giao diện Sơn (e9236c0), giao diện Dương (e489814, cùng nội dung 5bb7288 đã có trong nhánh Hoàng Anh), Docker/tích hợp Hoàng Anh (cb01332), AI Thành Lê (4e6b2b0) và dữ liệu Công Thành (c4c1a62). Lịch sử nhánh Dương và Công Thành được merge, không chép đè hoặc bỏ tác giả.
+
+CÁC THAY ĐỔI
+
+1. Auth: trường nhập và nút gửi bị khóa cho tới khi client sẵn sàng; có thông báo khi JavaScript tắt. Form dùng POST cho native fallback, không gửi mật khẩu bằng GET. Giữ autocomplete và khả năng dùng trình quản lý mật khẩu.
+2. Docker: dùng Next dev với Webpack và loopback allowedDevOrigins để xử lý lỗi hydration/vòng reload đã tái hiện với Turbopack. Không gán hostname nội bộ cố định vì điều đó làm guard loopback của phiên demo bị chặn. Giữ nguyên điều kiện development + cờ bật tường minh + loopback; không mở auth demo ở production.
+3. Image: thêm OpenSSL cho Prisma CLI; loại model local, môi trường Python, dữ liệu riêng và kết quả test khỏi build context.
+4. Hàng đợi: chỉ bật SUBMITTED theo API checkpoint hiện tại; thêm tải tiếp bằng cursor, chống trùng phiếu, hủy response cũ khi refresh/đổi locale, giữ trang đã tải khi lỗi mạng và xóa dữ liệu đang hiển thị nếu mất quyền khi tải tiếp.
+5. Ngôn ngữ: thêm query locale=vi|en tùy chọn cho hàng đợi và gợi ý. Nếu bỏ qua vẫn dùng User.locale. Giá trị không hợp lệ trả 400. Chỉ đổi nhãn vị trí hệ thống; mô tả gốc không bị sửa/dịch.
+6. Seed: thêm báo cáo TAP-1 rò nước tại nhà vệ sinh tầng 1 và PLUMBING minh họa, cùng H2-03/H2-04 cũ. Seed giữ update={} cho các bản ghi cũ, không đổi Report gốc. Không có migration mới và không coi A1 demo là danh mục USTH thực tế.
+7. Đánh giá: merge bộ dữ liệu độc lập; chạy baseline và E5 đã ghim; lưu output và checksum model. Validator hỗ trợ review thật có tối thiểu hai người khác nhau và ghi nhận thời gian/ghi chú. Chế độ reviewed-only trả null metric khi chưa có ca được duyệt. Không tự đánh dấu dữ liệu là HUMAN_REVIEWED.
+
+KẾT QUẢ ĐÃ CHẠY
+
+- npm ci theo lockfile: đạt.
+- npm run build: đạt, gồm TypeScript và đủ route auth/vi/en/API.
+- npm run typecheck: đạt sau thay đổi cuối.
+- npm run test:ui: 31/31 đạt trên Chrome. Có hồi quy JavaScript tắt/native POST, locale, phân trang, retry, response cũ, mất quyền, giữ mô tả và an toàn render text.
+- npm run test:reporter-flow: cả 7 nhóm kiểm tra đạt trên PostgreSQL tạm, production Next, Better Auth/session thật và AI fixture; gồm quản lý/nhân viên có tài khoản thật được dựng trong DB test.
+- Docker Compose build/up/migration/seed/verify: đạt trên project kiểm tra riêng vastfix-fix-checkpoint1, các cổng web 3343, AI 18403, DB 5543, Mailpit UI 18028.
+- check-integration --fallback --auth: 15/15 đạt trên image cuối; gồm AI tắt vẫn gửi được, quyền ba vai, đăng ký USTH/xác minh Mailpit và thu hồi phiên.
+- npm run check:stack-browser: đạt trên chính Docker với Chrome và FastAPI thật. Đăng ký/xác minh/đăng nhập người báo bằng UI thật; gửi mô tả có khoảng trắng/xuống dòng; kiểm tra đúng một Report/Issue/event trong PostgreSQL; quản lý thấy sau reload; nhãn vị trí English; phân trang qua hơn 25 phiếu; 403 của người báo và đăng xuất 401. Quản lý trong bài test Docker này dùng phiên demo local tường minh.
+- check-report-api.mjs: đạt quyền, validation, giao dịch tạo Report–Issue–event, locale English, locale sai trả 400 và đăng xuất.
+- check-duplicates.mjs: đạt candidates rỗng/trong nhà/ngoài trời, vị trí viết lại, giới hạn/không lặp, ID AI lạ, timeout/fallback, ẩn nguồn merge, hủy merge xuất hiện lại và Report gốc không thay đổi. Merge/unmerge ở bài này là fixture DB, chưa phải API vận hành hoàn chỉnh.
+- AI contract: 14/14 đạt.
+- Dữ liệu đánh giá: 8/8 đạt.
+- E5 /health và /duplicates: đạt với model ONNX đã ghim; output trong ai-service/evaluation/embedding-api-2026-11-22.json.
+- Đã xem ảnh desktop và các viewport mobile 390px tại phần mô tả/nút gửi, không tràn ngang trong các ca kiểm tra. Chưa kiểm Safari/iOS thật.
+
+Kiểm thử tích hợp đã được sửa để chạy lặp lại trên DB có dữ liệu thử: một báo cáo H2-03 mới có thể đứng trên Report seed cũ trong top 5, không coi đó là lỗi. Fixture FastAPI cố định vẫn kiểm thứ tự R001 H2-03 trước R002 H2-04; test trình duyệt còn đối chiếu mọi ID/mô tả gợi ý với DB thật.
+
+KẾT QUẢ ĐÁNH GIÁ AI
+
+Bộ Công Thành: 41 mô tả, 22 tình huống, 16 ca dương đủ điều kiện tính xếp hạng. Tất cả nhãn vẫn là 21 PROVISIONAL và 1 UNCERTAIN; không có nhãn được người duyệt.
+
+  Location only: Recall@3=1.000, Recall@5=1.000, MRR=0.688.
+  Keyword only: Recall@3=1.000, Recall@5=1.000, MRR=0.781.
+  Baseline v1: Recall@3=1.000, Recall@5=1.000, MRR=0.844.
+  E5 q8: Recall@3=1.000, Recall@5=1.000, MRR=0.875.
+
+Bộ spike Thành Lê: 38 mô tả, 27 truy vấn ở nhóm all.
+  Baseline v1: Recall@3=0.704, Recall@5=0.827, MRR=0.772.
+  E5 q8: Recall@3=0.846, Recall@5=0.988, MRR=0.796.
+
+Đây là kết quả thử nghiệm trên dữ liệu tổng hợp; tập ứng viên ngắn không chứng minh độ bao phủ toàn khuôn viên. Model mặc định của Docker vẫn là baseline. Lượt so sánh E5 và kiểm tra endpoint E5 dùng model local đã ghim, không tự đổi model sản phẩm. Output đầy đủ và model manifest nằm trong các thư mục evaluation của repo; trọng số model không được đưa lên Git hoặc image web.
+
+VIỆC NHÓM CẦN TỰ XÁC NHẬN
+
+- Công Thành và một người duyệt thứ hai cần đọc, quyết định và ghi nhận nhãn thật, đặc biệt ca UNCERTAIN. Agent không thay họ ký duyệt.
+- Tập dượt trên máy nhóm, xác nhận danh mục/vị trí demo, lưu bằng chứng để review supervisor. Không coi merge code là biên bản nghiệm thu checkpoint.
+- SMTP ngoài, upload ảnh, follow Issue, merge/unmerge API đầy đủ, phân công/sửa chữa/đóng việc và các tính năng checkpoint sau vẫn theo đặc tả supervisor đã chốt.
+
+CÁCH CHẠY LẠI
+
+Từ gốc repo: npm ci; npm run demo:env; npm run stack:up.
+Sau đó: npm run check:integration -- --fallback --auth; npm run check:stack-browser.
+Test trình duyệt cần Chrome hoặc Playwright Chromium. Nó tạo tài khoản và báo cáo tổng hợp có đánh dấu, bao gồm 26 phiếu để kiểm tra phân trang. Dùng stack/volume local riêng nếu cần giữ dữ liệu demo sạch. Dừng bằng npm run stack:down; không dùng down -v nếu muốn giữ dữ liệu.
+
+Các kiểm tra của lượt sửa dùng DB/SMTP local riêng; không sửa dữ liệu DB gốc ở cổng 5433 và không gửi thư tới hộp USTH thật. Các nhánh thành viên được giữ nguyên khi tích hợp main.

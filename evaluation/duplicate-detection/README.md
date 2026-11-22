@@ -50,3 +50,20 @@ The old `ai-service/evaluation/run.py --data` path was inspected but is not comp
 ## Coverage and limits
 
 The cases cover duplicate and negative relationships, same area with different equipment or faults, paraphrases, Vietnamese and English pairs, mixed languages, short and unaccented text, recurrence, closed and merged Issues, empty candidates, indoor building and floor differences, outdoor locations, and similar hard negatives. The 22 cases are hand selected and small. They do not represent the real campus incident distribution or prove performance on unseen reports. Outdoor pins are not covered. All dates and locations are fictional.
+
+
+## Reproduced embedding comparison on 22 November 2026
+
+`results-2026-11-22.json` contains the full exploratory baseline/E5 results. `model-manifest-2026-11-22.json` records the immutable Hugging Face revision and SHA-256 checksums of the tokenizer and quantized ONNX weights; weights remain local and are excluded from Git and the web Docker image. Follow `ai-service/README.md` to obtain that pinned model, install `ai-service/requirements-embedding.txt`, then run from the root:
+
+```sh
+python evaluation/duplicate-detection/evaluate.py --api --embedding-dir .venv/e5-small
+```
+
+On the 16 eligible positive cases, baseline MRR was 0.844 and E5 MRR was 0.875; both Recall@3/5 were 1.000 on these small candidate lists. This is exploratory evidence using provisional synthetic labels, not proof of campus accuracy. The API subsection in this output exercises the baseline endpoint; the embedding comparison is a direct call to the unchanged E5 ranker.
+
+## Record real label review
+
+Current fixture statuses are unchanged: 21 PROVISIONAL, one UNCERTAIN, zero human-reviewed. After two actual people independently inspect a case and agree on object/occurrence identity, update its labels/rationale and set HUMAN_REVIEWED with a `review` object containing `reviewers` (at least two distinct names), `reviewed_at` (UTC ISO 8601), and `notes` explaining the decision. Do not use example identities or let a script approve labels. Preserve this reviewed copy separately from the deterministic synthetic generator output.
+
+The validator now accepts documented human reviews and rejects missing or duplicate reviewer records. `python evaluate.py --data reviewed-dataset.json --reviewed-only` evaluates only recorded reviews; zero reviewed positives produces null metrics rather than a fabricated score. Outdoor pinned-candidate eligibility also has a bounding-box regression test matching the backend; the original case fixture still uses unpinned locations.

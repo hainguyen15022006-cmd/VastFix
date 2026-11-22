@@ -87,3 +87,26 @@ Build with `npm run build`; run browser checks with `npm run test:ui` and the is
 ## Shared stack (Docker Compose)
 
 `npm run stack:up` builds and starts PostgreSQL, migrations and seed, Mailpit, the FastAPI service and the web app; `npm run check:integration` runs the end-to-end checks. See [Hoang_Anh_Checkpoint1.md](docs/Hoang_Anh_Checkpoint1.md).
+
+
+## Integrated checkpoint fixes 22 November 2026
+
+The shared branch includes every member's implementation and the independent evaluation dataset. See [the integration verification record](docs/Checkpoint1_Integration_Verification_2026-11-22.txt) for the exact checks and the remaining human label review.
+
+From the repository root with Node 24 and Docker Desktop running:
+
+```sh
+npm ci
+npm run demo:env
+npm run stack:up
+npm run check:integration -- --fallback --auth
+npm run check:stack-browser
+```
+
+The browser check requires Chrome (or `PLAYWRIGHT_CHANNEL=chromium` with Playwright Chromium installed). It creates a verified synthetic reporter and marked test reports, including more than 25 reports to check pagination, on the local stack. It verifies the actual Docker UI with FastAPI and PostgreSQL; the manager uses the explicit local demo session. Use a dedicated local test stack when keeping demo data clean matters. `STACK_DATABASE_URL`, `WEB_URL`, `MAIL_URL`, and the `VASTFIX_*_PORT` variables support separate test ports.
+
+The Docker development server uses Webpack and explicitly permits the loopback dev origin. Demo authentication retains the development-only and loopback checks. Auth fields remain disabled until the client is ready, and native fallback uses POST. The checkpoint queue shows SUBMITTED issues, supports loading subsequent pages, and localizes system location labels with optional `locale=vi|en`; report descriptions stay unchanged.
+
+The repeatable seed now includes H2-03, the difficult H2-04 negative, and a different-floor plumbing negative TAP-1. A1 and these locations/categories are fictional demo catalogs, not an approved campus inventory.
+
+[Independent evaluation data and instructions](evaluation/duplicate-detection/README.md) include reproducible baseline/E5 outputs and a pinned model manifest. All current labels remain provisional or uncertain; no human approval is inferred from this merge.

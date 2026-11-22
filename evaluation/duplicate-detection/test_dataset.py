@@ -61,3 +61,33 @@ def test_api_contract_on_labeled_cases(data):
     result = evaluate(data, validate(data), run_api=True)
     assert result["api"]["cases"] == sum(c["review_status"] == "PROVISIONAL" for c in data["cases"])
     assert result["api"]["contract_errors"] == []
+
+
+def test_human_review_requires_two_distinct_reviewers_and_a_record(data):
+    changed = deepcopy(data)
+    case = changed["cases"][0]
+    case["review_status"] = "HUMAN_REVIEWED"
+    with pytest.raises(AssertionError):
+        validate(changed)
+    case["review"] = {"reviewers": ["Test reviewer A", "Test reviewer A"],
+                      "reviewed_at": "2026-11-22T00:00:00Z", "notes": "Synthetic test record only"}
+    with pytest.raises(AssertionError):
+        validate(changed)
+    case["review"]["reviewers"][1] = "Test reviewer B"
+    validate(changed)
+    empty = {**data, "cases": []}
+    result = evaluate(empty, validate(data))
+    assert result["ranking"]["baseline-v1"] == {"cases": 0, "recall_at_3": None, "recall_at_5": None, "mrr": None}
+
+
+def test_outdoor_pins_use_the_same_bounding_box_as_the_backend(data):
+    by_id = validate(data)
+    row = deepcopy(next(r for r in by_id.values() if r["location"]["kind"] == "OUTDOOR" and not r["merged_source"] and r["issue_status"] != "CLOSED"))
+    query = deepcopy(row)
+    query["location"].update(detail="Near the gate", latitude=21.0, longitude=105.0)
+    row["location"].update(detail="A differently worded place", latitude=21.0005, longitude=105.0005)
+    assert candidate_eligible(query, row)
+    row["location"]["latitude"] = 22.0
+    assert not candidate_eligible(query, row)
+    query["location"].update(latitude=None, longitude=None)
+    assert candidate_eligible(query, row)

@@ -104,7 +104,7 @@ export function ReportForm() {
     const timeout = setTimeout(() => controller.abort(), 12_000);
     setHints({ kind: "loading" });
     try {
-      const data = await getSuggestions(input, controller.signal);
+      const data = await getSuggestions(input, controller.signal, locale);
       if (current === generation.current) setHints({ kind: "ready", data });
     } catch (error) {
       if (current === generation.current) setHints({ kind: "error", error: failure(error) });

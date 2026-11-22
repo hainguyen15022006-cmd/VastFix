@@ -8,3 +8,11 @@ ai-service
 .env.*
 !.env.example
 *.log
+.venv
+venv
+**/__pycache__
+**/.pytest_cache
+test-results
+playwright-report
+data/private
+.DS_Store

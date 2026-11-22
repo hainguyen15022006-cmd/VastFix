@@ -27,8 +27,10 @@ function isIssue(value: unknown): value is ManagerIssue {
     && Number.isFinite(Date.parse(value.createdAt as string));
 }
 
-export async function fetchManagerIssues(status: IssueStatus, signal: AbortSignal): Promise<ManagerIssuesResponse> {
-  const response = await fetch(`/api/manager/issues?${new URLSearchParams({ status })}`, {
+export async function fetchManagerIssues(status: IssueStatus, signal: AbortSignal, options: { locale: string; cursor?: string } = { locale: "vi" }): Promise<ManagerIssuesResponse> {
+  const query = new URLSearchParams({ status, locale: options.locale });
+  if (options.cursor) query.set("cursor", options.cursor);
+  const response = await fetch(`/api/manager/issues?${query}`, {
     signal, credentials: "same-origin", cache: "no-store", headers: { Accept: "application/json" },
   });
   const data: unknown = await response.json().catch(() => null);

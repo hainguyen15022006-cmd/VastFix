@@ -71,7 +71,14 @@ def validate(data):
         case_ids.add(c["case_id"])
         assert c["provenance"] == data["provenance"]
         assert c["review_status"] in {"PROVISIONAL", "UNCERTAIN", "HUMAN_REVIEWED"}
-        assert c["review_status"] != "HUMAN_REVIEWED"  # No review evidence exists.
+        if c["review_status"] == "HUMAN_REVIEWED":
+            review = c.get("review", {})
+            reviewers = review.get("reviewers", [])
+            assert isinstance(reviewers, list) and len(reviewers) >= 2
+            assert all(isinstance(name, str) and name.strip() for name in reviewers)
+            assert len({name.strip().casefold() for name in reviewers}) == len(reviewers)
+            checked_time(review["reviewed_at"])
+            assert isinstance(review.get("notes"), str) and review["notes"].strip()
         assert c["query_id"] in by_id and c["scenario"] and c["rationale"]
         candidates = c["candidate_ids"]
         positive = set(c["expected_relevant_ids"])
@@ -103,7 +110,11 @@ def candidate_eligible(query, row):
     if qloc["kind"] == "INDOOR":
         return qloc["building_id"] == loc["building_id"]
     # Chuc's current pilot broadens unpinned outdoor retrieval to all open outdoor Issues.
-    return qloc["latitude"] is None or qloc["detail"].casefold() == loc["detail"].casefold()
+    if qloc["latitude"] is None or qloc["detail"].casefold() == loc["detail"].casefold():
+        return True
+    return (loc["latitude"] is not None and loc["longitude"] is not None
+            and abs(qloc["latitude"] - loc["latitude"]) <= 0.001
+            and abs(qloc["longitude"] - loc["longitude"]) <= 0.001)
 
 
 def request(case, by_id, eligible_only=False):
@@ -198,6 +209,8 @@ def evaluate(data, by_id, embedding=None, run_api=False):
             client.__exit__(None, None, None)
 
     def summarize(scores):
+        if not scores:
+            return {"cases": 0, "recall_at_3": None, "recall_at_5": None, "mrr": None}
         return {"cases": len(scores), "recall_at_3": round(mean(s[0] for s in scores), 3),
                 "recall_at_5": round(mean(s[1] for s in scores), 3),
                 "mrr": round(mean(s[2] for s in scores), 3)}
@@ -220,9 +233,12 @@ def main():
     parser.add_argument("--data", type=Path, default=HERE / "dataset.json")
     parser.add_argument("--api", action="store_true", help="exercise the actual FastAPI /duplicates endpoint")
     parser.add_argument("--embedding-dir", type=Path, help="already installed local E5 ONNX model")
+    parser.add_argument("--reviewed-only", action="store_true", help="score only cases with recorded human review")
     args = parser.parse_args()
     data = json.loads(args.data.read_text(encoding="utf-8"))
     by_id = validate(data)
+    if args.reviewed_only:
+        data = {**data, "cases": [case for case in data["cases"] if case["review_status"] == "HUMAN_REVIEWED"]}
     embedding = None
     if args.embedding_dir:
         from app.embedding import E5Scorer

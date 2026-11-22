@@ -47,7 +47,15 @@ try {
     assert.deepEqual(saved.rows, [{ report: result.report.id, issue: result.issue.id, email: role + "@demo.invalid", eventType: "REPORT_SUBMITTED" }]);
     const page = (await api(queue, "GET", undefined, cookies.manager, 200)).result;
     assert.ok(page.items.some(item => item.issueId === result.issue.id && item.originReportId === result.report.id));
+    if (role === "staff") {
+      const english = (await api(queue + "&locale=en", "GET", undefined, cookies.manager, 200)).result;
+      const item = english.items.find(item => item.issueId === result.issue.id);
+      assert.equal(item.locationLabel, "A1 · Floor 2 · Middle corridor");
+      assert.equal(item.summary, data.description);
+    }
   }
+  await api(queue + "&locale=fr", "GET", undefined, cookies.manager, 400);
+  await api("/api/duplicate-suggestions?locale=fr", "POST", input, cookies.reporter, 400);
   await api(session, "DELETE", undefined, cookies.manager, 200);
   await api(queue, "GET", undefined, cookies.manager, 401);
   console.log("PASS: authentication, authorization, validation, three-role writes, database events, queue, logout.");

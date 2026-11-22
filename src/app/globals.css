@@ -251,6 +251,9 @@ th:last-child, td:last-child { text-align: right; }
 .panel + .panel { margin-top: 20px; }
 .auth-shell { max-width: 640px; }
 .auth-form { display: flex; flex-direction: column; gap: 12px; }
+.auth-fields { display: flex; flex-direction: column; gap: 12px; border: 0; padding: 0; margin: 0; min-width: 0; }
+.vf-pagination { display: grid; gap: 12px; padding: 16px 24px; border-top: 1px solid #e8ede9; }
+.vf-pagination .vf-partial { padding: 0; border: 0; background: transparent; }
 .auth-form label { display: flex; flex-direction: column; gap: 6px; font-weight: 700; }
 .auth-form input { width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid #8295a3; border-radius: 6px; background: white; color: var(--ink); font: inherit; }
 .auth-form input:focus-visible, button:focus-visible { outline: 3px solid #bb5b15; outline-offset: 3px; }

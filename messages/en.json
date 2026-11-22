@@ -68,7 +68,11 @@
     "issueId": "Issue ID",
     "reportId": "Original report ID",
     "timezone": "Times are shown in Vietnam time (UTC+7).",
-    "privacy": "The queue does not display photos or reporter identities."
+    "privacy": "The queue does not display photos or reporter identities.",
+    "statusScope": "Showing newly submitted issues.",
+    "loadMore": "Load more issues",
+    "loadingMore": "Loading more…",
+    "pageError": "Unable to load the next page. Loaded issues are kept; you can try again."
   },
   "Status": {
     "SUBMITTED": "Submitted",

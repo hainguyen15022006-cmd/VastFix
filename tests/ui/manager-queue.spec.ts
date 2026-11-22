@@ -44,7 +44,11 @@ test("queue uses the contract and keeps descriptions unchanged across languages"
   await expect(page.getByRole("table").getByText(rows[0].summary, { exact: true })).toBeVisible();
   await expect(page.getByRole("table").getByText(rows[1].summary, { exact: true })).toBeVisible();
   expect(requests.length).toBeGreaterThan(0);
-  for (const url of requests) expect([...url.searchParams]).toEqual([["status", "SUBMITTED"]]);
+  for (const url of requests) {
+    expect(url.searchParams.get("status")).toBe("SUBMITTED");
+    expect(["vi", "en"]).toContain(url.searchParams.get("locale"));
+  }
+  expect(requests.some(url => url.searchParams.get("locale") === "en")).toBe(true);
 });
 
 test("local search handles Vietnamese without accents and is limited to loaded rows", async ({ page }) => {
@@ -96,25 +100,24 @@ test("malformed successful response is not presented as an empty queue", async (
   await expect(page.getByText("Chưa có phiếu ở trạng thái này")).toHaveCount(0);
 });
 
-test("loading and status changes ignore a late response from the previous filter", async ({ page }) => {
+test("only the implemented status is offered and locale changes ignore late responses", async ({ page }) => {
   let releaseOld: () => void = () => {};
-  const oldResponse = new Promise<void>((resolve) => { releaseOld = resolve; });
-  await page.route(endpoint, async (route) => {
-    const status = new URL(route.request().url()).searchParams.get("status");
-    if (status === "SUBMITTED") {
-      await oldResponse;
-      await route.fulfill({ json: body() }).catch(() => {});
-    } else {
-      await route.fulfill({ json: body([{ ...rows[1], status: "CLOSED" }]) });
-    }
+  const old = new Promise<void>(resolve => { releaseOld = resolve; });
+  await page.route(endpoint, async route => {
+    if (new URL(route.request().url()).searchParams.get("locale") === "vi") {
+      await old;
+      await route.fulfill({ json: body([rows[0]]) }).catch(() => {});
+    } else await route.fulfill({ json: body([rows[1]]) });
   });
   await page.goto("/vi/manager/issues");
-  await expect(page.getByRole("heading", { name: "Đang tải hàng đợi" })).toBeVisible();
-  await page.getByRole("combobox", { name: "Trạng thái", exact: true }).selectOption("CLOSED");
+  const status = page.getByRole("combobox", { name: "Trạng thái", exact: true });
+  await expect(status).toBeDisabled();
+  await expect(status.locator("option")).toHaveCount(1);
+  await expect(status).toHaveValue("SUBMITTED");
+  await page.getByRole("link", { name: "English", exact: true }).click();
   await expect(page.getByRole("table").getByText(rows[1].summary, { exact: true })).toBeVisible();
   releaseOld();
   await expect(page.getByRole("table").getByText(rows[0].summary, { exact: true })).toHaveCount(0);
-  await expect(page.getByRole("table").getByText("Đã đóng", { exact: true })).toBeVisible();
 });
 
 test("mobile queue and accessible detail dialog fit the screen", async ({ page }, info) => {
@@ -160,4 +163,57 @@ test("integrated real backend requires a session without demo fallback", async (
   await page.goto("/vi/manager/issues");
   await expect(page.getByRole("heading", { name: "Cần đăng nhập", exact: true })).toBeVisible();
   await expect(page.getByRole("table")).toHaveCount(0);
+});
+
+test("pagination sends the cursor, deduplicates rows and can retry a failed page", async ({ page }) => {
+  let pageCalls = 0;
+  await page.route(endpoint, route => {
+    const query = new URL(route.request().url()).searchParams;
+    expect(query.get("locale")).toBe("vi");
+    if (!query.has("cursor")) return route.fulfill({ json: body([rows[0]], "next-page") });
+    expect(query.get("cursor")).toBe("next-page");
+    pageCalls++;
+    return pageCalls === 1 ? route.fulfill({ status: 503, json: {} })
+      : route.fulfill({ json: body([rows[0], rows[1]]) });
+  });
+  await page.goto("/vi/manager/issues");
+  await page.getByRole("button", { name: "Tải thêm phiếu" }).click();
+  await expect(page.locator("main").getByRole("alert")).toContainText("Chưa tải được trang tiếp theo");
+  await expect(page.getByRole("table").getByText(rows[0].summary, { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Tải thêm phiếu" }).click();
+  await expect(page.getByText("Hiển thị 2 / 2 phiếu đã tải")).toBeVisible();
+  await expect(page.getByRole("table").locator("tbody tr")).toHaveCount(2);
+  await expect(page.getByRole("button", { name: "Tải thêm phiếu" })).toHaveCount(0);
+});
+
+test("losing manager permission during pagination clears previously loaded rows", async ({ page }) => {
+  await page.route(endpoint, route => new URL(route.request().url()).searchParams.has("cursor")
+    ? route.fulfill({ status: 403, json: { requestId: "permission-revoked" } })
+    : route.fulfill({ json: body([rows[0]], "next-page") }));
+  await page.goto("/vi/manager/issues");
+  await page.getByRole("button", { name: "Tải thêm phiếu" }).click();
+  await expect(page.getByRole("heading", { name: "Bạn chưa có quyền xem hàng đợi" })).toBeVisible();
+  await expect(page.getByText(rows[0].summary, { exact: true })).toHaveCount(0);
+});
+
+test("refresh aborts a pending page and never appends its stale response", async ({ page }) => {
+  let release: () => void = () => {};
+  let firstPageCalls = 0;
+  const oldPage = new Promise<void>(resolve => { release = resolve; });
+  await page.route(endpoint, async route => {
+    if (new URL(route.request().url()).searchParams.has("cursor")) {
+      await oldPage;
+      await route.fulfill({ json: body([rows[0]]) }).catch(() => {});
+    } else {
+      firstPageCalls++;
+      await route.fulfill({ json: firstPageCalls === 1 ? body([rows[0]], "next-page") : body([rows[1]]) });
+    }
+  });
+  await page.goto("/vi/manager/issues");
+  await page.getByRole("button", { name: "Tải thêm phiếu" }).click();
+  await expect(page.getByRole("button", { name: "Đang tải thêm…" })).toBeDisabled();
+  await page.getByRole("button", { name: "Làm mới", exact: true }).click();
+  await expect(page.getByRole("table").getByText(rows[1].summary, { exact: true })).toBeVisible();
+  release();
+  await expect(page.getByRole("table").getByText(rows[0].summary, { exact: true })).toHaveCount(0);
 });

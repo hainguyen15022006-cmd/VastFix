@@ -105,7 +105,7 @@ try {
   await page.getByRole("combobox", { name: "Khu vực *", exact: true }).selectOption("33333333-3333-4333-8333-333333333333");
   await page.getByLabel("Loại sự cố (không bắt buộc)").selectOption("ELECTRICAL");
   await page.locator("#location-detail").fill("đèn H2-03");
-  const suggestionsResponse = page.waitForResponse(r => r.url().endsWith("/api/duplicate-suggestions"));
+  const suggestionsResponse = page.waitForResponse(r => new URL(r.url()).pathname === "/api/duplicate-suggestions");
   await page.getByRole("button", { name: "Kiểm tra gợi ý" }).click();
   const suggestionsHttp = await suggestionsResponse;
   const suggestionsBody = await suggestionsHttp.json();

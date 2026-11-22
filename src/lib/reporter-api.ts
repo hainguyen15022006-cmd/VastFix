@@ -53,8 +53,9 @@ export async function getReportOptions(signal: AbortSignal): Promise<ReportOptio
   return data as unknown as ReportOptions;
 }
 
-export async function getSuggestions(input: ReportInput, signal: AbortSignal): Promise<Suggestions> {
-  const { data } = await request("/api/duplicate-suggestions", signal, input);
+export async function getSuggestions(input: ReportInput, signal: AbortSignal, locale?: string): Promise<Suggestions> {
+  const path = "/api/duplicate-suggestions" + (locale ? `?${new URLSearchParams({ locale })}` : "");
+  const { data } = await request(path, signal, input);
   if (!["ok", "unavailable"].includes(data.aiStatus as string) || !Array.isArray(data.suggestions)
     || data.suggestions.length > 5 || !data.suggestions.every(s => object(s) && id(s.reportId) && id(s.issueId)
       && text(s.summary) && text(s.locationLabel) && date(s.createdAt) && typeof s.score === "number"

@@ -52,3 +52,10 @@ This is an in-process FastAPI test, not an end-to-end `POST /api/duplicate-sugge
 No embedding evaluation was run: no local E5 ONNX model was present, and no large model was downloaded. No PostgreSQL or Next.js integration was run. The synthetic categories beyond `ELECTRICAL` need review and matching database catalog entries before loading. Công Thành and a second human reviewer should resolve C16 and approve or revise provisional incident labels; only then should the team report validated ground-truth metrics.
 
 The independent dataset, case definitions, validation, exploratory ranking, FastAPI checks, and handover are ready for Checkpoint 1 review. Official metric validation and integrated API behavior remain pending.
+
+
+## Reproduction and E5 comparison 22 November 2026
+
+The dataset still has zero human-reviewed labels. Full outputs are in `results-2026-11-22.json`, with pinned model revision and file hashes in `model-manifest-2026-11-22.json`. Both baseline and E5 ran on the same 16 eligible provisional positive cases: Recall@3=1.000 and Recall@5=1.000 for both; MRR=0.844 for baseline and 0.875 for multilingual-e5-small-q8-v1. Eight dataset tests passed after adding documented human-review metadata and pinned-outdoor filtering checks. These are exploratory synthetic-data results; the high Recall on short lists does not establish real-world performance.
+
+The historical statement above that embedding was not run describes the 19 November run. The 22 November output includes direct E5 ranking, while its FastAPI API checks remain baseline contract checks. The original 38-description spike was also reproduced with embedding; its full output is `ai-service/evaluation/results-2026-11-22.json`. No model weights or private test data are committed.

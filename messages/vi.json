@@ -68,7 +68,11 @@
     "issueId": "Mã phiếu xử lý",
     "reportId": "Mã báo cáo gốc",
     "timezone": "Thời gian hiển thị theo giờ Việt Nam (UTC+7).",
-    "privacy": "Hàng đợi không hiển thị ảnh hoặc danh tính người báo."
+    "privacy": "Hàng đợi không hiển thị ảnh hoặc danh tính người báo.",
+    "statusScope": "Đang hiển thị các phiếu mới gửi.",
+    "loadMore": "Tải thêm phiếu",
+    "loadingMore": "Đang tải thêm…",
+    "pageError": "Chưa tải được trang tiếp theo. Các phiếu đã tải vẫn được giữ; bạn có thể thử lại."
   },
   "Status": {
     "SUBMITTED": "Mới gửi",

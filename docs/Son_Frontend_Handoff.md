@@ -1,5 +1,7 @@
 # Sơn: frontend quản lý và giao diện chung
 
+Cập nhật bản chung 22/11/2026: hàng đợi chỉ bật SUBMITTED theo API hiện tại, đã có nút tải thêm bằng cursor và truyền locale vi/en. Bản ghi 19/11 phía dưới mô tả nhánh gốc, không phải giới hạn của main sau tích hợp. Xem `Checkpoint1_Integration_Verification_2026-11-22.txt`.
+
 Ngày: 19/11/2026. Nhánh local: `codex/son-manager-frontend`.
 
 Nền: `feat/web-foundation`, commit `e8afebf0b14bb4a871adcf15541a8acfba6debb7`.

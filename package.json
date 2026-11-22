@@ -27,7 +27,8 @@
     "auth:bootstrap-manager": "tsx scripts/bootstrap-manager.ts",
     "auth:setup": "node scripts/setup-auth-env.mjs",
     "test:ui": "playwright test",
-    "test:reporter-flow": "node scripts/check-reporter-flow.mjs"
+    "test:reporter-flow": "node scripts/check-reporter-flow.mjs",
+    "check:stack-browser": "node --env-file=.env scripts/check-stack-browser.mjs --write"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",

@@ -26,7 +26,7 @@ async function indoor(page: Page, description = "  Đèn H2-03 bị tắt\nTừ 
 
 test("submits exact v1 data once without requesting suggestions and shows receipt", async ({ page }) => {
   let posts = 0, hints = 0;
-  await page.route("**/api/duplicate-suggestions", r => { hints++; return r.fulfill({ json: {} }); });
+  await page.route("**/api/duplicate-suggestions?*", r => { hints++; return r.fulfill({ json: {} }); });
   await page.route("**/api/reports", async r => {
     posts++;
     expect(r.request().postDataJSON()).toEqual({ description: "  Đèn H2-03 bị tắt\nTừ sáng nay  ", location: { kind: "INDOOR", buildingId, floorId, areaId, detail: "" } });
@@ -76,7 +76,7 @@ test("changing building clears dependent fields and whitespace does not submit",
 
 test("suggestions render safe text and localized reasons without probabilities", async ({ page }, info) => {
   const summary = '<img src=x onerror="alert(1)"> Đèn H2-03';
-  await page.route("**/api/duplicate-suggestions", r => r.fulfill({ json: { requestId, aiStatus: "ok", suggestions: [{ ...suggestion, summary }] } }));
+  await page.route("**/api/duplicate-suggestions?*", r => r.fulfill({ json: { requestId, aiStatus: "ok", suggestions: [{ ...suggestion, summary }] } }));
   await start(page); await indoor(page);
   await page.getByRole("button", { name: "Kiểm tra gợi ý" }).click();
   await expect(page.getByText(summary, { exact: true })).toBeVisible();
@@ -90,7 +90,7 @@ test("suggestions render safe text and localized reasons without probabilities",
 
 for (const aiStatus of ["ok", "unavailable"] as const) {
   test(`${aiStatus} with empty suggestions has a distinct message and permits submission`, async ({ page }) => {
-    await page.route("**/api/duplicate-suggestions", r => r.fulfill({ json: { requestId, aiStatus, suggestions: [] } }));
+    await page.route("**/api/duplicate-suggestions?*", r => r.fulfill({ json: { requestId, aiStatus, suggestions: [] } }));
     await page.route("**/api/reports", r => r.fulfill({ status: 201, json: receipt }));
     await start(page); await indoor(page);
     await page.getByRole("button", { name: "Kiểm tra gợi ý" }).click();
@@ -102,7 +102,7 @@ for (const aiStatus of ["ok", "unavailable"] as const) {
 
 test("late suggestions cannot overwrite an edited draft and AI cannot block submit", async ({ page }) => {
   let release: () => void = () => {};
-  await page.route("**/api/duplicate-suggestions", async r => {
+  await page.route("**/api/duplicate-suggestions?*", async r => {
     await new Promise<void>(resolve => { release = resolve; });
     await r.fulfill({ json: { requestId, aiStatus: "ok", suggestions: [suggestion] } }).catch(() => {});
   });
@@ -118,7 +118,7 @@ test("late suggestions cannot overwrite an edited draft and AI cannot block subm
 });
 
 test("unknown reason codes and malformed AI results never appear as valid suggestions", async ({ page }) => {
-  await page.route("**/api/duplicate-suggestions", r => r.fulfill({ json: { requestId, aiStatus: "ok", suggestions: [{ ...suggestion, reasonCodes: ["MADE_UP"] }] } }));
+  await page.route("**/api/duplicate-suggestions?*", r => r.fulfill({ json: { requestId, aiStatus: "ok", suggestions: [{ ...suggestion, reasonCodes: ["MADE_UP"] }] } }));
   await start(page); await indoor(page);
   await page.getByRole("button", { name: "Kiểm tra gợi ý" }).click();
   await expect(page.getByText("Gợi ý tạm không khả dụng. Bạn vẫn có thể gửi báo cáo mới.")).toBeVisible();
@@ -170,7 +170,7 @@ test("English mobile form is usable and long results fit viewport", async ({ pag
   await page.locator("#description").fill("Đèn bị tắt");
   await page.getByRole("radio", { name: "Outdoors" }).check();
   await page.locator("#location-detail").fill("Near the gate");
-  await page.route("**/api/duplicate-suggestions", r => r.fulfill({ json: { requestId, aiStatus: "ok", suggestions: [{ ...suggestion, summary: "X".repeat(150) }] } }));
+  await page.route("**/api/duplicate-suggestions?*", r => r.fulfill({ json: { requestId, aiStatus: "ok", suggestions: [{ ...suggestion, summary: "X".repeat(150) }] } }));
   await page.getByRole("button", { name: "Check suggestions" }).click();
   await expect(page.getByText("Same area", { exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

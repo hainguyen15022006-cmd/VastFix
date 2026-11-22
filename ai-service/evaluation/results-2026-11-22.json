@@ -1,0 +1,382 @@
+{
+  "reports": 38,
+  "metrics": [
+    {
+      "method": "location-only",
+      "split": "all",
+      "queries": 27,
+      "recall_at_3": 0.673,
+      "recall_at_5": 0.877,
+      "mrr": 0.699
+    },
+    {
+      "method": "location-only",
+      "split": "vi-vi",
+      "queries": 9,
+      "recall_at_3": 0.889,
+      "recall_at_5": 1.0,
+      "mrr": 0.694
+    },
+    {
+      "method": "location-only",
+      "split": "en-en",
+      "queries": 9,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 0.704
+    },
+    {
+      "method": "location-only",
+      "split": "vi-en",
+      "queries": 27,
+      "recall_at_3": 0.87,
+      "recall_at_5": 0.981,
+      "mrr": 0.753
+    },
+    {
+      "method": "lexical-only",
+      "split": "all",
+      "queries": 27,
+      "recall_at_3": 0.383,
+      "recall_at_5": 0.444,
+      "mrr": 0.609
+    },
+    {
+      "method": "lexical-only",
+      "split": "vi-vi",
+      "queries": 9,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "method": "lexical-only",
+      "split": "en-en",
+      "queries": 9,
+      "recall_at_3": 0.556,
+      "recall_at_5": 0.778,
+      "mrr": 0.561
+    },
+    {
+      "method": "lexical-only",
+      "split": "vi-en",
+      "queries": 27,
+      "recall_at_3": 0.537,
+      "recall_at_5": 0.685,
+      "mrr": 0.555
+    },
+    {
+      "method": "baseline-v1",
+      "split": "all",
+      "queries": 27,
+      "recall_at_3": 0.704,
+      "recall_at_5": 0.827,
+      "mrr": 0.772
+    },
+    {
+      "method": "baseline-v1",
+      "split": "vi-vi",
+      "queries": 9,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "method": "baseline-v1",
+      "split": "en-en",
+      "queries": 9,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 0.796
+    },
+    {
+      "method": "baseline-v1",
+      "split": "vi-en",
+      "queries": 27,
+      "recall_at_3": 0.963,
+      "recall_at_5": 1.0,
+      "mrr": 0.87
+    },
+    {
+      "method": "multilingual-e5-small-q8-v1",
+      "split": "all",
+      "queries": 27,
+      "recall_at_3": 0.846,
+      "recall_at_5": 0.988,
+      "mrr": 0.796
+    },
+    {
+      "method": "multilingual-e5-small-q8-v1",
+      "split": "vi-vi",
+      "queries": 9,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 0.815
+    },
+    {
+      "method": "multilingual-e5-small-q8-v1",
+      "split": "en-en",
+      "queries": 9,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 0.889
+    },
+    {
+      "method": "multilingual-e5-small-q8-v1",
+      "split": "vi-en",
+      "queries": 27,
+      "recall_at_3": 0.981,
+      "recall_at_5": 1.0,
+      "mrr": 0.889
+    }
+  ],
+  "mean_rank_ms": {
+    "baseline-v1": 0.29,
+    "multilingual-e5-small-q8-v1": 86.39
+  },
+  "top_1_errors": {
+    "location-only": [
+      {
+        "query": "L03-2",
+        "ranked_first": "L04-1",
+        "first_duplicate": "L03-1"
+      },
+      {
+        "query": "L03-3",
+        "ranked_first": "L04-1",
+        "first_duplicate": "L03-1"
+      },
+      {
+        "query": "L03-4",
+        "ranked_first": "L04-1",
+        "first_duplicate": "L03-3"
+      },
+      {
+        "query": "TAP-L-2",
+        "ranked_first": "TAP-R-1",
+        "first_duplicate": "TAP-L-1"
+      },
+      {
+        "query": "TAP-L-3",
+        "ranked_first": "TAP-R-1",
+        "first_duplicate": "TAP-L-1"
+      },
+      {
+        "query": "TAP-L-4",
+        "ranked_first": "TAP-R-3",
+        "first_duplicate": "TAP-L-3"
+      },
+      {
+        "query": "TAP-R-3",
+        "ranked_first": "TAP-L-3",
+        "first_duplicate": "TAP-R-1"
+      },
+      {
+        "query": "LOCK-3",
+        "ranked_first": "HINGE-2",
+        "first_duplicate": "LOCK-1"
+      },
+      {
+        "query": "LOCK-4",
+        "ranked_first": "HINGE-2",
+        "first_duplicate": "LOCK-3"
+      },
+      {
+        "query": "HINGE-2",
+        "ranked_first": "LOCK-1",
+        "first_duplicate": "HINGE-1"
+      },
+      {
+        "query": "OUTLET-2",
+        "ranked_first": "HINGE-2",
+        "first_duplicate": "OUTLET-1"
+      },
+      {
+        "query": "OUTLET-3",
+        "ranked_first": "HINGE-2",
+        "first_duplicate": "OUTLET-1"
+      },
+      {
+        "query": "OUTLET-4",
+        "ranked_first": "HINGE-4",
+        "first_duplicate": "OUTLET-1"
+      }
+    ],
+    "lexical-only": [
+      {
+        "query": "L03-2",
+        "ranked_first": "HINGE-1",
+        "first_duplicate": "L03-1"
+      },
+      {
+        "query": "L03-4",
+        "ranked_first": "L04-2",
+        "first_duplicate": "L03-2"
+      },
+      {
+        "query": "L04-2",
+        "ranked_first": "L03-2",
+        "first_duplicate": "L04-1"
+      },
+      {
+        "query": "L04-4",
+        "ranked_first": "L03-2",
+        "first_duplicate": "L04-2"
+      },
+      {
+        "query": "TAP-L-2",
+        "ranked_first": "L04-2",
+        "first_duplicate": "TAP-L-1"
+      },
+      {
+        "query": "TAP-L-4",
+        "ranked_first": "PUDDLE-2",
+        "first_duplicate": "TAP-L-2"
+      },
+      {
+        "query": "TAP-R-2",
+        "ranked_first": "TAP-L-2",
+        "first_duplicate": "TAP-R-1"
+      },
+      {
+        "query": "TAP-R-4",
+        "ranked_first": "TAP-L-4",
+        "first_duplicate": "TAP-R-2"
+      },
+      {
+        "query": "LOCK-2",
+        "ranked_first": "HINGE-1",
+        "first_duplicate": "LOCK-1"
+      },
+      {
+        "query": "HINGE-2",
+        "ranked_first": "LOCK-1",
+        "first_duplicate": "HINGE-1"
+      },
+      {
+        "query": "PUDDLE-2",
+        "ranked_first": "TAP-L-2",
+        "first_duplicate": "PUDDLE-1"
+      },
+      {
+        "query": "PUDDLE-4",
+        "ranked_first": "TAP-R-4",
+        "first_duplicate": "PUDDLE-2"
+      },
+      {
+        "query": "OUTLET-2",
+        "ranked_first": "PUDDLE-2",
+        "first_duplicate": "OUTLET-1"
+      }
+    ],
+    "baseline-v1": [
+      {
+        "query": "L03-2",
+        "ranked_first": "L04-1",
+        "first_duplicate": "L03-1"
+      },
+      {
+        "query": "L03-4",
+        "ranked_first": "L04-2",
+        "first_duplicate": "L03-2"
+      },
+      {
+        "query": "L04-2",
+        "ranked_first": "L03-2",
+        "first_duplicate": "L04-1"
+      },
+      {
+        "query": "L04-4",
+        "ranked_first": "L03-2",
+        "first_duplicate": "L04-2"
+      },
+      {
+        "query": "TAP-L-2",
+        "ranked_first": "TAP-R-1",
+        "first_duplicate": "TAP-L-1"
+      },
+      {
+        "query": "TAP-R-2",
+        "ranked_first": "TAP-L-2",
+        "first_duplicate": "TAP-R-1"
+      },
+      {
+        "query": "TAP-R-4",
+        "ranked_first": "TAP-L-4",
+        "first_duplicate": "TAP-R-2"
+      },
+      {
+        "query": "LOCK-2",
+        "ranked_first": "HINGE-1",
+        "first_duplicate": "LOCK-1"
+      },
+      {
+        "query": "HINGE-2",
+        "ranked_first": "LOCK-1",
+        "first_duplicate": "HINGE-1"
+      },
+      {
+        "query": "PUDDLE-2",
+        "ranked_first": "TAP-L-2",
+        "first_duplicate": "PUDDLE-1"
+      },
+      {
+        "query": "OUTLET-2",
+        "ranked_first": "LOCK-2",
+        "first_duplicate": "OUTLET-1"
+      }
+    ],
+    "multilingual-e5-small-q8-v1": [
+      {
+        "query": "L03-2",
+        "ranked_first": "L04-1",
+        "first_duplicate": "L03-1"
+      },
+      {
+        "query": "L03-3",
+        "ranked_first": "L04-1",
+        "first_duplicate": "L03-1"
+      },
+      {
+        "query": "L04-2",
+        "ranked_first": "L03-2",
+        "first_duplicate": "L04-1"
+      },
+      {
+        "query": "TAP-L-4",
+        "ranked_first": "TAP-R-3",
+        "first_duplicate": "TAP-L-2"
+      },
+      {
+        "query": "TAP-R-2",
+        "ranked_first": "TAP-L-2",
+        "first_duplicate": "TAP-R-1"
+      },
+      {
+        "query": "TAP-R-3",
+        "ranked_first": "TAP-L-1",
+        "first_duplicate": "TAP-R-1"
+      },
+      {
+        "query": "TAP-R-4",
+        "ranked_first": "TAP-L-2",
+        "first_duplicate": "TAP-R-3"
+      },
+      {
+        "query": "LOCK-2",
+        "ranked_first": "HINGE-1",
+        "first_duplicate": "LOCK-1"
+      },
+      {
+        "query": "HINGE-2",
+        "ranked_first": "LOCK-1",
+        "first_duplicate": "HINGE-1"
+      },
+      {
+        "query": "HINGE-3",
+        "ranked_first": "LOCK-3",
+        "first_duplicate": "HINGE-2"
+      }
+    ]
+  }
+}
