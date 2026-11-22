@@ -1,0 +1,282 @@
+VASTFIX — KẾT QUẢ DUYỆT NHÃN BẰNG AI
+Ngày 23/11/2026 · Theo yêu cầu Hải Anh
+
+Đã đọc 41 mô tả, metadata vị trí/thời gian/trạng thái và toàn bộ 61 cặp ứng viên trong 22 tình huống. Kết quả: 14 tình huống có nhãn đầy đủ được ghi AI_REVIEWED; 8 tình huống UNCERTAIN cần thông tin bổ sung. Có 20 cặp trùng, 31 cặp không trùng và 10 cặp chưa chắc. Không có nhãn HUMAN_REVIEWED.
+
+Đây là một lượt duyệt bằng AI trên dữ liệu tổng hợp, có đối chiếu nhãn ban đầu. Không phải đánh giá mù, đánh giá độc lập bởi người hoặc xác minh sự cố thực địa. Không dùng incident_key ẩn để bù cho chi tiết người báo chưa cung cấp.
+
+QUY TẮC ÁP DỤNG
+Định danh đối tượng gồm thiết bị/vị trí đủ chi tiết; xét cùng lần sự cố đang xảy ra. Lần đã sửa/kết thúc trước đợt tái phát được tách riêng. Các mô tả khác biểu hiện nhưng có thể chung nguyên nhân và một lần xử lý cần dùng O10: chỉ chốt trùng/không trùng khi có đủ căn cứ; thiếu thì chưa chắc. Nguồn đã gộp có thể trùng về ngữ nghĩa nhưng bị loại khỏi candidates của backend.
+
+BẢN DỮ LIỆU
+Giữ nguyên dataset.json do generator sinh và toàn bộ nội dung 41 Report. Bản có quyết định mới là dataset.ai-reviewed.json. Nhật ký label-review-2026-11-23.json ghi lý do riêng cho từng cặp và SHA-256 của nguồn. Chạy materialize_review.py để tái tạo bản duyệt; script từ chối nếu nguồn đã đổi hoặc thiếu quyết định.
+
+Các trường expected_relevant_ids, expected_negative_ids và expected_uncertain_ids tạo ba tập rời nhau, bao phủ đúng danh sách ứng viên. C16 trước đây đặt cả hai ứng viên trong negative dù trạng thái chưa chắc; bản duyệt chuyển cả hai sang uncertain. C14 không còn bị ép thành mất sáng chỉ vì mã đối tượng và incident_key.
+
+CÁC TÌNH HUỐNG CẦN BỔ SUNG
+C01: Giữ quan hệ trùng với báo cáo mất sáng H2-03, nhưng chưa thể coi nhấp nháy là một sự cố độc lập.
+Cần thêm: Cần lịch sử sửa/khôi phục hoặc xác nhận hai triệu chứng có cùng lần xử lý.
+
+C06: Cặp máy chiếu Việt/Anh khớp, nhưng quan hệ với pin điều khiển P-2 chưa đủ căn cứ để chốt âm.
+Cần thêm: Cần xác nhận P-2 đã được bật/kiểm tra độc lập với điều khiển và vẫn không lên hình.
+
+C07: Hai báo cáo rò nước AC-2 trùng; chưa thể tự kết luận tiếng ồn của cùng AC-2 là một lần sự cố khác.
+Cần thêm: Cần kiểm tra kỹ thuật xem rò nước và tiếng ồn có cùng nguyên nhân/lần xử lý hay không.
+
+C09: Cặp Wi-Fi phòng 101 trùng; phòng 102 không đủ thông tin định danh hạ tầng để chốt âm.
+Cần thêm: Cần AP/SSID hoặc sơ đồ mạng và xác nhận phạm vi ảnh hưởng phòng 101/102.
+
+C13: Cặp rác hành lang Việt/Anh khớp; quan hệ giữa rác và sàn ướt cùng khu vực cần làm rõ.
+Cần thêm: Cần mô tả nguyên nhân, phạm vi và liệu một lần dọn xử lý cả hai hay không.
+
+C14: Định danh được H2-03 nhưng chữ hỏng không phân biệt mất sáng với nhấp nháy.
+Cần thêm: Cần bổ sung không sáng/nhấp nháy/biểu hiện cụ thể và thời điểm bắt đầu.
+
+C16: Không xác định được bóng nào; xóa nhãn âm tạm cho cả hai ứng viên.
+Cần thêm: Cần mã bóng hoặc mô tả vị trí đủ phân biệt và thời điểm/phạm vi hỏng.
+
+C20: Khớp mất sáng H2-03 và loại thiết bị/vị trí khác; giữ chưa chắc cho nhấp nháy của cùng H2-03.
+Cần thêm: Cần thông tin như C01 về diễn tiến hỏng và lần sửa/khôi phục.
+
+KẾT QUẢ TÍNH LẠI
+Loại toàn bộ tình huống còn cặp chưa chắc khỏi chấm xếp hạng; các quyết định cặp rõ ràng trong những tình huống này vẫn được giữ để kiểm tra. Còn 14 tình huống dùng cho kiểm tra API, gồm 9 ca dương và 5 ca chỉ có âm hoặc mảng rỗng.
+
+location-only: 9 ca dương; Recall@3=1.000; Recall@5=1.000; MRR=0.833.
+keyword-only: 9 ca dương; Recall@3=1.000; Recall@5=1.000; MRR=0.889.
+baseline-v1: 9 ca dương; Recall@3=1.000; Recall@5=1.000; MRR=0.889.
+multilingual-e5-small-q8-v1: 9 ca dương; Recall@3=1.000; Recall@5=1.000; MRR=0.889.
+
+Baseline và E5 cùng MRR 0,889 trên 9 ca dương đã chọn. Không kết luận E5 hơn baseline từ lượt này. Các số 0,844/0,875 ngày 22/11 dùng 16 ca dương provisional khác mẫu số, nên không so trực tiếp để tuyên bố cải thiện.
+API baseline: 14/14 response đạt invariant, tìm được ít nhất một mục liên quan ở 9/9 ca dương. Có gợi ý trong 2/5 ca chỉ có âm. Ba ca âm còn lại là danh sách rỗng ban đầu hoặc rỗng sau lọc Issue đóng; không dùng tỷ lệ này để khẳng định độ chính xác phân loại trùng ngoài thực tế. Gợi ý không phải quyết định gộp.
+
+KIỂM THỬ
+12 kiểm thử dữ liệu/nhật ký duyệt đạt; 14 kiểm thử contract AI đạt. Kiểm tra nguồn không đổi, bao phủ đủ 61 cặp, ba tập nhãn không giao nhau, các ca chưa chắc bị loại khỏi chấm, không giả làm HUMAN_REVIEWED và chế độ human-only vẫn trả 0 ca/null metric.
+
+CÁCH DÙNG
+python evaluation/duplicate-detection/materialize_review.py
+python -m pytest -q evaluation/duplicate-detection
+python evaluation/duplicate-detection/evaluate.py --data evaluation/duplicate-detection/dataset.ai-reviewed.json --api --embedding-dir <thu-muc-E5-da-ghim>
+
+Thông số mô hình giữ nguyên manifest ngày 22/11. Trọng số không được đưa vào Git. --reviewed-only chỉ dành cho HUMAN_REVIEWED và sẽ trả 0 ca trên bản này; lệnh đánh giá bản AI ở trên không cần cờ đó.
+
+CHI TIẾT TỪNG TÌNH HUỐNG
+
+C01 — UNCERTAIN
+Truy vấn light03_en: Light H2-03 in the A1 second-floor corridor is out
+Giữ quan hệ trùng với báo cáo mất sáng H2-03, nhưng chưa thể coi nhấp nháy là một sự cố độc lập.
+  light03_vi — TRÙNG: Đèn H2-03 ở hành lang tầng 2 tòa A1 không sáng
+  Lý do: Cùng H2-03, A1/tầng 2/hành lang, cùng mô tả mất sáng trong đợt đang mở.
+  light04 — KHÔNG TRÙNG: Đèn H2-04 ở hành lang tầng 2 tòa A1 không sáng
+  Lý do: H2-04 là bóng khác H2-03 dù cùng vị trí và biểu hiện.
+  light03_flicker — CHƯA CHẮC: Đèn H2-03 hành lang tầng 2 nhấp nháy nhưng vẫn sáng
+  Lý do: Cùng H2-03; nhấp nháy lúc 08:10 có thể tiến triển thành tắt lúc 08:30. Không có bản ghi đã sửa hoặc bằng chứng hai lần hỏng độc lập.
+  Cần bổ sung: Cần lịch sử sửa/khôi phục hoặc xác nhận hai triệu chứng có cùng lần xử lý.
+
+C02 — AI_REVIEWED
+Truy vấn light03_typo: den H2-03 hanh lang tang 2 khong sang
+Chấp nhận hai diễn đạt Việt/Anh của cùng đợt H2-03; không dấu không làm đổi đối tượng.
+  light03_vi — TRÙNG: Đèn H2-03 ở hành lang tầng 2 tòa A1 không sáng
+  Lý do: H2-03 và toàn bộ vị trí trùng; cùng biểu hiện không sáng, chưa có lần sửa xen giữa trong fixture.
+  light03_en — TRÙNG: Light H2-03 in the A1 second-floor corridor is out
+  Lý do: Light H2-03 is out và mô tả không dấu tương thích về đối tượng/vị trí/biểu hiện.
+  light04 — KHÔNG TRÙNG: Đèn H2-04 ở hành lang tầng 2 tòa A1 không sáng
+  Lý do: Mã bóng H2-04 khác H2-03.
+
+C03 — AI_REVIEWED
+Truy vấn light03_recur: Bóng H2-03 lại tắt ở hành lang A1 tầng hai
+Phân biệt lần hỏng tháng 10 đã kết thúc với đợt tháng 11; tách nhãn ngữ nghĩa khỏi điều kiện ứng viên.
+  light03_vi — TRÙNG: Đèn H2-03 ở hành lang tầng 2 tòa A1 không sáng
+  Lý do: Cùng H2-03 và đợt 18/11 đang mở; không có khôi phục được ghi nhận giữa hai mô tả.
+  light03_en — TRÙNG: Light H2-03 in the A1 second-floor corridor is out
+  Lý do: Cùng vị trí và mất sáng trong đợt tháng 11 chưa kết thúc.
+  light03_old — KHÔNG TRÙNG: Đèn H2-03 hành lang tầng 2 không sáng
+  Lý do: Đợt tháng 10 đã có closed_at ngày 03/10, trước đợt tháng 11; đây là tái phát, không phải cùng lần sự cố.
+  light03_merged — TRÙNG: H2-03 ceiling light has stopped working
+  Lý do: Cùng đợt H2-03 tháng 11 về ngữ nghĩa; merged_source=true chỉ khiến nguồn không được đưa vào gợi ý.
+  light04 — KHÔNG TRÙNG: Đèn H2-04 ở hành lang tầng 2 tòa A1 không sáng
+  Lý do: Khác bóng đèn.
+
+C04 — AI_REVIEWED
+Truy vấn light03_recur: Bóng H2-03 lại tắt ở hành lang A1 tầng hai
+Không dùng hai báo cáo tháng 10 làm đáp án trùng của đợt tháng 11.
+  light03_old — KHÔNG TRÙNG: Đèn H2-03 hành lang tầng 2 không sáng
+  Lý do: Đợt tháng 10 kết thúc trước khi đợt tháng 11 xảy ra.
+  light03_old_en — KHÔNG TRÙNG: The H2-03 corridor lamp is dark
+  Lý do: Cũng thuộc đợt tháng 10 đã đóng; ngôn ngữ khác không thay đổi ranh giới lần hỏng.
+
+C05 — AI_REVIEWED
+Truy vấn light03_en: Light H2-03 in the A1 second-floor corridor is out
+Mã thiết bị phải đi kèm tòa/tầng/khu vực; không so khớp H2-03 riêng lẻ.
+  light03_a2 — KHÔNG TRÙNG: Đèn H2-03 hành lang tầng 2 tòa A2 không sáng
+  Lý do: H2-03 ở A2 khác bóng H2-03 tại A1.
+  light03_floor3 — KHÔNG TRÙNG: Đèn H2-03 hành lang tầng 3 tòa A1 không sáng
+  Lý do: Tầng 3 khác tầng 2 trong định danh vị trí của fixture.
+  light04 — KHÔNG TRÙNG: Đèn H2-04 ở hành lang tầng 2 tòa A1 không sáng
+  Lý do: Khác mã bóng đèn.
+
+C06 — UNCERTAIN
+Truy vấn projector_vi: Máy chiếu P-2 trong phòng thực hành A1 không lên hình
+Cặp máy chiếu Việt/Anh khớp, nhưng quan hệ với pin điều khiển P-2 chưa đủ căn cứ để chốt âm.
+  projector — TRÙNG: Projector P-2 in A1 lab 2 shows no image
+  Lý do: Cùng P-2, cùng phòng thực hành A1 tầng 2, cùng lỗi không lên hình.
+  projector_remote — CHƯA CHẮC: Projector P-2 remote in A1 lab 2 has dead batteries
+  Lý do: Điều khiển được nêu đích danh thuộc P-2; pin hết có thể liên quan việc không bật/điều khiển máy. Chưa có thử bật bằng nút máy hoặc xác nhận hai hỏng độc lập.
+  ac_leak — KHÔNG TRÙNG: Điều hòa AC-2 phòng thực hành A1 chảy nước
+  Lý do: AC-2 chảy nước là thiết bị và công việc khác máy chiếu không lên hình; không có quan hệ trực tiếp được mô tả.
+  Cần bổ sung: Cần xác nhận P-2 đã được bật/kiểm tra độc lập với điều khiển và vẫn không lên hình.
+
+C07 — UNCERTAIN
+Truy vấn ac_leak_en: Water drips from AC-2 in the A1 lab
+Hai báo cáo rò nước AC-2 trùng; chưa thể tự kết luận tiếng ồn của cùng AC-2 là một lần sự cố khác.
+  ac_leak — TRÙNG: Điều hòa AC-2 phòng thực hành A1 chảy nước
+  Lý do: Cùng AC-2, cùng phòng A1 và cùng hiện tượng nước nhỏ/chảy ra.
+  ac_noise — CHƯA CHẮC: Điều hòa AC-2 phòng thực hành A1 kêu to
+  Lý do: Cùng AC-2 trong khoảng thời gian gần nhau; chưa có dữ kiện xác nhận tiếng ồn độc lập hay cùng lần hỏng với rò nước, theo O10.
+  projector — KHÔNG TRÙNG: Projector P-2 in A1 lab 2 shows no image
+  Lý do: P-2 không lên hình là đối tượng và hiện tượng khác AC-2 rò nước.
+  Cần bổ sung: Cần kiểm tra kỹ thuật xem rò nước và tiếng ồn có cùng nguyên nhân/lần xử lý hay không.
+
+C08 — AI_REVIEWED
+Truy vấn tap_en: Sink tap 1 leaks in the A1 second-floor restroom
+Khớp vòi số 1; các ứng viên còn lại mô tả đối tượng hỏng riêng.
+  tap — TRÙNG: Vòi rửa số 1 nhà vệ sinh A1 tầng 2 rò nước
+  Lý do: Vòi số 1 và tap 1 cùng A1/tầng 2/nhà vệ sinh, cùng rò nước.
+  tap2 — KHÔNG TRÙNG: Vòi rửa số 2 nhà vệ sinh A1 tầng 2 rò nước
+  Lý do: Vòi số 2 là đối tượng khác vòi số 1.
+  drain — KHÔNG TRÙNG: Nước đọng do cống sàn nhà vệ sinh A1 tầng 2 bị tắc
+  Lý do: Mô tả ghi rõ cống sàn bị tắc; thông cống không sửa rò vòi. Có hai đối tượng và hư hỏng được nêu cụ thể, không chỉ mô tả sàn ướt chưa rõ nguyên nhân.
+
+C09 — UNCERTAIN
+Truy vấn wifi_vi: Mạng wifi phòng 101 B1 rớt liên tục
+Cặp Wi-Fi phòng 101 trùng; phòng 102 không đủ thông tin định danh hạ tầng để chốt âm.
+  wifi — TRÙNG: Wi-Fi in B1 room 101 disconnects repeatedly
+  Lý do: Cùng dịch vụ Wi-Fi phòng 101 B1 và triệu chứng mất kết nối lặp lại trong đợt gần nhau.
+  wifi_room102 — CHƯA CHẮC: Wi-Fi in B1 room 102 disconnects repeatedly
+  Lý do: Hai phòng có thể dùng chung AP/switch hoặc mạng. Fixture chỉ có vị trí phòng, không có AP/SSID hay bằng chứng hai sự cố độc lập.
+  door — KHÔNG TRÙNG: Cửa D1 hành lang B1 tầng một không đóng kín
+  Lý do: Cửa D1 không đóng kín khác hạng mục Wi-Fi mất kết nối.
+  Cần bổ sung: Cần AP/SSID hoặc sơ đồ mạng và xác nhận phạm vi ảnh hưởng phòng 101/102.
+
+C10 — AI_REVIEWED
+Truy vấn door_en: Door D1 on B1 ground floor does not latch
+D1 không đóng kín/không gài chốt là hai mô tả tương thích của cùng cửa trong fixture.
+  door — TRÙNG: Cửa D1 hành lang B1 tầng một không đóng kín
+  Lý do: Cùng D1, hành lang B1 tầng 1, cùng vấn đề đóng/giữ cửa; không có lần sửa xen giữa.
+  door2 — KHÔNG TRÙNG: Door D2 on B1 ground floor does not latch
+  Lý do: D2 là cửa khác D1.
+
+C11 — AI_REVIEWED
+Truy vấn gate_light_en: The light at the main 18-2 gate is out
+Chấp nhận ánh xạ đèn ở cùng cổng 18-2 trong phạm vi fixture tổng hợp, không suy rộng với nhiều đèn thực địa.
+  gate_light — TRÙNG: Đèn ở cổng chính 18-2 không sáng
+  Lý do: Cùng đèn được mô tả tại cổng chính 18-2, cùng không sáng và không có chi tiết mâu thuẫn trong fixture.
+  gate_camera — KHÔNG TRÙNG: Camera ở cổng chính 18-2 không hoạt động
+  Lý do: Camera và đèn là hai đối tượng; camera không hoạt động không tự được gán thành đèn hỏng.
+  yard_puddle — KHÔNG TRÙNG: Nước đọng trên sân trước A1 do ống tưới rò
+  Lý do: Ống tưới rò tại sân A1 khác đèn cổng 18-2.
+
+C12 — AI_REVIEWED
+Truy vấn yard_puddle_en: Irrigation pipe leaks onto the yard in front of A1
+Cùng ống tưới rò ở sân trước A1; không gộp rác và camera vào sự cố nước.
+  yard_puddle — TRÙNG: Nước đọng trên sân trước A1 do ống tưới rò
+  Lý do: Cả hai mô tả nêu ống tưới rò, nước ra sân trước A1 trong cùng đợt fixture.
+  yard_litter — KHÔNG TRÙNG: Litter has accumulated in the yard in front of A1
+  Lý do: Rác tích tụ cần dọn là vấn đề được mô tả riêng; sửa ống tưới không loại bỏ rác.
+  gate_camera — KHÔNG TRÙNG: Camera ở cổng chính 18-2 không hoạt động
+  Lý do: Camera tại cổng là đối tượng/vị trí khác.
+
+C13 — UNCERTAIN
+Truy vấn hall_dirty_en: There is litter in the middle corridor on A1 floor 2
+Cặp rác hành lang Việt/Anh khớp; quan hệ giữa rác và sàn ướt cùng khu vực cần làm rõ.
+  hall_dirty — TRÙNG: Hành lang giữa A1 tầng 2 có rác cần dọn
+  Lý do: Cùng rác tại hành lang giữa A1 tầng 2.
+  hall_wet — CHƯA CHẮC: Hành lang giữa A1 tầng 2 bị ướt cần lau
+  Lý do: Cùng khu vực, gần thời gian, không nêu nguồn nước hoặc nguồn rác. Có thể hai việc riêng hoặc cùng một đợt bẩn/tràn; không có căn cứ chốt độc lập theo O10.
+  Cần bổ sung: Cần mô tả nguyên nhân, phạm vi và liệu một lần dọn xử lý cả hai hay không.
+
+C14 — UNCERTAIN
+Truy vấn short_light: H2-03 hỏng
+Định danh được H2-03 nhưng chữ hỏng không phân biệt mất sáng với nhấp nháy.
+  light03_vi — CHƯA CHẮC: Đèn H2-03 ở hành lang tầng 2 tòa A1 không sáng
+  Lý do: Có thể là cùng mất sáng, nhưng truy vấn không nêu biểu hiện để xác nhận.
+  light04 — KHÔNG TRÙNG: Đèn H2-04 ở hành lang tầng 2 tòa A1 không sáng
+  Lý do: Truy vấn ghi rõ H2-03, không phải H2-04.
+  light03_flicker — CHƯA CHẮC: Đèn H2-03 hành lang tầng 2 nhấp nháy nhưng vẫn sáng
+  Lý do: Cũng có thể là lỗi nhấp nháy của H2-03; không dùng incident_key ẩn để ép thành âm.
+  Cần bổ sung: Cần bổ sung không sáng/nhấp nháy/biểu hiện cụ thể và thời điểm bắt đầu.
+
+C15 — AI_REVIEWED
+Truy vấn new_no_candidates: Window W7 is cracked
+Ca mảng ứng viên rỗng chỉ kiểm hành vi rỗng, không chứng minh khả năng phát hiện sự cố mới ngoài tập dữ liệu.
+Không có ứng viên; kiểm hành vi mảng rỗng.
+
+C16 — UNCERTAIN
+Truy vấn ambiguous: Đèn hỏng
+Không xác định được bóng nào; xóa nhãn âm tạm cho cả hai ứng viên.
+  light03_vi — CHƯA CHẮC: Đèn H2-03 ở hành lang tầng 2 tòa A1 không sáng
+  Lý do: Đèn hỏng không có mã/vị trí chi tiết để khẳng định hoặc loại H2-03.
+  light04 — CHƯA CHẮC: Đèn H2-04 ở hành lang tầng 2 tòa A1 không sáng
+  Lý do: Cũng không đủ căn cứ loại H2-04.
+  Cần bổ sung: Cần mã bóng hoặc mô tả vị trí đủ phân biệt và thời điểm/phạm vi hỏng.
+
+C17 — AI_REVIEWED
+Truy vấn light03_en: Light H2-03 in the A1 second-floor corridor is out
+Cùng mã bóng không làm hai lần sự cố trước/sau lần đóng trở thành trùng.
+  light03_old — KHÔNG TRÙNG: Đèn H2-03 hành lang tầng 2 không sáng
+  Lý do: Đợt tháng 10 được kết thúc ngày 03/10, khác đợt ngày 18/11.
+  light03_old_en — KHÔNG TRÙNG: The H2-03 corridor lamp is dark
+  Lý do: Bản tiếng Anh cũng thuộc lần tháng 10 đã kết thúc.
+
+C18 — AI_REVIEWED
+Truy vấn light03_recur: Bóng H2-03 lại tắt ở hành lang A1 tầng hai
+Merge ảnh hưởng tính đủ điều kiện gợi ý, không đổi sự thật hai mô tả nói về cùng sự cố.
+  light03_merged — TRÙNG: H2-03 ceiling light has stopped working
+  Lý do: Cùng H2-03 mất sáng tháng 11; phải loại khỏi candidates vì là nguồn đang gộp.
+  light03_vi — TRÙNG: Đèn H2-03 ở hành lang tầng 2 tòa A1 không sáng
+  Lý do: Cùng đợt H2-03 và còn là ứng viên hợp lệ.
+
+C19 — AI_REVIEWED
+Truy vấn lab_socket: Socket S1 in A1 lab has no power
+Không suy rằng mọi thiết bị cùng phòng đều là cùng sự cố ổ cắm S1.
+  ac_leak — KHÔNG TRÙNG: Điều hòa AC-2 phòng thực hành A1 chảy nước
+  Lý do: AC-2 rò nước khác ổ cắm S1 mất điện; không mô tả phụ thuộc trực tiếp giữa hai đối tượng.
+  projector — KHÔNG TRÙNG: Projector P-2 in A1 lab 2 shows no image
+  Lý do: P-2 không lên hình không được mô tả là cắm vào S1 hoặc mất nguồn do S1; khác đối tượng được báo.
+  ac_noise — KHÔNG TRÙNG: Điều hòa AC-2 phòng thực hành A1 kêu to
+  Lý do: AC-2 kêu to khác hỏng ổ cắm S1.
+
+C20 — UNCERTAIN
+Truy vấn light03_en: Light H2-03 in the A1 second-floor corridor is out
+Khớp mất sáng H2-03 và loại thiết bị/vị trí khác; giữ chưa chắc cho nhấp nháy của cùng H2-03.
+  light03_vi — TRÙNG: Đèn H2-03 ở hành lang tầng 2 tòa A1 không sáng
+  Lý do: Cùng H2-03 mất sáng tại A1 tầng 2 trong đợt đang mở.
+  light03_a2 — KHÔNG TRÙNG: Đèn H2-03 hành lang tầng 2 tòa A2 không sáng
+  Lý do: Khác tòa, là bóng khác dù mã giống.
+  light03_floor3 — KHÔNG TRÙNG: Đèn H2-03 hành lang tầng 3 tòa A1 không sáng
+  Lý do: Khác tầng, là vị trí đối tượng khác trong fixture.
+  light04 — KHÔNG TRÙNG: Đèn H2-04 ở hành lang tầng 2 tòa A1 không sáng
+  Lý do: Khác bóng H2-04.
+  light03_flicker — CHƯA CHẮC: Đèn H2-03 hành lang tầng 2 nhấp nháy nhưng vẫn sáng
+  Lý do: Nhấp nháy và mất sáng của cùng H2-03 có thể là hai giai đoạn một hỏng; chưa có bằng chứng tách lần xử lý.
+  hall_dirty — KHÔNG TRÙNG: Hành lang giữa A1 tầng 2 có rác cần dọn
+  Lý do: Rác cần dọn khác đối tượng đèn H2-03.
+  Cần bổ sung: Cần thông tin như C01 về diễn tiến hỏng và lần sửa/khôi phục.
+
+C21 — AI_REVIEWED
+Truy vấn door_en_again: The D1 hallway door in B1 still will not close
+Các mô tả D1 tiếp tục không đóng/gài được thuộc cùng đợt closure fault trong fixture.
+  door_en — TRÙNG: Door D1 on B1 ground floor does not latch
+  Lý do: Cùng D1, vị trí B1 và trạng thái không đóng/gài, còn mở và không có can thiệp xen giữa.
+  door — TRÙNG: Cửa D1 hành lang B1 tầng một không đóng kín
+  Lý do: Mô tả tiếng Việt tương thích cùng cửa D1 và lỗi đóng cửa.
+  door2 — KHÔNG TRÙNG: Door D2 on B1 ground floor does not latch
+  Lý do: D2 là cửa khác.
+
+C22 — AI_REVIEWED
+Truy vấn door_en_again: The D1 hallway door in B1 still will not close
+Đối chiếu tiếng Anh cho cùng D1, giữ D2 là hard negative theo định danh cửa.
+  door_en — TRÙNG: Door D1 on B1 ground floor does not latch
+  Lý do: Cùng D1 và cùng vấn đề đóng/gài trong đợt đang mở.
+  door2 — KHÔNG TRÙNG: Door D2 on B1 ground floor does not latch
+  Lý do: D2 khác D1, không gộp chỉ vì cùng câu chữ.
+

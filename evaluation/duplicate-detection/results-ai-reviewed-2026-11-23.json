@@ -1,0 +1,222 @@
+{
+  "reports": 41,
+  "cases": 22,
+  "review_statuses": {
+    "UNCERTAIN": 8,
+    "AI_REVIEWED": 14
+  },
+  "languages": {
+    "vi": 23,
+    "en": 18
+  },
+  "positive_cases": 9,
+  "negative_only_cases": 5,
+  "ranking_eligible_positive_cases": 9,
+  "ranking": {
+    "location-only": {
+      "cases": 9,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 0.833
+    },
+    "keyword-only": {
+      "cases": 9,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 0.889
+    },
+    "baseline-v1": {
+      "cases": 9,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 0.889
+    },
+    "multilingual-e5-small-q8-v1": {
+      "cases": 9,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 0.889
+    }
+  },
+  "language_groups": {
+    "location-only/mixed": {
+      "cases": 3,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 0.667
+    },
+    "keyword-only/mixed": {
+      "cases": 3,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0
+    },
+    "baseline-v1/mixed": {
+      "cases": 3,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0
+    },
+    "multilingual-e5-small-q8-v1/mixed": {
+      "cases": 3,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0
+    },
+    "location-only/en-vi": {
+      "cases": 4,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 0.875
+    },
+    "keyword-only/en-vi": {
+      "cases": 4,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 0.75
+    },
+    "baseline-v1/en-vi": {
+      "cases": 4,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 0.75
+    },
+    "multilingual-e5-small-q8-v1/en-vi": {
+      "cases": 4,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 0.75
+    },
+    "location-only/vi-vi": {
+      "cases": 1,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0
+    },
+    "keyword-only/vi-vi": {
+      "cases": 1,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0
+    },
+    "baseline-v1/vi-vi": {
+      "cases": 1,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0
+    },
+    "multilingual-e5-small-q8-v1/vi-vi": {
+      "cases": 1,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0
+    },
+    "location-only/en-en": {
+      "cases": 1,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0
+    },
+    "keyword-only/en-en": {
+      "cases": 1,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0
+    },
+    "baseline-v1/en-en": {
+      "cases": 1,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0
+    },
+    "multilingual-e5-small-q8-v1/en-en": {
+      "cases": 1,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0
+    }
+  },
+  "top_1_errors": {
+    "location-only": [
+      {
+        "case_id": "C02",
+        "ranked_first": "b027c2f4-a43e-577d-9afd-9cba4b8415c0",
+        "expected": [
+          "d56063f7-6c42-52a6-a35e-646807fb544e",
+          "feb34570-3dc7-5a10-bcf2-8d3fa299e826"
+        ]
+      },
+      {
+        "case_id": "C03",
+        "ranked_first": "b027c2f4-a43e-577d-9afd-9cba4b8415c0",
+        "expected": [
+          "d56063f7-6c42-52a6-a35e-646807fb544e",
+          "feb34570-3dc7-5a10-bcf2-8d3fa299e826"
+        ]
+      },
+      {
+        "case_id": "C08",
+        "ranked_first": "0c5568ce-77b4-5e1d-9d08-9481af725eb2",
+        "expected": [
+          "64c33cc9-059a-5d75-a302-ac2dc2e9bc24"
+        ]
+      }
+    ],
+    "multilingual-e5-small-q8-v1": [
+      {
+        "case_id": "C08",
+        "ranked_first": "ed9f3912-6478-5926-9446-13754b72a8e8",
+        "expected": [
+          "64c33cc9-059a-5d75-a302-ac2dc2e9bc24"
+        ]
+      },
+      {
+        "case_id": "C10",
+        "ranked_first": "c60abaeb-e665-5a18-ae2f-06b04888c014",
+        "expected": [
+          "1bce4f29-0f3c-5698-86df-2c0e56293983"
+        ]
+      }
+    ],
+    "keyword-only": [
+      {
+        "case_id": "C10",
+        "ranked_first": "c60abaeb-e665-5a18-ae2f-06b04888c014",
+        "expected": [
+          "1bce4f29-0f3c-5698-86df-2c0e56293983"
+        ]
+      },
+      {
+        "case_id": "C12",
+        "ranked_first": "f6924e13-16e7-58d3-9194-24b6e9b5e410",
+        "expected": [
+          "eca5f681-18e2-5477-9bad-ff13ae33d164"
+        ]
+      }
+    ],
+    "baseline-v1": [
+      {
+        "case_id": "C10",
+        "ranked_first": "c60abaeb-e665-5a18-ae2f-06b04888c014",
+        "expected": [
+          "1bce4f29-0f3c-5698-86df-2c0e56293983"
+        ]
+      },
+      {
+        "case_id": "C12",
+        "ranked_first": "f6924e13-16e7-58d3-9194-24b6e9b5e410",
+        "expected": [
+          "eca5f681-18e2-5477-9bad-ff13ae33d164"
+        ]
+      }
+    ]
+  },
+  "api": {
+    "cases": 14,
+    "positive_cases": 9,
+    "hits": 9,
+    "negative_only_cases": 5,
+    "negative_only_with_suggestions": 2,
+    "contract_errors": []
+  }
+}

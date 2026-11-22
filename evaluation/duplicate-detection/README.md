@@ -10,13 +10,13 @@ This directory contains the Checkpoint 1 evaluation data assigned to Công Thàn
 - `test_dataset.py` tests generation, validation, closed and merged eligibility, determinism, and the endpoint response contract.
 - `evaluation-report.md` records the executed results and limitations.
 
-The category catalog is a synthetic evaluation catalog. Only `ELECTRICAL` appears in the current database seed; the other codes are valid within this fixture but need team approval or database entries before the reports can be loaded into an application database. Indoor building, floor, and area UUIDs are deterministically derived from the place catalog. Outdoor cases use the contract's required detail and optional null coordinates. These are API-shaped fixtures, not database seed records.
+The category catalog is a synthetic evaluation catalog. The current demo seed includes `ELECTRICAL` and `PLUMBING`; the other codes are valid within this fixture but need matching database entries before the reports can be loaded into an application database. Indoor building, floor, and area UUIDs are deterministically derived from the place catalog. Outdoor cases use the contract's required detail and optional null coordinates. These are API-shaped fixtures, not database seed records.
 
 ## Label meaning
 
 Two reports are labeled duplicate only when they describe the **same affected object and the same occurrence**. Similar words, category, or area alone do not establish a duplicate. A repaired October light outage is separate from a November recurrence. An Issue merged as a source can still describe the same incident but is not an eligible suggestion candidate. `expected_relevant_ids` and `expected_negative_ids` partition each explicit candidate list. `incident_key` is a synthetic consistency aid, never an AI input.
 
-All 21 decided case labels are `PROVISIONAL`. Case C16 is `UNCERTAIN`, because “Đèn hỏng” does not identify the lamp. The evaluator excludes C16 from metrics. There are **zero human-reviewed labels**, so all reported metrics are exploratory and are not validated ground truth. Công Thành and another reviewer should inspect the descriptions, incident identity, hard negatives, and category catalog before any official result is claimed.
+The generated source `dataset.json` retains 21 PROVISIONAL cases and one UNCERTAIN case. The separate AI-reviewed copy dated 23 November has 14 AI_REVIEWED cases and eight UNCERTAIN cases after a review of all 61 pairs. Both copies have zero human-reviewed labels. See the AI review section below for the current decisions; metrics remain exploratory synthetic-data results.
 
 ## Reproduce
 
@@ -64,6 +64,26 @@ On the 16 eligible positive cases, baseline MRR was 0.844 and E5 MRR was 0.875; 
 
 ## Record real label review
 
-Current fixture statuses are unchanged: 21 PROVISIONAL, one UNCERTAIN, zero human-reviewed. After two actual people independently inspect a case and agree on object/occurrence identity, update its labels/rationale and set HUMAN_REVIEWED with a `review` object containing `reviewers` (at least two distinct names), `reviewed_at` (UTC ISO 8601), and `notes` explaining the decision. Do not use example identities or let a script approve labels. Preserve this reviewed copy separately from the deterministic synthetic generator output.
+The source fixture stays unchanged. An AI decision is recorded as AI_REVIEWED, never HUMAN_REVIEWED. To record a later human review, use actual reviewer identities and the required `review` metadata (at least two distinct reviewers, UTC reviewed_at and explanatory notes). Preserve reviewed copies separately from the deterministic synthetic generator output.
 
 The validator now accepts documented human reviews and rejects missing or duplicate reviewer records. `python evaluate.py --data reviewed-dataset.json --reviewed-only` evaluates only recorded reviews; zero reviewed positives produces null metrics rather than a fabricated score. Outdoor pinned-candidate eligibility also has a bounding-box regression test matching the backend; the original case fixture still uses unpinned locations.
+
+
+## AI label review 23 November 2026
+
+Hải Anh requested an AI review of the remaining labels. All 41 reports and 61 candidate pairs were inspected against object/occurrence identity and the approved O10 causal-uncertainty rule. [The Vietnamese review report](AI_Label_Review_2026-11-23.txt) explains every pair and the information missing from each deferred case.
+
+- `label-review-2026-11-23.json`: explicit AI decision log with source checksum, reviewer type, UTC time, reasons and needed information.
+- `dataset.ai-reviewed.json`: a separate copy with 14 AI_REVIEWED cases and eight UNCERTAIN cases (C01, C06, C07, C09, C13, C14, C16, C20). The 41 original reports are unchanged.
+- `materialize_review.py`: deterministically applies that log; refuses changed source data, incomplete pair coverage or overwriting the generator output.
+- `results-ai-reviewed-2026-11-23.json`: new exploratory evaluation on nine eligible positive cases; baseline and E5 both have MRR 0.889, Recall@3/5 1.000. This subset differs from the 16 positives used on 22 November, so the scores are not a before/after improvement comparison.
+
+Each reviewed case partitions candidates into relevant, negative and uncertain IDs. Any case with an uncertain pair remains UNCERTAIN and is excluded as a whole from metrics; an unknown relation is never treated as a negative. The decision log still retains the known pairs in those cases. AI review is not human, independent, blind or field validation.
+
+```sh
+python evaluation/duplicate-detection/materialize_review.py
+python -m pytest -q evaluation/duplicate-detection
+python evaluation/duplicate-detection/evaluate.py --data evaluation/duplicate-detection/dataset.ai-reviewed.json --api --embedding-dir .venv/e5-small
+```
+
+`--reviewed-only` deliberately selects only HUMAN_REVIEWED cases and returns no scored cases for this AI copy. Without that flag, the command above scores the 14 decided cases, including nine positive ranking cases. The API subsection still uses the baseline endpoint; E5 is compared through the pinned direct ranker.
