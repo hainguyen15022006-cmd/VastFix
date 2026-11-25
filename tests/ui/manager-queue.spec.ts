@@ -100,7 +100,7 @@ test("malformed successful response is not presented as an empty queue", async (
   await expect(page.getByText("Chưa có phiếu ở trạng thái này")).toHaveCount(0);
 });
 
-test("only the implemented status is offered and locale changes ignore late responses", async ({ page }) => {
+test("all six workflow statuses are offered and locale changes ignore late responses", async ({ page }) => {
   let releaseOld: () => void = () => {};
   const old = new Promise<void>(resolve => { releaseOld = resolve; });
   await page.route(endpoint, async route => {
@@ -111,8 +111,8 @@ test("only the implemented status is offered and locale changes ignore late resp
   });
   await page.goto("/vi/manager/issues");
   const status = page.getByRole("combobox", { name: "Trạng thái", exact: true });
-  await expect(status).toBeDisabled();
-  await expect(status.locator("option")).toHaveCount(1);
+  await expect(status).toBeEnabled();
+  await expect(status.locator("option")).toHaveCount(6);
   await expect(status).toHaveValue("SUBMITTED");
   await page.getByRole("link", { name: "English", exact: true }).click();
   await expect(page.getByRole("table").getByText(rows[1].summary, { exact: true })).toBeVisible();
