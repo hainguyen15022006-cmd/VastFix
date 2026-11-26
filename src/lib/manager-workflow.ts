@@ -44,3 +44,19 @@ export async function fetchManagerDetail(id: string, locale: string, signal: Abo
   if (!record(body) || !isManagerDetail(body.issue)) throw new DetailError("unavailable", requestId);
   return body.issue;
 }
+
+export type ManagerAction = "triage" | "assign" | "return-work" | "close" | "reopen" | "return-to-triage";
+export class MutationError extends Error {
+  constructor(public kind: "invalid" | "conflict" | "auth" | "forbidden" | "missing" | "unavailable", public requestId?: string) { super(kind); }
+}
+
+export async function postManagerAction(id: string, action: ManagerAction, data: Record<string, unknown>): Promise<void> {
+  const response = await fetch(`/api/manager/issues/${encodeURIComponent(id)}/${action}`, {
+    method: "POST", credentials: "same-origin", cache: "no-store",
+    headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(data),
+  });
+  const body: unknown = await response.json().catch(() => null);
+  const requestId = record(body) && typeof body.requestId === "string" ? body.requestId : undefined;
+  if (!response.ok) throw new MutationError(response.status === 400 ? "invalid" : response.status === 409 ? "conflict" : response.status === 401 ? "auth" : response.status === 403 ? "forbidden" : response.status === 404 ? "missing" : "unavailable", requestId);
+  if (!record(body) || !record(body.issue) || !record(body.event)) throw new MutationError("unavailable", requestId);
+}

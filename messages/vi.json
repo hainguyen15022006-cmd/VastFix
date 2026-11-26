@@ -98,7 +98,10 @@
     "action_readOnly": "Chờ nhân viên xử lý hoặc nộp minh chứng.",
     "saveUnavailable": "Chờ nối API CP2", "reportPhoto": "Ảnh báo cáo", "evidencePhoto": "Ảnh minh chứng",
     "photoLoading": "Đang tải ảnh…", "photoUnavailable": "Không thể xem ảnh theo quyền hiện tại.",
-    "emptyPhotos": "Chưa có ảnh."
+      "emptyPhotos": "Chưa có ảnh.",
+      "chooseCategory": "Chọn loại sự cố", "chooseStaff": "Chọn nhân viên", "triage": "Tiếp nhận", "assign": "Phân công", "close": "Duyệt và đóng", "returnWork": "Trả lại việc", "reopen": "Mở lại", "returnToTriage": "Đưa về tiếp nhận", "reason": "Lý do", "completion": "Nội dung hoàn thành", "evidenceCount": "{count} ảnh minh chứng", "reviewEvidence": "Tôi đã xem ảnh minh chứng", "saved": "Đã lưu. Đang tải lại phiếu.",
+      "mutation_invalid": "Dữ liệu chưa hợp lệ. Kiểm tra các trường và thử lại.", "mutation_conflict": "Phiếu đã thay đổi hoặc trạng thái không còn phù hợp. Đã tải lại dữ liệu.", "mutation_auth": "Phiên đăng nhập đã hết. Vui lòng đăng nhập lại.", "mutation_forbidden": "Bạn không có quyền thực hiện thao tác này.", "mutation_missing": "Không tìm thấy phiếu hoặc thao tác.", "mutation_unavailable": "Chưa thể lưu. Thử lại sau.",
+      "mergeCompare": "So sánh trước khi gộp", "mergeTarget": "Phiếu đích: {id}", "mergeSourceId": "Mã phiếu nguồn", "compare": "Xem phiếu nguồn", "sourceUnavailable": "Không tải được phiếu nguồn hoặc mã nguồn trùng phiếu đích.", "mergeSource": "Nguồn", "mergeTargetTitle": "Đích", "mergeConfirm": "Tôi đã kiểm tra nguồn, đích và lý do", "mergePending": "Chờ API gộp của nhóm"
   },
   "Status": {
     "SUBMITTED": "Mới gửi",
