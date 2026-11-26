@@ -278,6 +278,8 @@ th:last-child, td:last-child { text-align: right; }
 .vf-workflow-actions textarea { min-height: 100px; }
 .vf-workflow-actions .vf-workflow-check { display: flex; align-items: center; gap: 10px; }
 .vf-workflow-success { padding: 12px 16px; background: #e4f4e9; border-radius: 8px; color: #175d35; }
+.vf-workflow-alert label { display: grid; gap: 6px; max-width: 650px; font-weight: 700; }
+.vf-workflow-alert textarea { min-height: 96px; width: 100%; padding: 8px; border: 1px solid #8295a3; border-radius: 6px; font: inherit; }
 .vf-merge-comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; width: 100%; }
 .vf-merge-comparison article { padding: 16px; border: 1px solid #dce6df; border-radius: 8px; overflow-wrap: anywhere; }
 @media (max-width: 650px) { .vf-merge-comparison { grid-template-columns: 1fr; } }

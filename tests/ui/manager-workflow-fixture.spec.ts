@@ -110,9 +110,57 @@ test("merge comparison stays disabled until merge API is available", async ({ pa
   await expect(page.getByRole("button", { name: "Chờ API gộp của nhóm" })).toBeDisabled();
 });
 
+test("merged sources and review-required issue stay read-only", async ({ page }) => {
+  const merged = { ...issue("TRIAGED"), reviewRequired: true, reports: [...issue("TRIAGED").reports, { reportId: id, issueId: reportId, description: "Ống nước rò rỉ", locationLabel: "A1 · tầng 2", submittedAt: "2026-11-23T07:00:00.000Z", photos: [] }] };
+  await page.route(`**/api/manager/issues/${id}?*`, route => route.fulfill({ json: { issue: merged, requestId: id } }));
+  await page.goto(`/vi/manager/issues/${id}`);
+  await expect(page.getByText("Phiếu nguồn cần được quản lý rà lại sau khi hủy gộp.")).toBeVisible();
+  await page.getByRole("button", { name: "Xử lý" }).click();
+  await expect(page.getByRole("button", { name: "Phân công" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Quan hệ gộp" }).click();
+  await expect(page.getByText("Ống nước rò rỉ")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Chờ API hủy gộp và mergeId" })).toBeDisabled();
+});
+
+test("changing source during fetch clears stale comparison", async ({ page }) => {
+  let release!: () => void;
+  const pending = new Promise<void>(resolve => { release = resolve; });
+  await page.route(`**/api/manager/issues/${id}?*`, route => route.fulfill({ json: { issue: issue("TRIAGED"), requestId: id } }));
+  await page.route(`**/api/manager/issues/${reportId}?*`, async route => { await pending; await route.fulfill({ json: { issue: { ...issue("SUBMITTED"), id: reportId }, requestId: id } }).catch(() => {}); });
+  await page.goto(`/vi/manager/issues/${id}`);
+  await page.getByRole("button", { name: "Quan hệ gộp" }).click();
+  await page.getByLabel("Mã phiếu nguồn").fill(reportId);
+  await page.getByRole("button", { name: "Xem phiếu nguồn" }).click();
+  await expect(page.getByRole("button", { name: "Đang tải phiếu nguồn…" })).toBeDisabled();
+  await page.getByLabel("Mã phiếu nguồn").fill("77777777-7777-4777-8777-777777777777");
+  release();
+  await expect(page.getByRole("heading", { name: "Nguồn" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Xem phiếu nguồn" })).toBeEnabled();
+});
+
 test("detail distinguishes missing and forbidden responses", async ({ page }) => {
   await page.route(`**/api/manager/issues/${id}?*`, route => route.fulfill({ status: 404, json: { error: { code: "NOT_FOUND", message: "private diagnostic" }, requestId: id } }));
   await page.goto(`/en/manager/issues/${id}`);
   await expect(page.getByRole("heading", { name: "Issue not found" })).toBeVisible();
   await expect(page.getByText("private diagnostic")).toHaveCount(0);
+});
+
+test("English mobile detail keeps original report text and keyboard tabs", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.route(`**/api/manager/issues/${id}?*`, route => route.fulfill({ json: { issue: issue("TRIAGED"), requestId: id } }));
+  await page.goto(`/en/manager/issues/${id}`);
+  await expect(page.getByRole("heading", { name: "Issue details" })).toBeVisible();
+  await expect(page.getByText("Đèn H2-03 không sáng")).toBeVisible();
+  const handling = page.getByRole("button", { name: "Handling" });
+  await handling.focus();
+  await page.keyboard.press("Enter");
+  await expect(handling).toHaveAttribute("aria-current", "page");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
+});
+
+test("forbidden detail shows a safe message", async ({ page }) => {
+  await page.route(`**/api/manager/issues/${id}?*`, route => route.fulfill({ status: 403, json: { error: { message: "private" }, requestId: id } }));
+  await page.goto(`/vi/manager/issues/${id}`);
+  await expect(page.getByRole("heading", { name: "Bạn không có quyền xem phiếu" })).toBeVisible();
+  await expect(page.getByText("private")).toHaveCount(0);
 });

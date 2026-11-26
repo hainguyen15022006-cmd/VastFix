@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ProtectedPhotoViewer } from "@/components/shared/protected-photo-viewer";
@@ -31,11 +31,16 @@ export function ManagerIssueDetail({ id }: { id: string }) {
   const [sourceId, setSourceId] = useState("");
   const [source, setSource] = useState<ManagerDetail | null>(null);
   const [sourceError, setSourceError] = useState(false);
+  const [sourceLoading, setSourceLoading] = useState(false);
+  const sourceRequest = useRef<AbortController | null>(null);
   const [mergeReason, setMergeReason] = useState("");
   const [mergeConfirmed, setMergeConfirmed] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
+    sourceRequest.current?.abort();
+    setSource(null); setSourceId(""); setSourceError(false); setSourceLoading(false);
+    setMergeReason(""); setMergeConfirmed(false);
     setState({ kind: "loading" });
     fetchManagerDetail(id, locale, controller.signal).then(issue => {
       if (controller.signal.aborted) return;
@@ -45,7 +50,7 @@ export function ManagerIssueDetail({ id }: { id: string }) {
       setDueAt(issue.dueAt ? new Date(new Date(issue.dueAt).getTime() + 7 * 60 * 60 * 1000).toISOString().slice(0, 16) : "");
       setAssigneeId(issue.assigneeId ?? "");
     }).catch(error => { if (!controller.signal.aborted) setState({ kind: "error", error: error instanceof DetailError ? error : new DetailError("unavailable") }); });
-    return () => controller.abort();
+    return () => { controller.abort(); sourceRequest.current?.abort(); };
   }, [id, locale, revision]);
 
   useEffect(() => {
@@ -81,11 +86,14 @@ export function ManagerIssueDetail({ id }: { id: string }) {
   }
 
   async function compareSource() {
+    sourceRequest.current?.abort();
     setSource(null); setSourceError(false); setMergeConfirmed(false);
-    if (!sourceId.trim() || sourceId.trim() === id) { setSourceError(true); return; }
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(sourceId.trim()) || sourceId.trim().toLowerCase() === id.toLowerCase()) { setSourceError(true); return; }
     const controller = new AbortController();
-    try { setSource(await fetchManagerDetail(sourceId.trim(), locale, controller.signal)); }
-    catch { setSourceError(true); }
+    sourceRequest.current = controller; setSourceLoading(true);
+    try { const result = await fetchManagerDetail(sourceId.trim(), locale, controller.signal); if (!controller.signal.aborted) setSource(result); }
+    catch { if (!controller.signal.aborted) setSourceError(true); }
+    finally { if (!controller.signal.aborted) setSourceLoading(false); }
   }
 
   const date = (value: string | null) => value ? format.dateTime(new Date(value), { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Ho_Chi_Minh" }) : t("none");
@@ -102,7 +110,7 @@ export function ManagerIssueDetail({ id }: { id: string }) {
     {state.kind === "error" && <div className="vf-state vf-error-state" role="alert"><h2>{t(`error_${state.error.kind}`)}</h2><p>{t("errorHelp")}</p>{state.error.requestId && <code>{state.error.requestId}</code>}<button className="vf-button" type="button" onClick={() => setRevision(n => n + 1)}>{t("retry")}</button></div>}
     {issue && <>
       <div className="vf-workflow-summary"><span className={`vf-badge vf-badge-${issue.status.toLowerCase()}`}>{statusText(issue.status)}</span><span>{t("version", { version: issue.version })}</span><span>{t("created")}: {date(issue.createdAt)}</span></div>
-      {issue.reviewRequired && <p className="vf-workflow-alert" role="note">{t("reviewRequired")}</p>}
+      {issue.reviewRequired && <div className="vf-workflow-alert" role="note"><p>{t("reviewRequired")}</p><label>{t("reviewReason")}<textarea value={reason} onChange={e => setReason(e.target.value)} maxLength={5000} /></label><button type="button" className="vf-button" disabled>{t("reviewPending")}</button></div>}
       {issue.mergedIntoIssueId && <p className="vf-workflow-alert" role="note">{t("mergedInto")}: <Link href={`/manager/issues/${issue.mergedIntoIssueId}`}>{issue.mergedIntoIssueId}</Link></p>}
       {actionError && <p className="vf-workflow-alert" role="alert">{t(`mutation_${actionError.kind}`)} {actionError.requestId && <code>{actionError.requestId}</code>}</p>}
       {success && <p className="vf-workflow-success" role="status">{t("saved")}</p>}
@@ -132,10 +140,10 @@ export function ManagerIssueDetail({ id }: { id: string }) {
       </section>}
       {tab === "photos" && <section className="vf-workflow-panel"><h2>{t("tab_photos")}</h2>{issue.reports.flatMap(report => report.photos.map(photo => <ProtectedPhotoViewer key={photo.photoId} photo={photo} alt={t("reportPhoto")} loading={t("photoLoading")} unavailable={t("photoUnavailable")} />))}{issue.history.flatMap(event => event.evidencePhotos.map(photo => <ProtectedPhotoViewer key={photo.photoId} photo={photo} alt={t("evidencePhoto")} loading={t("photoLoading")} unavailable={t("photoUnavailable")} />))}{issue.reports.every(report => !report.photos.length) && issue.history.every(event => !event.evidencePhotos.length) && <p>{t("emptyPhotos")}</p>}</section>}
       {tab === "history" && <section className="vf-workflow-panel"><h2>{t("tab_history")}</h2>{issue.history.length ? <ol className="vf-workflow-history">{issue.history.map(event => <li key={event.id}><strong>{event.eventType}</strong><time dateTime={event.occurredAt}>{date(event.occurredAt)}</time><dl>{Object.entries(event.details).map(([key, value]) => <div key={key}><dt>{key}</dt><dd>{value ?? t("none")}</dd></div>)}</dl></li>)}</ol> : <p>{t("empty")}</p>}</section>}
-      {tab === "merges" && <section className="vf-workflow-panel"><h2>{t("tab_merges")}</h2><p>{issue.mergedIntoIssueId ? t("mergedInto") : t("relatedCount", { count: Math.max(0, issue.reports.length - 1) })}</p>{issue.reports.slice(1).map(report => <p key={report.issueId}><Link href={`/manager/issues/${report.issueId}`}>{report.issueId}</Link> — {report.description}</p>)}
-        <div className="vf-workflow-actions"><h3>{t("mergeCompare")}</h3><p>{t("mergeTarget", { id: issue.id })}</p><label>{t("mergeSourceId")}<input value={sourceId} onChange={e => { setSourceId(e.target.value); setSource(null); setMergeConfirmed(false); }} /></label><button type="button" className="vf-button" onClick={compareSource}>{t("compare")}</button>{sourceError && <p role="alert">{t("sourceUnavailable")}</p>}
+      {tab === "merges" && <section className="vf-workflow-panel"><h2>{t("tab_merges")}</h2><p>{issue.mergedIntoIssueId ? t("mergedInto") : t("relatedCount", { count: Math.max(0, issue.reports.length - 1) })}</p>{issue.reports.slice(1).map(report => <article className="vf-workflow-record" key={report.issueId}><h3>{t("mergeSource")}</h3><p><Link href={`/manager/issues/${report.issueId}`}>{report.issueId}</Link></p><p>{report.description}</p><p>{report.locationLabel}</p><button type="button" className="vf-button" disabled>{t("reversePending")}</button></article>)}
+        {!issue.mergedIntoIssueId && <div className="vf-workflow-actions"><h3>{t("mergeCompare")}</h3><p>{t("mergeTarget", { id: issue.id })}</p><label>{t("mergeSourceId")}<input value={sourceId} onChange={e => { sourceRequest.current?.abort(); setSourceLoading(false); setSourceId(e.target.value); setSource(null); setSourceError(false); setMergeReason(""); setMergeConfirmed(false); }} /></label><button type="button" className="vf-button" disabled={sourceLoading} onClick={compareSource}>{sourceLoading ? t("sourceLoading") : t("compare")}</button>{sourceError && <p role="alert">{t("sourceUnavailable")}</p>}
           {source && <><div className="vf-merge-comparison"><article><h4>{t("mergeSource")}</h4><p>{source.reports[0]?.description}</p><p>{source.reports[0]?.locationLabel}</p><p>{statusText(source.status)}</p></article><article><h4>{t("mergeTargetTitle")}</h4><p>{issue.reports[0]?.description}</p><p>{issue.reports[0]?.locationLabel}</p><p>{statusText(issue.status)}</p></article></div><label>{t("reason")}<textarea value={mergeReason} onChange={e => setMergeReason(e.target.value)} maxLength={5000} /></label><label className="vf-workflow-check"><input type="checkbox" checked={mergeConfirmed} onChange={e => setMergeConfirmed(e.target.checked)} />{t("mergeConfirm")}</label><button type="button" className="vf-button" disabled>{t("mergePending")}</button></>}
-        </div>
+        </div>}
       </section>}
     </>}
   </div>;

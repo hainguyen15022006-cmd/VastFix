@@ -43,3 +43,7 @@ Chi tiết phiếu: [Về hàng đợi] [Mã phiếu] [Tải lại]
 4. Ảnh và merge/reverse/review thuộc Hải Anh; viewer cần API ảnh thực để kiểm tra quyền sau hủy gộp.
 
 Theo kế hoạch, SO-03/04 là việc ngày 25–26/11; không nằm trong đợt này. Không push hoặc mở PR khi chưa được Sơn yêu cầu ở cuộc trao đổi này.
+
+## Bổ sung SO-05/06/07 · 27–29/11
+
+Xem `docs/Checkpoint2_Son_27_29_Demo.md` cho kịch bản MANAGER, kiểm thử và phụ thuộc API. Đã có danh sách nguồn gộp, form rà lại nguồn và so sánh nguồn/đích an toàn khi request đến trễ. Nút gộp/hủy/rà lại vẫn disabled vì remote chưa có API/mergeId. Chưa có ảnh trạng thái trước/sau từ DB thật.
