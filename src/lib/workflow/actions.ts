@@ -2,13 +2,15 @@ import { ApiError, uuid } from "@/lib/api";
 import { getDb } from "@/lib/db";
 import type { IssueStatus, Prisma, Role } from "../../../database-starter/generated/prisma/client";
 import { attachEvidence, hasEvidence } from "./photos";
+import { requiredText, triageFields } from "./inputs";
+import { isWriteConflict, lockIssues } from "./locks";
 
 export const managerActions = ["triage", "assign", "return-work", "close", "reopen", "return-to-triage"] as const;
 export const staffActions = ["start", "progress", "submit"] as const;
 type Action = typeof managerActions[number] | typeof staffActions[number];
 
 const transitions: Record<Action, { from: IssueStatus[]; to: IssueStatus; event: string; fields: string[] }> = {
-  triage: { from: ["SUBMITTED"], to: "TRIAGED", event: "ISSUE_TRIAGED", fields: ["categoryCode", "priority", "dueAt"] },
+  triage: { from: ["SUBMITTED", "TRIAGED"], to: "TRIAGED", event: "ISSUE_TRIAGED", fields: ["categoryCode", "priority", "dueAt"] },
   assign: { from: ["TRIAGED"], to: "ASSIGNED", event: "ISSUE_ASSIGNED", fields: ["assigneeId"] },
   start: { from: ["ASSIGNED"], to: "IN_PROGRESS", event: "WORK_STARTED", fields: [] },
   progress: { from: ["IN_PROGRESS"], to: "IN_PROGRESS", event: "WORK_PROGRESS_UPDATED", fields: ["progressNote", "materials"] },
@@ -21,21 +23,6 @@ const transitions: Record<Action, { from: IssueStatus[]; to: IssueStatus; event:
 
 function conflict(message: string): never {
   throw new ApiError(409, "WORKFLOW_CONFLICT", message);
-}
-
-function requiredText(value: unknown, name: string, maxLength = 5000): string {
-  if (typeof value === "string" && value.trim() && value.length <= maxLength) return value;
-  throw new ApiError(400, "BAD_REQUEST", "Trường không hợp lệ: " + name);
-}
-
-function parseDueAt(value: unknown) {
-  if (typeof value === "string" && /^\d{4}-\d\d-\d\dT\d\d:\d\d(?::\d\d(?:\.\d{1,3})?)?(?:Z|[+-]\d\d:\d\d)$/.test(value)) {
-    const date = new Date(value);
-    const day = new Date(value.slice(0, 10) + "T00:00:00Z");
-    if (Number.isFinite(date.getTime()) && Number.isFinite(day.getTime()) &&
-        day.toISOString().slice(0, 10) === value.slice(0, 10)) return date;
-  }
-  throw new ApiError(400, "BAD_REQUEST", "dueAt phải là thời điểm ISO 8601 có múi giờ");
 }
 
 export async function applyWorkflow(
@@ -51,6 +38,7 @@ export async function applyWorkflow(
 
   try {
     return await getDb().$transaction(async tx => {
+      await lockIssues(tx, [issueId]);
       const issue = await tx.issue.findUnique({
         where: { id: issueId },
         select: { status: true, assigneeId: true, reviewRequired: true,
@@ -72,16 +60,9 @@ export async function applyWorkflow(
 
       switch (action) {
         case "triage": {
-          const categoryCode = requiredText(input.categoryCode, "categoryCode", 100);
-          const { priority } = input;
-          if (priority !== "P0" && priority !== "P1" && priority !== "P2") {
-            throw new ApiError(400, "BAD_REQUEST", "Mức ưu tiên không hợp lệ");
-          }
-          const dueAt = parseDueAt(input.dueAt);
-          const category = await tx.category.findUnique({ where: { code: categoryCode }, select: { id: true } });
-          if (!category) throw new ApiError(400, "INVALID_CATEGORY", "Loại sự cố không hợp lệ");
-          Object.assign(data, { confirmedCategoryId: category.id, priority, dueAt });
-          eventDetails = { ...details, categoryCode, priority, dueAt: dueAt.toISOString() };
+          const triage = await triageFields(tx, input);
+          Object.assign(data, triage.data);
+          eventDetails = { ...details, ...triage.details };
           break;
         }
         case "assign": {
@@ -147,7 +128,7 @@ export async function applyWorkflow(
       return { issue: { ...saved, version: version + 1 }, event };
     }, { isolationLevel: "Serializable" });
   } catch (error) {
-    if (error && typeof error === "object" && "code" in error && error.code === "P2034") {
+    if (isWriteConflict(error)) {
       conflict("Phiếu đã thay đổi, hãy tải lại");
     }
     throw error;

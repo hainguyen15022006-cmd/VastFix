@@ -4,6 +4,7 @@ import type { Prisma, Role } from "../../database-starter/generated/prisma/clien
 import { ApiError, uuid } from "./api";
 import { getDb } from "./db";
 import { normalizePhoto, photoPath, removePhotoFile, writePhoto } from "./photo-storage";
+import { isWriteConflict } from "./workflow/locks";
 
 type Actor = { id: string; role: Role; emailVerified: boolean };
 type Tx = Prisma.TransactionClient;
@@ -12,7 +13,7 @@ export const photoDto = (photo: { id: string; mimeType: string; sizeBytes: numbe
 });
 
 export function photoConflict(error: unknown): never {
-  if (error && typeof error === "object" && "code" in error && error.code === "P2034") {
+  if (isWriteConflict(error)) {
     throw new ApiError(409, "PHOTO_CONFLICT", "Ảnh hoặc phiếu vừa thay đổi, vui lòng tải lại");
   }
   throw error;

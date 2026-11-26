@@ -35,7 +35,7 @@ export function locationLabel(
 
 const reportFields = {
   id: true, description: true, submittedAt: true,
-  locationKind: true, locationSnapshot: true, locationDetail: true,
+  locationKind: true, locationSnapshot: true, locationDetail: true, latitude: true, longitude: true,
 } satisfies Prisma.ReportSelect;
 
 export async function staffQueue(request: NextRequest, staffId: string, locale: "vi" | "en") {
@@ -58,6 +58,7 @@ export async function staffQueue(request: NextRequest, staffId: string, locale: 
 const publicDetailKeys = [
   "from", "to", "categoryCode", "priority", "dueAt", "assigneeId", "progressNote",
   "materials", "completionNote", "reason", "reportId", "submissionEventId",
+  "mergeId", "sourceIssueId", "targetIssueId", "side",
 ];
 
 export async function issueDetail(id: string, locale: "vi" | "en", staffId?: string) {
@@ -70,14 +71,20 @@ export async function issueDetail(id: string, locale: "vi" | "en", staffId?: str
         id: true, originReportId: true, status: true, priority: true, dueAt: true, closedAt: true, createdAt: true,
         reviewRequired: true, assigneeId: true, assignee: { select: { id: true, name: true } },
         confirmedCategory: { select: { code: true } }, originReport: { select: reportFields },
-        outgoingMerges: { where: { reversedAt: null }, take: 1, select: { targetIssueId: true } },
+        outgoingMerges: { where: { reversedAt: null }, take: 1,
+          select: { id: true, sourceIssueId: true, targetIssueId: true, mergedAt: true, reason: true } },
         incomingMerges: { where: { reversedAt: null }, orderBy: { mergedAt: "asc" },
-          select: { source: { select: { id: true, originReport: { select: reportFields } } } } },
+          select: { id: true, sourceIssueId: true, targetIssueId: true, mergedAt: true, reason: true,
+            source: { select: { id: true, originReport: { select: reportFields } } } } },
         events: { orderBy: [{ occurredAt: "asc" }, { id: "asc" }],
           select: { id: true, actorUserId: true, eventType: true, occurredAt: true, details: true } },
       },
     });
     if (!issue) throw new ApiError(404, "NOT_FOUND", "Không tìm thấy phiếu");
+    const mergeHistory = !staffId ? await tx.issueMerge.findMany({
+      where: { OR: [{ sourceIssueId: id }, { targetIssueId: id }] },
+      orderBy: [{ mergedAt: "asc" }, { id: "asc" }],
+    }) : undefined;
 
     const related = [{ id: issue.id, originReport: issue.originReport }, ...issue.incomingMerges.map(merge => merge.source)];
     const photos = await readPhotoLinks(tx, issue.id, related.map(item => item.originReport.id));
@@ -107,10 +114,15 @@ export async function issueDetail(id: string, locale: "vi" | "en", staffId?: str
       categoryCode: issue.confirmedCategory?.code ?? null, dueAt: issue.dueAt, closedAt: issue.closedAt,
       createdAt: issue.createdAt, assigneeId: issue.assigneeId, assignee: issue.assignee,
       reviewRequired: issue.reviewRequired, mergedIntoIssueId: issue.outgoingMerges[0]?.targetIssueId ?? null,
+      outgoingMerge: issue.outgoingMerges[0] ? { ...issue.outgoingMerges[0], mergeId: issue.outgoingMerges[0].id } : null,
+      activeMerges: issue.incomingMerges.map(({ source: _source, ...merge }) => ({ ...merge, mergeId: merge.id })),
+      mergeHistory,
       version: issue.events.length,
       reports: related.map(({ id: sourceIssueId, originReport }) => ({
         reportId: originReport.id, issueId: sourceIssueId, description: originReport.description,
         locationLabel: locationLabel(originReport, locale), submittedAt: originReport.submittedAt,
+        location: { kind: originReport.locationKind, detail: originReport.locationDetail,
+          latitude: originReport.latitude, longitude: originReport.longitude, snapshot: originReport.locationSnapshot },
         photos: reportPhotos.get(originReport.id) ?? [],
       })),
       history,

@@ -33,3 +33,5 @@ PHẠM VI VÀ GIỚI HẠN
 - Không tự dọn ảnh nháp theo tuổi; DELETE được cung cấp cho FE bỏ ảnh khỏi form. Sao lưu cần cả database và volume ảnh.
 - Các điểm workflow đã báo ở bản review trước (chi tiết vị trí, rà lại TRIAGED, dữ liệu mergeId) vẫn cần xử lý riêng.
 - Thay đổi hiện ở nhánh local; chưa commit/push/merge main trong lượt làm phần ảnh.
+
+Lưu ý: đây là bản ghi giai đoạn ảnh tại commit 304c893. Backend gộp/hủy gộp và các lỗi workflow đã được xử lý trong bản tiếp theo; xem Checkpoint2_Backend_Verification_2026-11-26.txt để biết trạng thái mới.

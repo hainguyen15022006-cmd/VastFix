@@ -70,7 +70,7 @@ Upload không đổi trạng thái hoặc tăng version workflow; `/submit` mớ
 | WORK_EVIDENCE chưa submit | STAFF tải ảnh, vẫn còn quyền trên công việc |
 | WORK_EVIDENCE đã submit | MANAGER; STAFF được giao hiện tại; người báo có Report thuộc phiếu đó, gồm nguồn đang gộp vào |
 
-Người báo theo dõi hoặc sở hữu Report khác không được xem ảnh hiện trạng của người khác. Khi hủy gộp hoặc đổi người được giao, backend tính lại quan hệ hiện hành; quyền không giữ theo lần xem trước. Kiểm quyền qua quan hệ gộp được test bằng fixture DB, không có nghĩa merge/reverse API đã triển khai trong phần ảnh.
+Người báo theo dõi hoặc sở hữu Report khác không được xem ảnh hiện trạng của người khác. Khi hủy gộp hoặc đổi người được giao, backend tính lại quan hệ hiện hành; quyền không giữ theo lần xem trước. Kiểm quyền qua quan hệ gộp/hủy gộp hiện được chạy qua API thật trong `test:photos`. Hợp đồng gộp và rà lại nguồn ở [Checkpoint2_Backend_Contract.md](Checkpoint2_Backend_Contract.md).
 
 `DELETE /api/photos/:id` chỉ xóa ảnh nháp của chính người tải, chưa có `reportId`/`submissionEventId`. Ảnh đã nộp trả 409. FE gọi DELETE khi bỏ ảnh đã upload khỏi form. Mỗi tài khoản giữ tối đa 12 ảnh nháp; quá giới hạn cần bỏ ảnh không dùng trước khi tải thêm. Nếu người dùng bỏ hẳn trình duyệt, ảnh nháp có thể còn; tự động dọn theo tuổi chưa được triển khai.
 

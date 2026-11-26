@@ -1,0 +1,45 @@
+VASTFIX - KẾT QUẢ BACKEND CP2 CỦA HẢI ANH - 26/11/2026
+
+NHÁNH BÀN GIAO
+feat/cp2-photo-storage. Commit 304c893 là phần ảnh đã push trước; bản backend đầy đủ ở commit tiếp theo trên cùng nhánh.
+Không thay main trong lượt này. Đây là nghiệm thu backend, không thay nghiệm thu toàn nhóm hoặc supervisor.
+
+ĐÃ HOÀN THÀNH
+1. Schema/migration Photo, upload JPEG/PNG/WebP, GET/HEAD có quyền, DELETE ảnh nháp, photoIds khi gửi Report và evidencePhotoIds cho workflow Chúc.
+2. POST /api/manager/merges; POST /api/manager/merges/:id/reverse; POST /api/manager/issues/:id/review-after-unmerge.
+3. Gộp hình sao một tầng, giữ Report/ảnh gốc, event hai phía, phiên bản nguồn/đích và nguồn bị ẩn/khóa xử lý.
+4. Reverse giữ dữ liệu nguồn/đích, kể cả đích đã đóng; nguồn cần rà lại. Review xác nhận category/priority/dueAt/reason và liên kết mergeId trước khi mở phân công.
+5. Workflow dùng chung khóa Issue và Serializable; xung đột về version/đồ thị trả 409. DB giữ partial unique active source đã có từ CP1.
+6. Sửa hai lỗi đã review Chúc: detail trả vị trí cụ thể/tọa độ/snapshot; triage nhận TRIAGED để sửa đánh giá sau return/reopen.
+7. Detail trả activeMerges/outgoingMerge/mergeHistory và mergeId trong history; FE đủ dữ liệu sau reload.
+8. Hợp đồng CP2, ERD/trạng thái, bảng quyết định và hướng dẫn bàn giao theo tên thành viên.
+
+KIỂM THỬ
+- Production build + TypeScript: đạt trong worktree thử riêng, cùng mã nguồn với bản bàn giao.
+- npm run test:merges: 11 nhóm đạt. Đăng nhập Better Auth thật, PostgreSQL 17 tạm, API merge/reverse/review thật.
+- Có kiểm cạnh tranh hai quản lý: cùng nguồn, tạo chuỗi, tạo vòng, gộp với phân công, đảo hai lần, rà hai lần, đảo với đóng việc; chỉ một thao tác thắng.
+- Hủy sau đích CLOSED, giữ nguồn/đích đúng dữ liệu; không gán cờ review tùy tiện để rà khi chưa có lịch sử hủy; event rà trỏ đúng mergeId.
+- Candidate filtering được thử qua web tới AI fixture có ghi nhận candidate IDs. Không gọi đó là đánh giá chất lượng AI thật.
+- npm run test:photos: 9 nhóm đạt; kiểm quyền ảnh nay đi qua API merge/reverse thật, không dùng INSERT/UPDATE giả quan hệ gộp.
+- node scripts/check-workflow-api.mjs: đạt; guard metadata ảnh và workflow cũ giữ tương thích.
+- npm run test:reporter-flow: 7 nhóm đạt; web/auth/DB thật, AI fixture.
+- npm run test:ui: 31/31 đạt, 24.6 giây; đây là hồi quy các màn CP1, không phải kiểm thử giao diện CP2 mới chưa có.
+- Docker localhost 3000: gộp, reload detail, hủy, rà lại và từ chối người báo truy cập quản lý đều đạt.
+- Docker smoke dùng phiên demo local theo guard hiện có; không đổi guard auth để test.
+- Mọi bản ghi có trước lượt demo được đối chiếu theo ID/checksum và giữ nguyên.
+
+DỮ LIỆU DIỄN TẬP ĐƯỢC GIỮ LẠI
+Nhãn: [CP2-DEMO ab2db075]. Hai Report mới có ghi rõ không phải sự cố thực địa; dùng để nhóm đọc lịch sử.
+Source Issue: 0ba1b33f-80a0-406e-b25b-08e3dbe28e73
+Target Issue: 94713a76-7577-48df-a382-89d75e2e08b4
+Merge: 4ae7d0ee-ce42-4250-a404-aeeca8a98cdd (đã hủy; nguồn đã rà lại về TRIAGED).
+Phiên demo của lượt kiểm tra đã được thu hồi; không lưu cookie/mật khẩu vào tài liệu.
+
+BÀN GIAO
+Đọc docs/Checkpoint2_Backend_Contract.md và docs/Checkpoint2_Backend_Handoff.md.
+Dương/Sơn nối UI; Chúc đọc lại nghiệp vụ/contract; Hoàng Anh kiểm bản nhóm khi UI đã có; Thành Lê/Công Thành tiếp tục AI/data.
+
+RANH GIỚI
+Gộp cho công việc đã phân công/đang sửa chưa thuộc chính sách CP2. Lịch SLA tự động, thông báo/follow/feedback, bản đồ/quản trị và đánh giá AI cuối kỳ vẫn theo đặc tả và backlog.
+Chưa có màn upload/nhân viên/gộp đầy đủ trong lượt backend này. Full CP2 của nhóm chỉ đạt khi FE/BE/AI/data được tích hợp, kiểm quyền bằng tài khoản thật và có bằng chứng demo.
+Tài khoản STAFF phải được tạo/xác minh/cấp vai theo quy trình nhóm; seed demo chưa xác minh không được tự coi là STAFF đã xác minh để phân công.

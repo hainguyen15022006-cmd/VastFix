@@ -22,7 +22,7 @@ Gọi `POST /api/manager/issues/:id/:action` hoặc `POST /api/staff/issues/:id/
 
 | Vai / action | Điều kiện trạng thái → kết quả | Trường thêm | Event |
 | --- | --- | --- | --- |
-| MANAGER / `triage` | SUBMITTED → TRIAGED | `categoryCode`, `priority` (P0/P1/P2), `dueAt` (ISO 8601 có múi giờ) | ISSUE_TRIAGED |
+| MANAGER / `triage` | SUBMITTED hoặc TRIAGED → TRIAGED | `categoryCode`, `priority` (P0/P1/P2), `dueAt` (ISO 8601 có múi giờ) | ISSUE_TRIAGED |
 | MANAGER / `assign` | TRIAGED → ASSIGNED | `assigneeId` là STAFF đã xác minh | ISSUE_ASSIGNED |
 | STAFF / `start` | ASSIGNED → IN_PROGRESS | | WORK_STARTED |
 | STAFF / `progress` | IN_PROGRESS → IN_PROGRESS | `progressNote`, `materials` tùy chọn, đều là văn bản | WORK_PROGRESS_UPDATED |
@@ -81,3 +81,8 @@ Script dùng PostgreSQL 17 riêng, chạy toàn bộ migration chính thức g�
 ## Bàn giao API upload và đọc tệp
 
 Xem [Photo_API_CP2.md](Photo_API_CP2.md) để nối upload, photoIds của Report, evidencePhotoIds và quyền đọc/xóa ảnh nháp. Kết quả kiểm chứng ngày 26/11 nằm trong [Photo_API_Verification_2026-11-26.txt](Photo_API_Verification_2026-11-26.txt).
+
+
+## Bổ sung gộp/hủy gộp và rà lại nguồn
+
+Các endpoint gộp, reverse, review-after-unmerge; dữ liệu mergeId/history, vị trí cụ thể và cách phối hợp version được mô tả trong [Checkpoint2_Backend_Contract.md](Checkpoint2_Backend_Contract.md). Workflow dùng chung khóa Issue với merge, cho phép triage lại TRIAGED nhưng vẫn chặn reviewRequired. Bản ERD và bảng quyết định nằm trong [Checkpoint2_ERD_State.md](Checkpoint2_ERD_State.md) và [Checkpoint2_Decisions.md](Checkpoint2_Decisions.md).

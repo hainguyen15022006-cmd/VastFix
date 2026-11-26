@@ -4,6 +4,15 @@ VastFix is a proposed web application for reporting and resolving campus infrast
 
 **Project status:** Checkpoint 1 reporter and manager interfaces are integrated with the reporting APIs, authentication foundation and FastAPI duplicate-ranking service. The target submission date is **12 January 2027**.
 
+## Checkpoint 2 backend on this branch
+
+Private photo uploads/authorized reads and merge/reverse/review APIs are implemented on `feat/cp2-photo-storage`, building on Chúc’s workflow API. Report originals and submitted photos remain unchanged during merges. Backend checks cover real auth/database/files, concurrent actions and restored-source review. Full CP2 frontend integration is still pending.
+
+- [Backend contract](docs/Checkpoint2_Backend_Contract.md)
+- [Team handoff and demo scenarios](docs/Checkpoint2_Backend_Handoff.md)
+- [ERD and state model](docs/Checkpoint2_ERD_State.md)
+- [Photo API](docs/Photo_API_CP2.md)
+
 ## Problem
 
 The same broken light, water leak, or damaged facility may be reported several times in different words. Staff can end up reviewing duplicate reports, while reporters cannot easily see whether an issue is already being handled. Indoor locations also need more detail than GPS alone can provide.

@@ -132,8 +132,11 @@ try {
   pass("Report photo binding is atomic, owner-scoped, limited to unused IDs and immutable after submission");
 
   const beforeReport=(await db.query('SELECT row_to_json(r) AS data FROM "Report" r WHERE id=ANY($1::uuid[]) ORDER BY id',[[target.report.id,source.report.id]])).rows;
-  const mergeId=randomUUID();
-  await db.query('INSERT INTO "IssueMerge" (id,"sourceIssueId","targetIssueId","mergedByUserId",reason) VALUES ($1,$2,$3,$4,$5)',[mergeId,source.issue.id,target.issue.id,users.manager.id,"Permission fixture"]);
+  const merged=await call("manager","manager/merges",{
+    sourceIssueId:source.issue.id,targetIssueId:target.issue.id,
+    expectedSourceVersion:(await detail(source.issue.id)).version,expectedTargetVersion:(await detail(target.issue.id)).version,
+    reason:"Kiểm quyền ảnh qua API gộp thật"},201);
+  const mergeId=merged.merge.mergeId;
   const id=target.issue.id;
   await action("manager",id,"triage",{categoryCode:"ELECTRICAL",priority:"P1",dueAt:"2026-12-01T12:00:00+07:00"});
   await action("manager",id,"assign",{assigneeId:users.staff.id});
@@ -152,11 +155,12 @@ try {
   await remove("staff",evidence.photoId,409);
   pass("assigned STAFF uploads real evidence, three-photo limit holds, Chuc submit links it to its event and authorized reporters/managers can read");
 
-  await db.query('UPDATE "IssueMerge" SET "reversedAt"=now() WHERE id=$1',[mergeId]);
-  await db.query('UPDATE "Issue" SET "reviewRequired"=true WHERE id=$1',[source.issue.id]);
+  await call("manager",`manager/merges/${mergeId}/reverse`,{
+    expectedSourceVersion:(await detail(source.issue.id)).version,expectedTargetVersion:(await detail(target.issue.id)).version,
+    reason:"Kiểm quyền ảnh sau hủy gộp thật"});
   await get("staff",other.photoId,404);await get("other",evidence.photoId,404);await get("other",other.photoId);await get("manager",other.photoId);
   assert.deepEqual((await db.query('SELECT row_to_json(r) AS data FROM "Report" r WHERE id=ANY($1::uuid[]) ORDER BY id',[[target.report.id,source.report.id]])).rows,beforeReport);
-  pass("merge/reverse permission fixtures recalculate photo rights without modifying original Report rows or files");
+  pass("real merge/reverse APIs recalculate photo rights without modifying original Report rows or files");
 
   await action("manager",id,"return-work",{reason:"Kiểm tra lại"});
   const second=await upload("staff",jpeg,"image/jpeg",{purpose:"WORK_EVIDENCE",issueId:id});
@@ -194,7 +198,7 @@ try {
   assert.equal((await readdir(photoDir)).length,diskBefore.length);
   pass("draft quota and failure cleanup prevent extra metadata/files; removing drafts restores quota");
 
-  await writeFile(resolve("../photo-api-verification.json"),JSON.stringify({checks,scope:"Production Next + real Better Auth + PostgreSQL 17 + real image files; merge/reverse use DB fixtures, not merge APIs"},null,2));
+  await writeFile(resolve("../photo-api-verification.json"),JSON.stringify({checks,scope:"Production Next + real Better Auth + PostgreSQL 17 + real image files + actual merge/reverse APIs"},null,2));
   console.log(`PASS photo API: ${checks.length} verification groups.`);
 } catch(error) {
   console.error((error?.stack||String(error)).replaceAll(password,"[test-password]").replaceAll(dbPassword,"[db-password]"));
