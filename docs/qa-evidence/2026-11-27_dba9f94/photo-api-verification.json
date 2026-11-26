@@ -1,0 +1,14 @@
+{
+  "checks": [
+    "authenticated same-origin upload; invalid, corrupt, mismatched, oversized and repeated-field requests rejected",
+    "real JPEG/PNG/WebP files saved privately, decoded, metadata removed; draft/HEAD rights and response headers correct",
+    "Report photo binding is atomic, owner-scoped, limited to unused IDs and immutable after submission",
+    "assigned STAFF uploads real evidence, three-photo limit holds, Chuc submit links it to its event and authorized reporters/managers can read",
+    "real merge/reverse APIs recalculate photo rights without modifying original Report rows or files",
+    "return/resubmit/close/reopen retain evidence history and revoke former assignee access",
+    "missing files fail safely, database path tampering cannot read outside storage, draft deletion removes only its file",
+    "concurrent Report creation can consume a draft photo only once",
+    "draft quota and failure cleanup prevent extra metadata/files; removing drafts restores quota"
+  ],
+  "scope": "Production Next + real Better Auth + PostgreSQL 17 + real image files + actual merge/reverse APIs"
+}
