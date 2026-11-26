@@ -53,6 +53,7 @@ model User {
   accounts Account[]
   roleChanges UserRoleEvent[] @relation("RoleSubject")
   roleActions UserRoleEvent[] @relation("RoleActor")
+  ownedPhotos Photo[]
 }
 
 model Session {
@@ -179,6 +180,8 @@ model Report {
   area               Area?        @relation(fields: [areaId], references: [id], onDelete: Restrict)
   issue              Issue?
 
+  photos Photo[]
+
   @@index([areaId, submittedAt])
   @@index([reporterId, submittedAt])
 }
@@ -204,6 +207,8 @@ model Issue {
   recurrences         Issue[]     @relation("Recurrence")
   events              IssueEvent[]
 
+  photos Photo[]
+
   @@index([status, createdAt])
   @@index([assigneeId, status])
 }
@@ -217,6 +222,8 @@ model IssueEvent {
   occurredAt  DateTime @default(now()) @db.Timestamptz(3)
   issue       Issue    @relation(fields: [issueId], references: [id], onDelete: Restrict)
   actor       User     @relation(fields: [actorUserId], references: [id], onDelete: Restrict)
+
+  evidencePhotos Photo[]
 
   @@index([issueId, occurredAt])
 }
@@ -234,4 +241,35 @@ model IssueMerge {
   target Issue @relation("MergeTarget", fields: [targetIssueId], references: [id], onDelete: Restrict)
   actor User @relation("MergeActor", fields: [mergedByUserId], references: [id], onDelete: Restrict)
   reversedBy User? @relation("ReverseActor", fields: [reversedByUserId], references: [id], onDelete: Restrict)
+}
+
+enum PhotoPurpose {
+  REPORT
+  WORK_EVIDENCE
+}
+
+model Photo {
+  id                String       @id @default(uuid()) @db.Uuid
+  ownerUserId       String       @db.Uuid
+  issueId           String?      @db.Uuid
+  reportId          String?      @db.Uuid
+  submissionEventId String?      @db.Uuid
+  purpose           PhotoPurpose
+
+  storageKey String @unique @db.Text
+  mimeType   String @db.VarChar(100)
+  sizeBytes  Int
+
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+  storedAt  DateTime? @db.Timestamptz(3)
+
+  owner           User        @relation(fields: [ownerUserId], references: [id], onDelete: Restrict)
+  issue           Issue?      @relation(fields: [issueId], references: [id], onDelete: Restrict)
+  report          Report?     @relation(fields: [reportId], references: [id], onDelete: Restrict)
+  submissionEvent IssueEvent? @relation(fields: [submissionEventId], references: [id], onDelete: Restrict)
+
+  @@index([ownerUserId, createdAt])
+  @@index([issueId])
+  @@index([reportId])
+  @@index([submissionEventId])
 }

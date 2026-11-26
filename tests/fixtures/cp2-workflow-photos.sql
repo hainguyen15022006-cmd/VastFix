@@ -1,4 +1,5 @@
--- Contract fixture for the isolated CP2 integration test. Not a product migration.
+-- Legacy CP2 fixture before 20261126000000_photo_storage.
+-- Do not execute alongside production migrations; check-workflow-api now uses the real migration.
 CREATE TABLE "Photo" (
   "id" UUID PRIMARY KEY,
   "ownerUserId" UUID NOT NULL REFERENCES "User"("id"),
