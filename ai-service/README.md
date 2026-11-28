@@ -1,5 +1,7 @@
 # VastFix AI · Checkpoint 1
 
+Runtime CP2, checksum, readiness, Docker E5 và kết quả kiểm thử nằm trong [bàn giao Checkpoint 2](../docs/Checkpoint2_AI_Runtime.md).
+
 Thành Lê phụ trách FastAPI xếp hạng ứng viên theo [API contract v1, mục 4.4–4.5](../docs/VastFix_API_Contract_v1_Da_chot_2026-11-16.md). Next.js gửi danh sách ứng viên đã lọc. Dịch vụ AI chỉ dùng dữ liệu trong JSON đó và chạy độc lập với PostgreSQL. Schema `POST /classify` nằm trong contract cho checkpoint sau.
 
 ## Chạy dịch vụ

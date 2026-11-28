@@ -1,0 +1,14 @@
+{
+  "base_commit": "6e33c1bbbf74fbf289c2d3a43e2df258686990d3",
+  "threshold": 0.35,
+  "timeout_ms": 5000,
+  "review": "AI_REVIEWED; zero HUMAN_REVIEWED",
+  "sha256_lf": {
+    "evaluation/duplicate-detection/dataset.ai-reviewed.json": "c020526a57a10c7a376233f775efdd7d447bfc47e47a131a972a90283ceb518c",
+    "evaluation/duplicate-detection/evaluate.py": "9aa3d2f62af5eb087e5143fc880a3a9376aeb891d1afce1c27567fd469b4f32e",
+    "ai-service/model-manifest.json": "2276aa8bc7a45cf9ac7006d8df09dae51d917186a1c933c4d61e78f1dd1db149",
+    "ai-service/app/main.py": "8dde0a26c63e4c0472d0a9d667ab6223bad72cfa01a5060974476aa4116c365a",
+    "ai-service/app/ranking.py": "03ea6bd29585c014080e8fec1c6180616184fd560c3b49d29e985ed76a8fd28c",
+    "ai-service/app/embedding.py": "dc14f5fd9ca343c471c4658b9ed38b2310c7e681863bceb2a3793d9394f19de9"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "platform": "Windows-11-10.0.26300-SP0",
+  "python": "3.13.2",
+  "logical_cpus": 6,
+  "candidates": 50,
+  "runs": [
+    {
+      "mode": "baseline",
+      "missing_model": false,
+      "startup_seconds": 0.95,
+      "ready_status": 200,
+      "health": {
+        "status": "ok",
+        "model_version": "baseline-v1"
+      },
+      "warm_median_ms": 4.58,
+      "warm_max_ms": 6.93,
+      "concurrent_max_ms": 17.06,
+      "concurrent_requests": 12,
+      "deterministic": true,
+      "model_version": "baseline-v1"
+    },
+    {
+      "mode": "e5",
+      "missing_model": false,
+      "startup_seconds": 3.45,
+      "ready_status": 200,
+      "health": {
+        "status": "ok",
+        "model_version": "multilingual-e5-small-q8-v1"
+      },
+      "warm_median_ms": 216.86,
+      "warm_max_ms": 281.77,
+      "concurrent_max_ms": 997.68,
+      "concurrent_requests": 12,
+      "deterministic": true,
+      "model_version": "multilingual-e5-small-q8-v1"
+    },
+    {
+      "mode": "e5",
+      "missing_model": false,
+      "startup_seconds": 2.344,
+      "ready_status": 200,
+      "health": {
+        "status": "ok",
+        "model_version": "multilingual-e5-small-q8-v1"
+      },
+      "warm_median_ms": 220.38,
+      "warm_max_ms": 249.93,
+      "concurrent_max_ms": 1140.46,
+      "concurrent_requests": 12,
+      "deterministic": true,
+      "model_version": "multilingual-e5-small-q8-v1"
+    },
+    {
+      "mode": "e5",
+      "missing_model": true,
+      "startup_seconds": 1.326,
+      "ready_status": 503,
+      "health": {
+        "status": "unavailable",
+        "model_version": "multilingual-e5-small-q8-v1"
+      }
+    }
+  ]
+}

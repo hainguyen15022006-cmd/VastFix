@@ -10,13 +10,13 @@ from materialize_review import materialize
 
 
 def source_and_review():
-    return (HERE / "dataset.json").read_bytes(), json.loads((HERE / "label-review-2026-11-23.json").read_text())
+    return (HERE / "dataset.json").read_bytes(), json.loads((HERE / "label-review-2026-11-23.json").read_text(encoding="utf-8"))
 
 
 def test_review_is_reproducible_and_preserves_all_original_reports():
     raw, review = source_and_review()
     reviewed = materialize(raw, review)
-    assert reviewed == json.loads((HERE / "dataset.ai-reviewed.json").read_text())
+    assert reviewed == json.loads((HERE / "dataset.ai-reviewed.json").read_text(encoding="utf-8"))
     assert reviewed["reports"] == json.loads(raw)["reports"]
     assert len(review["cases"]) == 22
     assert sum(len(case["pair_decisions"]) for case in review["cases"]) == 61

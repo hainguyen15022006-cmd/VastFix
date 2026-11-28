@@ -138,7 +138,7 @@ def main():
                    for key, (b, f, a, kind) in PLACES.items()},
         "reports": REPORTS, "cases": CASES,
     }
-    (ROOT / "dataset.json").write_text(json.dumps(dataset, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (ROOT / "dataset.json").write_text(json.dumps(dataset, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 
 if __name__ == "__main__":

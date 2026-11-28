@@ -57,7 +57,7 @@ def main():
     args = parser.parse_args()
     assert args.output.resolve() != args.source.resolve(), "Keep the generated source fixture intact"
     data = materialize(args.source.read_bytes(), json.loads(args.review.read_text(encoding="utf-8")))
-    args.output.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    args.output.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
     print(f"Written AI review copy: {len(data['reports'])} reports, {len(data['cases'])} cases")
 
 

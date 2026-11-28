@@ -1,0 +1,18 @@
+# Overlay for the root compose.yaml. Model files are prepared before startup.
+services:
+  ai:
+    build:
+      context: ./ai-service
+      args:
+        AI_REQUIREMENTS: requirements-embedding.txt
+    environment:
+      VASTFIX_AI_RUNTIME: e5
+      VASTFIX_EMBEDDING_DIR: /models/e5
+      VASTFIX_DUPLICATE_MIN_SCORE: "0.35"
+    volumes:
+      - type: bind
+        source: ${VASTFIX_MODEL_DIR:-./.venv/e5-small}
+        target: /models/e5
+        read_only: true
+    healthcheck:
+      start_period: 60s

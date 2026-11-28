@@ -1,0 +1,17 @@
+{
+  "checks": [
+    "manager-only auth, same-origin writes, strict payload, versions and self-merge validation",
+    "one-level star merge returns reloadable merge IDs, logs both sides, hides sources from queues/AI and preserves all Reports",
+    "duplicate, chained, cyclic and assigned-source/target merges are rejected",
+    "reverse after target closure preserves source/target state, retains history, unlocks only after explicit manager review and then permits assignment",
+    "manager/staff detail retains precise indoor location and reopened/returned TRIAGED issues can be re-assessed",
+    "concurrent same-source merges commit once and return 409 for the competing transaction",
+    "concurrent chain merges commit once and return 409 for the competing transaction",
+    "concurrent cycle merges commit once and return 409 for the competing transaction",
+    "merge versus assignment shares Issue locks and a single event-count version",
+    "concurrent reverse/review each apply once and do not duplicate events",
+    "reverse versus close cannot both commit from the same target version",
+    "CP2 web fallback on AI 503 and timeout still permits Report creation"
+  ],
+  "scope": "Real merge/reverse/review APIs, Better Auth, PostgreSQL 17, real evidence image uploads; Candidate capture proxy forwards every request to real E5 FastAPI; model version, IDs and top5 checked"
+}
