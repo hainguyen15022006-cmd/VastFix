@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { Icon } from "@/components/shared/icon";
-import { fetchManagerIssues, normalizeSearch, QueueError, type IssueStatus, type ManagerIssue, type ManagerIssuesResponse } from "@/lib/manager-issues";
+import { fetchManagerIssues, issueStatuses, normalizeSearch, QueueError, type IssueStatus, type ManagerIssue, type ManagerIssuesResponse } from "@/lib/manager-issues";
+import { Link } from "@/i18n/navigation";
 
 type QueueState = { kind: "loading" } | { kind: "ready"; data: ManagerIssuesResponse } | { kind: "error"; error: QueueError };
 
@@ -13,7 +14,7 @@ export function ManagerQueue() {
   const statuses = useTranslations("Status");
   const format = useFormatter();
   const locale = useLocale();
-  const status: IssueStatus = "SUBMITTED";
+  const [status, setStatus] = useState<IssueStatus>("SUBMITTED");
   const [search, setSearch] = useState("");
   const [revision, setRevision] = useState(0);
   const [state, setState] = useState<QueueState>({ kind: "loading" });
@@ -98,7 +99,7 @@ export function ManagerQueue() {
       </section>
       <section className="vf-queue" aria-label={t("listTitle")}>
         <div className="vf-filters">
-          <div className="vf-field vf-status-filter"><label htmlFor="queue-status">{t("statusFilter")}</label><select id="queue-status" value={status} aria-describedby="queue-status-scope" disabled><option value="SUBMITTED">{statuses("SUBMITTED")}</option></select><span id="queue-status-scope">{t("statusScope")}</span></div>
+          <div className="vf-field vf-status-filter"><label htmlFor="queue-status">{t("statusFilter")}</label><select id="queue-status" value={status} onChange={event => setStatus(event.target.value as IssueStatus)}>{issueStatuses.map(value => <option key={value} value={value}>{statuses(value)}</option>)}</select><span>{t("statusScope")}</span></div>
           <label className="vf-field vf-search"><span>{t("searchLabel")}</span><span className="vf-input-wrap"><Icon name="search" /><input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t("searchPlaceholder")} /></span></label>
         </div>
         <div aria-live="polite" aria-atomic="true" className="vf-result-line">
@@ -112,7 +113,7 @@ export function ManagerQueue() {
           <td data-label={t("location")}><span className="vf-location"><Icon name="pin" />{issue.locationLabel}</span></td>
           <td data-label={t("status")}><span className={`vf-badge vf-badge-${issue.status.toLowerCase()}`}>{statuses(issue.status)}</span></td>
           <td data-label={t("createdAt")}><time dateTime={issue.createdAt}>{date(issue.createdAt)}</time></td>
-          <td><button type="button" className="vf-text-button" aria-label={t("viewIssue", { summary: issue.summary })} onClick={() => setSelected(issue)}>{t("view")}<Icon name="arrow" /></button></td>
+          <td><button type="button" className="vf-text-button" aria-label={t("viewIssue", { summary: issue.summary })} onClick={() => setSelected(issue)}>{t("view")}<Icon name="arrow" /></button><Link className="vf-text-button" href={`/manager/issues/${issue.issueId}`}>{t("openDetail")}</Link></td>
         </tr>)}</tbody></table></div>}
         {state.kind === "ready" && state.data.nextCursor !== null && <div className="vf-pagination">
           <p className="vf-partial" role="note">{t("partial")}</p>
