@@ -1,6 +1,6 @@
 # Checkpoint 2 · Báo cáo kiểm thử QA (bản nháp)
 
-Người giữ bảng: Hoàng Anh (Tích hợp/QA). Trạng thái: **nháp lần 3, 28/11/2026 16:30 giờ Việt Nam** (thêm kết quả chạy lại trên Windows). Bảng này theo các ca bắt buộc ở trang 22-23 kế hoạch CP2. Chỉ ghi PASS khi đã chạy và có bằng chứng; phần chưa chạy ghi NOT RUN, không suy ra từ test CP1.
+Người giữ bảng: Hoàng Anh (Tích hợp/QA). Trạng thái: **nháp lần 4, 28/11/2026 16:45 giờ Việt Nam** (thêm kết quả chạy lại trên Windows và test giao diện trên stack thật). Bảng này theo các ca bắt buộc ở trang 22-23 kế hoạch CP2. Chỉ ghi PASS khi đã chạy và có bằng chứng; phần chưa chạy ghi NOT RUN, không suy ra từ test CP1.
 
 ## 1. Bản được kiểm
 
@@ -12,7 +12,7 @@ Người giữ bảng: Hoàng Anh (Tích hợp/QA). Trạng thái: **nháp lần
 | Xung đột khi ghép | Không có. Không sửa code của thành viên. |
 | Môi trường E1 | Linux x64 sạch (container), Node 24.22.3, npm 11, PostgreSQL 17 tạm qua `embedded-postgres`, Google Chrome cho Playwright, Python 3.13 cho ai-service |
 | Môi trường E2 | Windows 11 của Hoàng Anh, Node 24.19.0, repo `C:\Users\ad\PROJECT\VastFix`, bản ghép tự làm lại commit `8f75218` (cùng hai commit nguồn với `dba9f94`) |
-| Môi trường E3 | Docker Compose stack trên Windows: **chưa chạy cho bản CP2** |
+| Môi trường E3 | Docker Compose stack trên Windows (web/db/ai/mailpit healthy, 28/11 16:08), DB CP1 nâng cấp qua `migrate`; tài khoản thật đăng ký + xác minh qua Mailpit: manager, staff.a, staff.b, reporter; Chrome. Backup DB trước migrate: `stack-backup-2026-11-28.utf8.sql` (ngoài repo) |
 | Bằng chứng | [`docs/qa-evidence/2026-11-27_dba9f94/`](qa-evidence/2026-11-27_dba9f94/) |
 
 Chưa có trên các nhánh remote ngày 26/11: màn hình STAFF, form báo cáo có tải ảnh, nút gộp/hủy gộp/rà lại nguồn trên UI quản lý (nút gộp vẫn disabled dù API đã có). Các phần UI tương ứng ghi NOT RUN.
@@ -49,11 +49,11 @@ Cột Lớp: **API** là HTTP + DB thật qua script; **UI** là trình duyệt 
 | ID | Lớp | Commit / MT | Bước | Expected | Actual | Kết quả | Bằng chứng | Owner sửa |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | W01 | API | dba9f94 / E1 | REPORTER upload ảnh REPORT, gửi Report với `photoIds`; đọc lại | Đúng 1 Report, Issue SUBMITTED, event; ảnh gắn bất biến | Gắn ảnh nguyên tử, đúng owner, ảnh không đổi sau gửi; tranh chấp dùng ảnh chỉ thành công 1 lần | PASS | photos.log nhóm 3, 8; reporter-flow.log | Hải Anh + Chúc |
-| W01 | UI | | Form báo sự cố có chọn ảnh, reload | Như trên qua UI | Form CP1 chưa có chọn ảnh | NOT RUN | | Dương |
+| W01 | UI | 8f75218 / E3 | REPORTER (tài khoản thật đã xác minh) gửi `[CP2-DEMO] Đèn H2-04` qua form | Biên nhận, 1 Issue SUBMITTED | Có biên nhận và mã phiếu `dbe05b05…`; phiếu hiện trong hàng đợi quản lý. Form chưa có chọn ảnh | PASS (không ảnh) / NOT RUN (ảnh, QA-02) | W01-reporter-gui-H2-04.jpg | Dương |
 | W02 | API | dba9f94 / E1 | MANAGER triage (dueAt sai ngày, field lạ, hợp lệ) rồi assign | 400 với dữ liệu sai; TRIAGED; ASSIGNED; event đúng actor | Đúng như expected; assign cho REPORTER bị 400 | PASS | workflow.log | Chúc + Sơn |
-| W02 | UI | dba9f94 / E1 (mock) | Playwright triage/assign với fixture | Gửi `expectedVersion`, reload detail | 46/46 PASS nhưng mock API | NOT RUN (UI thật) | ui.log #25, #27 | Sơn |
+| W02 | UI | 8f75218 / E3 | MANAGER thật: Mở chi tiết → Xử lý → ELECTRICAL/P1/hạn → Tiếp nhận → Phân công staff.a → F5 | TRIAGED → ASSIGNED, lịch sử đúng | Lịch sử có ISSUE_TRIAGED và ISSUE_ASSIGNED đúng giờ, dữ liệu giữ sau reload. Lịch sử chỉ hiện mã thô, không hiện tên người thao tác (QA-08) | PASS | W02-W09a/b-lich-su-*.jpg | Sơn |
 | W03 | API | dba9f94 / E1 | STAFF B đọc list/detail/start phiếu của A; REPORTER gọi staff/manager list | B list rỗng, detail/start 404; REPORTER 403; không phiên 401 | Đúng như expected | PASS | workflow.log | Chúc + Hải Anh |
-| W03 | UI | | Hai profile trình duyệt STAFF A/B | B không thấy việc A | Chưa có màn STAFF | NOT RUN | | Dương |
+| W03 | UI | 8f75218 / E3 | REPORTER mở Hàng đợi sự cố và mở thẳng link chi tiết phiếu | Bị chặn, không lộ dữ liệu | "Bạn chưa có quyền xem hàng đợi" / "Bạn không có quyền xem phiếu". Phần STAFF A/B chưa có màn STAFF | PASS (REPORTER) / NOT RUN (STAFF) | W03a, W03b | Dương |
 | W04 | API | dba9f94 / E1 | STAFF A start, progress với ghi chú có dấu + xuống dòng, vật tư | IN_PROGRESS; nội dung giữ nguyên sau đọc lại | `"Kiểm dây\nĐã ngắt điện"` giữ nguyên trong history | PASS | workflow.log | Chúc + Dương |
 | W04 | UI | | | | Chưa có màn STAFF | NOT RUN | | Dương |
 | W05 | API | dba9f94 / E1 | Submit thiếu ảnh, ảnh không tồn tại, ảnh STAFF B, ảnh Issue khác, sai purpose, chưa lưu; thiếu bảng ảnh | 400 (503 khi thiếu storage); version không đổi | Đúng như expected, rollback giữ version | PASS | workflow.log; photos.log nhóm 4 | Chúc + Hải Anh |
@@ -65,17 +65,18 @@ Cột Lớp: **API** là HTTP + DB thật qua script; **UI** là trình duyệt 
 | W08 | API | dba9f94 / E1 | Reopen có lý do; STAFF A cũ đọc phiếu | TRIAGED, closedAt null, assignee null; STAFF A 404; quyền ảnh của người giao cũ bị thu hồi | Đúng như expected | PASS | workflow.log; photos.log nhóm 6 | Chúc |
 | W08 | UI | | | | Mock PASS (#30) | NOT RUN | | Sơn |
 | W09 | API | dba9f94 / E1 | Hai request assign cùng version (A và B) | Một 200, một 409; 1 event ISSUE_ASSIGNED | Đúng như expected. Close song song chỉ kiểm dạng reverse vs close (merges nhóm 11) | PASS (assign) / NOT RUN (close hai tab) | workflow.log; merges.log | Chúc + Hải Anh |
+| W09 | UI | 8f75218 / E3 | Hai tab MANAGER cùng phiếu ASSIGNED; tab 1 Đưa về tiếp nhận; tab 2 (dữ liệu cũ) làm lại | Tab 2 báo xung đột, tải lại; 1 event | Tab 2 hiện "Phiếu đã thay đổi… Đã tải lại dữ liệu", về TRIAGED phiên bản 4; lịch sử chỉ 1 ISSUE_RETURNED_TO_TRIAGE (lý do "tab 1") | PASS | W09-tab2-bao-xung-dot.png, W02-W09b | Sơn + Chúc |
 | W10 | UI | | Hết phiên / đổi vai khi đang mở màn | Request sau bị từ chối, UI xóa dữ liệu | Chỉ có ca reporter hết phiên giữ nháp (#42, mock) | NOT RUN | | Hải Anh + FE |
 | W11 | API | dba9f94 / E1 | 26 phiếu, trang 1 và cursor; lọc status sai | 25 mục + nextCursor, trang 2 không trùng; 400 | Đúng như expected | PASS | workflow.log | Chúc |
 | W11 | UI | | Lỗi tải tiếp, refresh | | Chưa chạy | NOT RUN | | FE |
-| W12 | UI | dba9f94 / E1 (mock) | /en mobile form báo cáo | Nhãn, lỗi, viewport đúng | Form reporter /en mobile PASS (#45). Màn CP2 vi/en, modal, mobile chưa kiểm | NOT RUN (màn CP2) | ui.log | Dương + Sơn |
+| W12 | UI | 8f75218 / E3 | Mở form báo cáo và chi tiết phiếu ở /en | Nhãn tiếng Anh, mô tả giữ nguyên | Nhãn, trạng thái, vị trí chuyển tiếng Anh; mô tả `[CP2-DEMO] Đèn H2-03 không sáng` giữ tiếng Việt. Mobile/modal chưa kiểm | PASS (desktop) / NOT RUN (mobile) | W12a, W12b | Dương + Sơn |
 
 ### 3.2 Merge, ảnh và AI (trang 23)
 
 | ID | Lớp | Commit / MT | Bước | Expected | Actual | Kết quả | Bằng chứng | Owner sửa |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | M01 | API | dba9f94 / E1 | POST /manager/merges A→B | Event hai bên; A ẩn khỏi queue và AI candidates; B thấy Report của A; Report gốc không đổi | Đúng như expected (so snapshot bảng Report) | PASS | merges.log nhóm 2 | Hải Anh + Sơn |
-| M01 | UI | | | | Nút gộp disabled trong UI | NOT RUN | ui.log #32 | Sơn |
+| M01 | UI | 8f75218 / E3 | MANAGER: Quan hệ gộp → nhập mã H2-04 → Xem phiếu nguồn → tick xác nhận | Gửi được lệnh gộp | So sánh nguồn/đích hiển thị đúng; nút "Chờ API gộp của nhóm" vẫn disabled sau khi tick (QA-03) | NOT RUN (chặn bởi QA-03) | QA03-nut-gop-bi-khoa.jpg | Sơn |
 | M02 | API | dba9f94 / E1 | A→A, trùng, chuỗi, vòng, nguồn/đích đã giao | Đều bị chặn | Đúng như expected | PASS | merges.log nhóm 1, 3 | Hải Anh |
 | M03 | API | dba9f94 / E1 | Gộp đồng thời cùng nguồn, chuỗi, vòng; gộp vs assign | 1 thành công, 1 409; không quan hệ mồ côi | Đúng như expected | PASS | merges.log nhóm 6-9 | Hải Anh |
 | M04 | API | dba9f94 / E1 | Reverse đúng mergeId sau khi đích CLOSED; reverse lần 2 | Giữ log, nguồn reviewRequired, không nhận kết quả của đích; không ghi lặp | Đúng như expected | PASS | merges.log nhóm 4, 10 | Hải Anh + Sơn |
@@ -87,7 +88,7 @@ Cột Lớp: **API** là HTTP + DB thật qua script; **UI** là trình duyệt 
 | A01 | API | dba9f94 / E1 (AI fixture) | Gợi ý trùng sau gộp và sau reverse | Nguồn gộp bị loại trước khi gọi AI; reverse xuất hiện lại | Đúng với AI fixture ghi candidate IDs; AI thật chưa chạy | PASS (lọc candidates) / NOT RUN (AI thật) | merges.log nhóm 2, 4 | Chúc + Thành Lê |
 | A02 | Stack | | Dừng service ai, timeout, model lỗi | Web báo unavailable, vẫn gửi được | Ca CP1 FB-01 đạt 21/11; chưa chạy lại trên bản CP2. Runtime/version model CP2 chưa chốt (O-CP2-04) | NOT RUN | | Thành Lê + Chúc |
 | I01a | Build | dba9f94 / E1 | DB mới + toàn bộ migration + seed; typecheck, build, suite | Đạt | Đạt trên DB tạm Linux sạch | PASS | các log ở mục 2 | Hoàng Anh + Hải Anh |
-| I01b | Stack | | DB nâng cấp từ CP1 (volume cũ) qua service migrate | Migration photo_storage áp, dữ liệu cũ giữ | Hải Anh báo đã áp trên DB cổng 5434 có checksum; QA chưa chạy độc lập | NOT RUN | | Hoàng Anh |
+| I01b | Stack | 8f75218 / E3 | `stack:up` trên volume DB CP1 (có backup trước) | Migration photo_storage áp, dữ liệu cũ giữ | `migrate` exit, stack healthy, volume ảnh được tạo; app đọc được dữ liệu và tài khoản mới. Chưa so checksum dữ liệu cũ | PASS (áp được) / NOT RUN (checksum) | | Hoàng Anh |
 | I01c | Máy thứ hai | | Windows của nhóm, `npm ci` + stack | Đạt | Chưa chạy | NOT RUN | | Hoàng Anh |
 | D01 | Data | | Evaluator trên dataset ghim | | Ngoài phạm vi lần này | NOT RUN | | Công Thành + Thành Lê |
 
@@ -98,9 +99,9 @@ Chưa kiểm và chưa có kế hoạch kiểm trong CP2: tải lớn, Safari, i
 | | PASS | FAIL | NOT RUN |
 | --- | --- | --- | --- |
 | Lớp API/build (E1) | 19 ca | 0 | 2 phần (close hai tab, AI thật) |
-| Lớp UI thật và Stack | 0 | 0 | toàn bộ |
+| Lớp UI thật trên stack (E3, 28/11) | 6 ca: W01 (không ảnh), W02, W03 (REPORTER), W09, W12 (desktop), I01b | 0 | W04-W08, W10, W11 UI; M01-M05 UI (QA-03); P03, A02, I01c |
 
-Chưa có FAIL ở lớp API. CP2 **chưa đạt nghiệm thu** vì luồng demo chính cần UI STAFF, upload ảnh trên form và nút gộp/hủy gộp, và stack Docker chưa được QA chạy.
+Chưa có FAIL ở API và UI đã chạy. CP2 **chưa đạt nghiệm thu** vì luồng demo chính còn thiếu màn STAFF (QA-01), upload ảnh trên form (QA-02) và nút gộp/hủy gộp (QA-03). Ảnh bằng chứng UI: `docs/qa-evidence/2026-11-28_8f75218-ui/`.
 
 ## 5. Vấn đề mở và người nhận
 
@@ -112,6 +113,7 @@ Chưa có FAIL ở lớp API. CP2 **chưa đạt nghiệm thu** vì luồng demo
 | QA-04 | Các nhánh CP2 chưa vào `main`; cần PR theo thứ tự workflow-api → photo-storage → manager-ui | Tích hợp | Hải Anh duyệt | 27/11 |
 | QA-05 | Repo chưa có quy trình cấp vai STAFF (chỉ có bootstrap MANAGER); seed STAFF chưa xác minh nên danh sách giao việc rỗng. QA thêm tạm `npm run qa:grant-staff` (chỉ DB dev, có ghi UserRoleEvent) để test; cần Hải Anh thay bằng quy trình chính thức | Chặn test UI thật | Hải Anh | 29/11 |
 | QA-06 | `check-workflow-api.mjs` dùng SQL fixture cho quan hệ gộp và metadata ảnh; không dùng làm bằng chứng merge | Ghi chú | Chúc | Không chặn |
+| QA-08 | Tab Lịch sử hiện mã event và field thô (ISSUE_TRIAGED, assigneeId UUID), không hiện tên người thao tác, không dịch vi/en | Nhỏ, ghi known issue | Sơn | 29/11 |
 | QA-07 | Model runtime, timeout, threshold chưa chốt (O-CP2-04, hạn 27/11 20:00) | Chặn A01/A02 | Thành Lê + Công Thành | 27/11 20:00 |
 
 ## 6. Lịch chạy lại
