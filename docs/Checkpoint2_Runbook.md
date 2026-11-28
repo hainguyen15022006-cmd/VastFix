@@ -66,7 +66,15 @@ Cần năm tài khoản `@usth.edu.vn` đăng ký và xác minh qua Mailpit: REP
 
 1. Đăng ký tại `/register`, mở Mailpit, bấm link xác minh.
 2. MANAGER đầu tiên: `npm.cmd run auth:bootstrap-manager -- <email>` (chỉ một lần cho mỗi DB).
-3. STAFF: **chưa có lệnh hoặc API cấp vai STAFF trong repo** (vấn đề QA-05). Cần Hải Anh cung cấp quy trình có ghi `UserRoleEvent`, không sửa tay bảng `User`.
+3. STAFF (tạm, chờ quy trình chính thức của Hải Anh, QA-05): đăng ký + xác minh như bước 1, rồi cấp vai bằng MANAGER đã xác minh. Lệnh trỏ vào DB của stack (cổng 5434), không phải DB dev 5433:
+
+```powershell
+$env:DATABASE_URL="postgresql://vastfix_dev:vastfix_dev_only@127.0.0.1:5434/vastfix_dev?schema=public"
+npm.cmd run qa:grant-staff -- staff.a@usth.edu.vn manager@usth.edu.vn
+Remove-Item Env:DATABASE_URL
+```
+
+Script chỉ chạy trên DB localhost, chỉ đổi REPORTER đã xác minh → STAFF và ghi `UserRoleEvent` có người cấp.
 
 Không đưa mật khẩu, cookie hay token vào tài liệu và log.
 

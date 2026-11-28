@@ -30,7 +30,8 @@
     "test:reporter-flow": "node scripts/check-reporter-flow.mjs",
     "check:stack-browser": "node --env-file=.env scripts/check-stack-browser.mjs --write",
     "test:photos": "node scripts/check-photo-api.mjs",
-    "test:merges": "node scripts/check-merge-api.mjs"
+    "test:merges": "node scripts/check-merge-api.mjs",
+    "qa:grant-staff": "tsx scripts/qa-grant-staff.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",

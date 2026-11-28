@@ -1,6 +1,6 @@
 # Checkpoint 2 · Báo cáo kiểm thử QA (bản nháp)
 
-Người giữ bảng: Hoàng Anh (Tích hợp/QA). Trạng thái: **nháp lần 2, 27/11/2026 00:05 giờ Việt Nam**. Bảng này theo các ca bắt buộc ở trang 22-23 kế hoạch CP2. Chỉ ghi PASS khi đã chạy và có bằng chứng; phần chưa chạy ghi NOT RUN, không suy ra từ test CP1.
+Người giữ bảng: Hoàng Anh (Tích hợp/QA). Trạng thái: **nháp lần 3, 28/11/2026 16:30 giờ Việt Nam** (thêm kết quả chạy lại trên Windows). Bảng này theo các ca bắt buộc ở trang 22-23 kế hoạch CP2. Chỉ ghi PASS khi đã chạy và có bằng chứng; phần chưa chạy ghi NOT RUN, không suy ra từ test CP1.
 
 ## 1. Bản được kiểm
 
@@ -11,7 +11,8 @@ Người giữ bảng: Hoàng Anh (Tích hợp/QA). Trạng thái: **nháp lần
 | Thành phần | `feat/cp2-workflow-api` 11809a6 (Chúc) · `feat/cp2-photo-storage` 80fbe7b (Hải Anh) · `feat/cp2-manager-workflow-ui` 21c4491 (Sơn) · nền `main` 6e33c1b |
 | Xung đột khi ghép | Không có. Không sửa code của thành viên. |
 | Môi trường E1 | Linux x64 sạch (container), Node 24.22.3, npm 11, PostgreSQL 17 tạm qua `embedded-postgres`, Google Chrome cho Playwright, Python 3.13 cho ai-service |
-| Môi trường E2 | Docker Compose stack trên máy Windows của nhóm: **chưa chạy cho bản CP2** |
+| Môi trường E2 | Windows 11 của Hoàng Anh, Node 24.19.0, repo `C:\Users\ad\PROJECT\VastFix`, bản ghép tự làm lại commit `8f75218` (cùng hai commit nguồn với `dba9f94`) |
+| Môi trường E3 | Docker Compose stack trên Windows: **chưa chạy cho bản CP2** |
 | Bằng chứng | [`docs/qa-evidence/2026-11-27_dba9f94/`](qa-evidence/2026-11-27_dba9f94/) |
 
 Chưa có trên các nhánh remote ngày 26/11: màn hình STAFF, form báo cáo có tải ảnh, nút gộp/hủy gộp/rà lại nguồn trên UI quản lý (nút gộp vẫn disabled dù API đã có). Các phần UI tương ứng ghi NOT RUN.
@@ -28,8 +29,14 @@ Chưa có trên các nhánh remote ngày 26/11: màn hình STAFF, form báo cáo
 | `npm run test:reporter-flow` | PASS 7/7 nhóm | 5 s | `reporter-flow.log` |
 | `npm run test:ui` (Chrome) | PASS 46/46 | 30 s | `ui.log` |
 | `pytest ai-service/tests` | PASS 14/14 | 1 s | `ai-pytest.log` |
-| `npm run check:integration -- --fallback --auth` | NOT RUN: cần Docker stack (E2) | | |
-| `npm run check:stack-browser` | NOT RUN: cần Docker stack (E2) | | |
+| **E2 (Windows, 28/11 15:47-15:54)** | | | |
+| `npm run build` | PASS, có route merges/uploads/photos/staff | | `.next` build 15:47 |
+| `npm run test:photos` | PASS 9/9 | | `photo-api-verification.json` 15:52 |
+| `npm run test:merges` | PASS 11/11 | | `merge-api-verification.json` 15:53 |
+| `npm run test:ui` (Chrome) | PASS (`.last-run.json` status passed, 0 failed) | | `test-results/` 15:54 |
+| `check-workflow-api`, `test:reporter-flow` trên E2 | Người chạy báo xong; script không để lại tệp kết quả nên chưa có bằng chứng file | | cần ảnh terminal |
+| `npm run check:integration -- --fallback --auth` | NOT RUN: cần Docker stack (E3) | | |
+| `npm run check:stack-browser` | NOT RUN: cần Docker stack (E3) | | |
 
 Ghi chú về phạm vi: các suite API dùng Better Auth thật, PostgreSQL 17 tạm và `next start` production. `check-workflow-api.mjs` chèn metadata ảnh và quan hệ gộp bằng SQL fixture; theo checklist trang 20, phần gộp chỉ được tính PASS từ `test:merges` (gọi API merge/reverse thật). 15 ca `manager-workflow-fixture.spec.ts` mock response API: chỉ chứng minh UI gửi đúng payload, không chứng minh DB.
 
@@ -103,7 +110,7 @@ Chưa có FAIL ở lớp API. CP2 **chưa đạt nghiệm thu** vì luồng demo
 | QA-02 | Form báo cáo chưa gửi `photoIds`. Chặn W01 UI và demo bước 2 | Blocker demo | Dương | 27/11 20:00 |
 | QA-03 | Nút gộp trong `manager-issue-detail.tsx` vẫn disabled; chưa có hủy gộp, review-after-unmerge trên UI dù API đã có ở 80fbe7b | Blocker demo | Sơn | 27/11 20:00 |
 | QA-04 | Các nhánh CP2 chưa vào `main`; cần PR theo thứ tự workflow-api → photo-storage → manager-ui | Tích hợp | Hải Anh duyệt | 27/11 |
-| QA-05 | Chưa có tài khoản STAFF A/B đã xác minh, cấp vai theo quy trình trên stack chung (HO-02) | Chặn test UI thật | Hoàng Anh + Hải Anh | 27/11 |
+| QA-05 | Repo chưa có quy trình cấp vai STAFF (chỉ có bootstrap MANAGER); seed STAFF chưa xác minh nên danh sách giao việc rỗng. QA thêm tạm `npm run qa:grant-staff` (chỉ DB dev, có ghi UserRoleEvent) để test; cần Hải Anh thay bằng quy trình chính thức | Chặn test UI thật | Hải Anh | 29/11 |
 | QA-06 | `check-workflow-api.mjs` dùng SQL fixture cho quan hệ gộp và metadata ảnh; không dùng làm bằng chứng merge | Ghi chú | Chúc | Không chặn |
 | QA-07 | Model runtime, timeout, threshold chưa chốt (O-CP2-04, hạn 27/11 20:00) | Chặn A01/A02 | Thành Lê + Công Thành | 27/11 20:00 |
 
