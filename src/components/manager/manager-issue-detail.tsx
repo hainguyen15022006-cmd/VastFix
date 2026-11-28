@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ProtectedPhotoViewer } from "@/components/shared/protected-photo-viewer";
-import { DetailError, MutationError, fetchManagerDetail, postManagerAction, type ManagerAction, type ManagerDetail } from "@/lib/manager-workflow";
+import { DetailError, MutationError, fetchManagerDetail, postManagerAction, postMerge, postReverseMerge, postReviewAfterUnmerge, type ManagerAction, type ManagerDetail } from "@/lib/manager-workflow";
 
 type ViewState = { kind: "loading" } | { kind: "error"; error: DetailError } | { kind: "ready"; issue: ManagerDetail };
 type Tab = "report" | "handling" | "photos" | "history" | "merges";
@@ -96,6 +96,23 @@ export function ManagerIssueDetail({ id }: { id: string }) {
     finally { if (!controller.signal.aborted) setSourceLoading(false); }
   }
 
+  async function mutateMerge(run: () => Promise<unknown>) {
+    if (!issue || busy) return;
+    setBusy(true); setActionError(null); setSuccess(false);
+    try { await run(); setSuccess(true); setSource(null); setMergeReason(""); setReason(""); setMergeConfirmed(false); setRevision(n => n + 1); }
+    catch (error) { const failure = error instanceof MutationError ? error : new MutationError("unavailable"); setActionError(failure); if (failure.kind === "conflict") setRevision(n => n + 1); }
+    finally { setBusy(false); }
+  }
+
+  async function reverse(mergeId: string, sourceIssueId: string) {
+    if (!issue) return;
+    await mutateMerge(async () => {
+      const controller = new AbortController();
+      const [freshSource, freshTarget] = await Promise.all([fetchManagerDetail(sourceIssueId, locale, controller.signal), fetchManagerDetail(issue.id, locale, controller.signal)]);
+      return postReverseMerge(mergeId, freshSource.version, freshTarget.version, reason.trim());
+    });
+  }
+
   const date = (value: string | null) => value ? format.dateTime(new Date(value), { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Ho_Chi_Minh" }) : t("none");
   const issue = state.kind === "ready" ? state.issue : null;
   const tabs: Tab[] = ["report", "handling", "photos", "history", "merges"];
@@ -110,7 +127,7 @@ export function ManagerIssueDetail({ id }: { id: string }) {
     {state.kind === "error" && <div className="vf-state vf-error-state" role="alert"><h2>{t(`error_${state.error.kind}`)}</h2><p>{t("errorHelp")}</p>{state.error.requestId && <code>{state.error.requestId}</code>}<button className="vf-button" type="button" onClick={() => setRevision(n => n + 1)}>{t("retry")}</button></div>}
     {issue && <>
       <div className="vf-workflow-summary"><span className={`vf-badge vf-badge-${issue.status.toLowerCase()}`}>{statusText(issue.status)}</span><span>{t("version", { version: issue.version })}</span><span>{t("created")}: {date(issue.createdAt)}</span></div>
-      {issue.reviewRequired && <div className="vf-workflow-alert" role="note"><p>{t("reviewRequired")}</p><label>{t("reviewReason")}<textarea value={reason} onChange={e => setReason(e.target.value)} maxLength={5000} /></label><button type="button" className="vf-button" disabled>{t("reviewPending")}</button></div>}
+      {issue.reviewRequired && <div className="vf-workflow-alert" role="note"><p>{t("reviewRequired")}</p><label>{t("reviewReason")}<textarea value={reason} onChange={e => setReason(e.target.value)} maxLength={5000} /></label><button type="button" className="vf-button" disabled={busy || !reason.trim() || !categoryCode || !dueAt} onClick={() => void mutateMerge(() => postReviewAfterUnmerge(id, { expectedVersion: issue.version, categoryCode, priority, dueAt: new Date(`${dueAt}:00+07:00`).toISOString(), reason: reason.trim() }))}>{t("reviewSubmit")}</button></div>}
       {issue.mergedIntoIssueId && <p className="vf-workflow-alert" role="note">{t("mergedInto")}: <Link href={`/manager/issues/${issue.mergedIntoIssueId}`}>{issue.mergedIntoIssueId}</Link></p>}
       {actionError && <p className="vf-workflow-alert" role="alert">{t(`mutation_${actionError.kind}`)} {actionError.requestId && <code>{actionError.requestId}</code>}</p>}
       {success && <p className="vf-workflow-success" role="status">{t("saved")}</p>}
@@ -141,8 +158,9 @@ export function ManagerIssueDetail({ id }: { id: string }) {
       {tab === "photos" && <section className="vf-workflow-panel"><h2>{t("tab_photos")}</h2>{issue.reports.flatMap(report => report.photos.map(photo => <ProtectedPhotoViewer key={photo.photoId} photo={photo} alt={t("reportPhoto")} loading={t("photoLoading")} unavailable={t("photoUnavailable")} />))}{issue.history.flatMap(event => event.evidencePhotos.map(photo => <ProtectedPhotoViewer key={photo.photoId} photo={photo} alt={t("evidencePhoto")} loading={t("photoLoading")} unavailable={t("photoUnavailable")} />))}{issue.reports.every(report => !report.photos.length) && issue.history.every(event => !event.evidencePhotos.length) && <p>{t("emptyPhotos")}</p>}</section>}
       {tab === "history" && <section className="vf-workflow-panel"><h2>{t("tab_history")}</h2>{issue.history.length ? <ol className="vf-workflow-history">{issue.history.map(event => <li key={event.id}><strong>{event.eventType}</strong><time dateTime={event.occurredAt}>{date(event.occurredAt)}</time><dl>{Object.entries(event.details).map(([key, value]) => <div key={key}><dt>{key}</dt><dd>{value ?? t("none")}</dd></div>)}</dl></li>)}</ol> : <p>{t("empty")}</p>}</section>}
       {tab === "merges" && <section className="vf-workflow-panel"><h2>{t("tab_merges")}</h2><p>{issue.mergedIntoIssueId ? t("mergedInto") : t("relatedCount", { count: Math.max(0, issue.reports.length - 1) })}</p>{issue.reports.slice(1).map(report => <article className="vf-workflow-record" key={report.issueId}><h3>{t("mergeSource")}</h3><p><Link href={`/manager/issues/${report.issueId}`}>{report.issueId}</Link></p><p>{report.description}</p><p>{report.locationLabel}</p><button type="button" className="vf-button" disabled>{t("reversePending")}</button></article>)}
-        {!issue.mergedIntoIssueId && <div className="vf-workflow-actions"><h3>{t("mergeCompare")}</h3><p>{t("mergeTarget", { id: issue.id })}</p><label>{t("mergeSourceId")}<input value={sourceId} onChange={e => { sourceRequest.current?.abort(); setSourceLoading(false); setSourceId(e.target.value); setSource(null); setSourceError(false); setMergeReason(""); setMergeConfirmed(false); }} /></label><button type="button" className="vf-button" disabled={sourceLoading} onClick={compareSource}>{sourceLoading ? t("sourceLoading") : t("compare")}</button>{sourceError && <p role="alert">{t("sourceUnavailable")}</p>}
-          {source && <><div className="vf-merge-comparison"><article><h4>{t("mergeSource")}</h4><p>{source.reports[0]?.description}</p><p>{source.reports[0]?.locationLabel}</p><p>{statusText(source.status)}</p></article><article><h4>{t("mergeTargetTitle")}</h4><p>{issue.reports[0]?.description}</p><p>{issue.reports[0]?.locationLabel}</p><p>{statusText(issue.status)}</p></article></div><label>{t("reason")}<textarea value={mergeReason} onChange={e => setMergeReason(e.target.value)} maxLength={5000} /></label><label className="vf-workflow-check"><input type="checkbox" checked={mergeConfirmed} onChange={e => setMergeConfirmed(e.target.checked)} />{t("mergeConfirm")}</label><button type="button" className="vf-button" disabled>{t("mergePending")}</button></>}
+        {!issue.mergedIntoIssueId && <div className="vf-workflow-actions"><h3>{t("mergeCompare")}</h3><p>{t("mergeTarget", { id: issue.id })}</p><label>{t("mergeSourceId")}<input value={sourceId} onChange={e => { sourceRequest.current?.abort(); setSourceLoading(false); setSourceId(e.target.value); setSource(null); setSourceError(false); setMergeReason(""); setMergeConfirmed(false); }} /></label><button type="button" className="vf-button" disabled={sourceLoading || busy} onClick={compareSource}>{sourceLoading ? t("sourceLoading") : t("compare")}</button>{sourceError && <p role="alert">{t("sourceUnavailable")}</p>}
+          {source && <><div className="vf-merge-comparison"><article><h4>{t("mergeSource")}</h4><p>{source.reports[0]?.description}</p><p>{source.reports[0]?.locationLabel}</p><p>{statusText(source.status)}</p><p>{t("version", { version: source.version })}</p></article><article><h4>{t("mergeTargetTitle")}</h4><p>{issue.reports[0]?.description}</p><p>{issue.reports[0]?.locationLabel}</p><p>{statusText(issue.status)}</p><p>{t("version", { version: issue.version })}</p></article></div><label>{t("reason")}<textarea value={mergeReason} onChange={e => setMergeReason(e.target.value)} maxLength={5000} /></label><label className="vf-workflow-check"><input type="checkbox" checked={mergeConfirmed} onChange={e => setMergeConfirmed(e.target.checked)} />{t("mergeConfirm")}</label><button type="button" className="vf-button" disabled={busy || !mergeConfirmed || !mergeReason.trim() || source.status === "ASSIGNED" || source.status === "IN_PROGRESS" || source.status === "AWAITING_REVIEW" || source.status === "CLOSED" || issue.status === "ASSIGNED" || issue.status === "IN_PROGRESS" || issue.status === "AWAITING_REVIEW" || issue.status === "CLOSED" || source.reviewRequired || issue.reviewRequired || !!source.mergedIntoIssueId || !!issue.mergedIntoIssueId} onClick={() => void mutateMerge(() => postMerge(source.id, issue.id, source.version, issue.version, mergeReason.trim()))}>{t("mergePending")}</button></>}
+          {issue.activeMerges?.map(merge => <div key={merge.mergeId}><p>{merge.sourceIssueId} → {merge.targetIssueId}; {t("reason")}: {merge.reason}; {t("version", { version: issue.version })}</p><label>{t("reverseReason")}<textarea value={reason} onChange={e => setReason(e.target.value)} maxLength={5000} /></label><button type="button" className="vf-button" disabled={busy || !reason.trim()} onClick={() => void reverse(merge.mergeId, merge.sourceIssueId)}>{t("reverseSubmit")}</button></div>)}
         </div>}
       </section>}
     </>}
