@@ -1,0 +1,2 @@
+# Preserve the byte-level hash recorded by the dataset review on Windows.
+evaluation/duplicate-detection/*.json text eol=lf

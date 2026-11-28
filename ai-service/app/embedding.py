@@ -3,6 +3,9 @@ from pathlib import Path
 import numpy as np
 import onnxruntime as ort
 from tokenizers import Tokenizer
+from threading import Lock
+
+from .model_files import verify_model
 
 
 class E5Scorer:
@@ -10,6 +13,8 @@ class E5Scorer:
     reason_threshold = 0.80
 
     def __init__(self, model_dir: Path):
+        verify_model(model_dir)
+        self.lock = Lock()
         self.tokenizer = Tokenizer.from_file(str(model_dir / "tokenizer.json"))
         self.tokenizer.enable_truncation(max_length=512)
         self.tokenizer.enable_padding(pad_id=self.tokenizer.token_to_id("<pad>"), pad_token="<pad>")
@@ -37,6 +42,8 @@ class E5Scorer:
         return np.concatenate(parts)
 
     def similarities(self, query: str, candidates: list[str]) -> list[float]:
-        query_vector = self.encode([query], "query: ")[0]
-        vectors = self.encode(candidates, "passage: ")
+        # Tokenizer padding/truncation state is shared by requests.
+        with self.lock:
+            query_vector = self.encode([query], "query: ")[0]
+            vectors = self.encode(candidates, "passage: ")
         return np.clip(vectors @ query_vector, 0, 1).tolist()
