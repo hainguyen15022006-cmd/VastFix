@@ -60,6 +60,7 @@ services:
     environment:
       DATABASE_URL: *db_url
       # Tên biến theo docs/Chuc_Checkpoint1.md. Next.js gọi AI qua mạng nội bộ Compose.
+      VASTFIX_UPLOAD_DIR: /app/data/private/photos
       FASTAPI_BASE_URL: http://ai:8000
       DUPLICATE_TIMEOUT_MS: "5000"
       # Đăng nhập thật (Better Auth, docs/Auth_Implementation_Step_by_Step.md). Thư xác minh vào Mailpit.
@@ -76,6 +77,8 @@ services:
       VASTFIX_DEMO_MANAGER_PASSWORD: ${VASTFIX_DEMO_MANAGER_PASSWORD:?Chạy npm run demo:env trước}
     ports:
       - "127.0.0.1:${VASTFIX_WEB_PORT:-3000}:3000"
+    volumes:
+      - vastfix_photo_data:/app/data/private/photos
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -93,3 +96,4 @@ services:
 
 volumes:
   vastfix_stack_pgdata:
+  vastfix_photo_data:

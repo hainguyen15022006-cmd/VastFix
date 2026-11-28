@@ -1,0 +1,37 @@
+VASTFIX - KIỂM CHỨNG BACKEND ẢNH CP2 - 26/11/2026
+
+Nhánh: feat/cp2-photo-storage, nền API workflow của Chúc 11809a6.
+
+ĐÃ TRIỂN KHAI
+- Migration 20261126000000_photo_storage đã áp vào database đang chạy cổng 5434.
+- Có bản sao lưu riêng trước migration. User/Report/Issue/IssueEvent/IssueMerge cũ được so sánh checksum trước và sau; giữ nguyên.
+- POST /api/uploads: multipart một ảnh REPORT hoặc WORK_EVIDENCE, kiểm phiên/Origin/đối tượng công việc, giới hạn và nội dung ảnh.
+- GET/HEAD /api/photos/:id: trả byte tệp sau kiểm quyền theo quan hệ hiện hành; không đưa ảnh vào public.
+- DELETE /api/photos/:id: chỉ ảnh nháp của chủ sở hữu; ảnh đã nộp không xóa qua API này.
+- POST /api/reports thêm photoIds tùy chọn; tạo Report/Issue/event và gắn ảnh trong một transaction; request v1 cũ vẫn chạy.
+- WORK_EVIDENCE nối với submit của Chúc và đúng event nộp việc.
+- Compose có volume riêng vastfix_vastfix_photo_data tại /app/data/private/photos.
+- Ghim sharp 0.35.5 trực tiếp; cập nhật lockfile, env example, Dockerfile và quy tắc Git để không bỏ qua route api/uploads.
+
+KIỂM THỬ ĐÃ ĐẠT
+- Build production và TypeScript: đạt, trên worktree kiểm thử riêng.
+- npm run test:photos: 9 nhóm đạt. Dùng Better Auth thật, PostgreSQL 17 tạm và tệp JPEG/PNG/WebP thật.
+- Quyền ảnh: chưa đăng nhập/sai người báo/nhân viên khác, ảnh nháp, ảnh đã gửi, đổi người được giao, quan hệ gộp/hủy gộp.
+- Nội dung: ảnh hỏng, sai MIME, SVG, dung lượng lớn, trường multipart lặp bị từ chối; ảnh lưu đã bỏ metadata.
+- Tính nhất quán: sai owner/sai ảnh rollback toàn Report, không dùng lại ảnh, tranh chấp gắn ảnh chỉ một lần thành công, quota và dọn tệp sau thất bại.
+- Lỗi tệp thiếu/đường dẫn DB sai không đọc dữ liệu bên ngoài; xóa nháp không xóa ảnh đã nộp.
+- node scripts/check-workflow-api.mjs: đạt toàn bộ workflow của Chúc với bảng Photo từ migration thật.
+- npm run test:reporter-flow: 7 nhóm đạt, auth/DB thật, AI fixture.
+- npm run test:ui: 31/31 đạt trên Chrome, 25.8 giây. Đây là hồi quy UI CP1, không gọi là đã có giao diện upload CP2.
+- Docker thực tế tại http://127.0.0.1:3000: upload PNG, xem đúng quyền và từ chối không đăng nhập đạt.
+- Tạo lại container web bằng --force-recreate: byte ảnh và phiên thử vẫn đọc được từ volume; sau đó dọn ảnh nháp/tệp/phiên của lượt thử.
+
+PHẠM VI VÀ GIỚI HẠN
+- Bộ test ảnh riêng dùng đăng nhập thật. Docker smoke dùng phiên demo local có guard development + loopback hiện có, không đổi guard auth để chạy test.
+- Kiểm quyền qua merge/reverse dùng fixture DB; API gộp/hủy gộp không thuộc phần backend ảnh này và chưa được triển khai bởi thay đổi này.
+- Giao diện chọn/tải/xem ảnh vẫn cần Dương/Sơn nối theo docs/Photo_API_CP2.md.
+- Không tự dọn ảnh nháp theo tuổi; DELETE được cung cấp cho FE bỏ ảnh khỏi form. Sao lưu cần cả database và volume ảnh.
+- Các điểm workflow đã báo ở bản review trước (chi tiết vị trí, rà lại TRIAGED, dữ liệu mergeId) vẫn cần xử lý riêng.
+- Thay đổi hiện ở nhánh local; chưa commit/push/merge main trong lượt làm phần ảnh.
+
+Lưu ý: đây là bản ghi giai đoạn ảnh tại commit 304c893. Backend gộp/hủy gộp và các lỗi workflow đã được xử lý trong bản tiếp theo; xem Checkpoint2_Backend_Verification_2026-11-26.txt để biết trạng thái mới.

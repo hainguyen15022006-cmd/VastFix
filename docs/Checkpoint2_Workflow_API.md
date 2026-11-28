@@ -22,7 +22,7 @@ Gọi `POST /api/manager/issues/:id/:action` hoặc `POST /api/staff/issues/:id/
 
 | Vai / action | Điều kiện trạng thái → kết quả | Trường thêm | Event |
 | --- | --- | --- | --- |
-| MANAGER / `triage` | SUBMITTED → TRIAGED | `categoryCode`, `priority` (P0/P1/P2), `dueAt` (ISO 8601 có múi giờ) | ISSUE_TRIAGED |
+| MANAGER / `triage` | SUBMITTED hoặc TRIAGED → TRIAGED | `categoryCode`, `priority` (P0/P1/P2), `dueAt` (ISO 8601 có múi giờ) | ISSUE_TRIAGED |
 | MANAGER / `assign` | TRIAGED → ASSIGNED | `assigneeId` là STAFF đã xác minh | ISSUE_ASSIGNED |
 | STAFF / `start` | ASSIGNED → IN_PROGRESS | | WORK_STARTED |
 | STAFF / `progress` | IN_PROGRESS → IN_PROGRESS | `progressNote`, `materials` tùy chọn, đều là văn bản | WORK_PROGRESS_UPDATED |
@@ -64,7 +64,7 @@ Ví dụ xung đột theo cấu trúc lỗi CP1.
 
 ## Phụ thuộc cần ghép với Hải Anh
 
-`src/lib/workflow/photos.ts` là điểm kết nối tới lớp lưu ảnh. Bảng đề xuất `Photo` cần có `id`, `ownerUserId`, `issueId`, `reportId`, `purpose` (`REPORT` hoặc `WORK_EVIDENCE`), `storedAt`, `submissionEventId`, `createdAt`. Nếu schema chính thức khác, điều chỉnh adapter theo contract đã chốt. SQL trong `tests/fixtures/cp2-workflow-photos.sql` chỉ dành cho DB test cô lập.
+`src/lib/workflow/photos.ts` là điểm kết nối tới lớp lưu ảnh. Bảng `Photo` chính thức được tạo bởi migration `20261126000000_photo_storage`, giữ các trường adapter đang dùng: `id`, `ownerUserId`, `issueId`, `reportId`, `purpose` (`REPORT` hoặc `WORK_EVIDENCE`), `storedAt`, `submissionEventId`, `createdAt`. Thông tin tệp bổ sung gồm `storageKey` duy nhất, `mimeType` và `sizeBytes` bắt buộc. `purpose` dùng enum PostgreSQL `PhotoPurpose`. SQL trong `tests/fixtures/cp2-workflow-photos.sql` là fixture cũ trước migration, không được chạy cùng migration chính thức.
 
 Upload do Hải Anh triển khai, chỉ ghi `storedAt` sau khi tệp đã được lưu và đăng ký đúng owner, target, purpose. Submit gắn ảnh chưa dùng vào event của phiếu trong cùng transaction, từ chối ảnh sai chủ sở hữu, sai Issue, sai purpose, chưa lưu hoặc đã dùng. `GET /api/photos/:id` do Hải Anh kiểm tra quyền tải tệp riêng tại thời điểm truy cập, kể cả sau hủy gộp. Khi thiếu bảng ảnh, detail trả danh sách ảnh rỗng và submit trả 503 giữ nguyên Issue/event.
 
@@ -73,7 +73,16 @@ Upload do Hải Anh triển khai, chỉ ghi `storedAt` sau khi tệp đã đư�
 ```bash
 npm run typecheck
 npm run build
-node.exe scripts/check-workflow-api.mjs
+node scripts/check-workflow-api.mjs
 ```
 
-Script dùng PostgreSQL 17 riêng, chạy migration CP1 và fixture ảnh, đăng nhập qua Better Auth với dữ liệu tài khoản kiểm thử đã xác minh. Kiểm tra phân quyền, lọc/phân trang, triage/assign/start, progress, các lần nộp/trả lại, close/reopen và xung đột song song. Ghép trên bản chung và kiểm lại với API upload/file thật trước khi báo DONE.
+Script dùng PostgreSQL 17 riêng, chạy toàn bộ migration chính thức gồm bảng Photo, đăng nhập qua Better Auth với dữ liệu tài khoản kiểm thử đã xác minh. Dữ liệu ảnh trong test chỉ là metadata giả lập, chưa kiểm chứng upload hoặc byte tệp thật. Test riêng mô phỏng thiếu bảng ảnh để kiểm tra 503 và rollback; không tạo bảng Photo thứ hai. Kiểm tra phân quyền, lọc/phân trang, triage/assign/start, progress, các lần nộp/trả lại, close/reopen và xung đột song song. Ghép trên bản chung và kiểm lại với API upload/file thật trước khi báo DONE.
+
+## Bàn giao API upload và đọc tệp
+
+Xem [Photo_API_CP2.md](Photo_API_CP2.md) để nối upload, photoIds của Report, evidencePhotoIds và quyền đọc/xóa ảnh nháp. Kết quả kiểm chứng ngày 26/11 nằm trong [Photo_API_Verification_2026-11-26.txt](Photo_API_Verification_2026-11-26.txt).
+
+
+## Bổ sung gộp/hủy gộp và rà lại nguồn
+
+Các endpoint gộp, reverse, review-after-unmerge; dữ liệu mergeId/history, vị trí cụ thể và cách phối hợp version được mô tả trong [Checkpoint2_Backend_Contract.md](Checkpoint2_Backend_Contract.md). Workflow dùng chung khóa Issue với merge, cho phép triage lại TRIAGED nhưng vẫn chặn reviewRequired. Bản ERD và bảng quyết định nằm trong [Checkpoint2_ERD_State.md](Checkpoint2_ERD_State.md) và [Checkpoint2_Decisions.md](Checkpoint2_Decisions.md).

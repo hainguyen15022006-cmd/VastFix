@@ -57,8 +57,8 @@ async function makeIssue(description) {
 async function photo(issueId, { owner = "staffA", purpose = "WORK_EVIDENCE", saved = true } = {}) {
   const id = randomUUID();
   await db.query(
-    'INSERT INTO "Photo" (id,"issueId","ownerUserId",purpose,"storedAt") VALUES ($1,$2,$3,$4,$5)',
-    [id, issueId, users[owner].id, purpose, saved ? new Date() : null],
+    'INSERT INTO "Photo" (id,"issueId","ownerUserId",purpose,"storedAt","storageKey","mimeType","sizeBytes") VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
+    [id, issueId, users[owner].id, purpose, saved ? new Date() : null, "workflow-test/" + id + ".jpg", "image/jpeg", 128],
   );
   return id;
 }
@@ -159,9 +159,17 @@ try {
   version = (await staff("progress", version, { progressNote: note, materials: "Một bóng LED" })).issue.version;
   assert.equal((await detail()).history.at(-1).details.progressNote, note);
   await staff("submit", version, { completionNote: "Xong", evidencePhotoIds: [] }, 400);
-  await staff("submit", version, { completionNote: "Xong", evidencePhotoIds: [randomUUID()] }, 503);
+  // Production migrations now create Photo. Unknown IDs are invalid evidence,
+  // while missing storage remains a distinct 503 that must roll back the write.
+  await staff("submit", version, { completionNote: "Xong", evidencePhotoIds: [randomUUID()] }, 400);
   assert.equal((await detail()).version, version);
-  await db.query(await readFile("tests/fixtures/cp2-workflow-photos.sql", "utf8"));
+  await db.query('ALTER TABLE "Photo" RENAME TO "PhotoUnavailableForTest"');
+  try {
+    await staff("submit", version, { completionNote: "Xong", evidencePhotoIds: [randomUUID()] }, 503);
+    assert.equal((await detail()).version, version);
+  } finally {
+    await db.query('ALTER TABLE "PhotoUnavailableForTest" RENAME TO "Photo"');
+  }
 
   const other = await makeIssue("Phiếu ngoài phạm vi");
   const wrongOwner = await photo(id, { owner: "staffB" });
@@ -218,7 +226,7 @@ try {
   const next = await call("manager", "manager/issues?cursor=" + first.nextCursor);
   assert.ok(next.items.length > 0 && next.items.every(item => !first.items.some(old => old.issueId === item.issueId)));
 
-  console.log("PASS CP2 workflow: Better Auth, scope, transitions, evidence (fixture), events, concurrent writes, merge guard and pagination.");
+  console.log("PASS CP2 workflow: Better Auth, scope, transitions, evidence metadata (production Photo migration), events, concurrent writes, merge guard and pagination.");
 } catch (error) {
   console.error(error);
   console.error(logs);

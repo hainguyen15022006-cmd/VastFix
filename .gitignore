@@ -29,7 +29,7 @@ htmlcov/
 *.key
 
 # Local runtime data
-uploads/
+/uploads/
 data/private/
 *.sqlite3
 *.db

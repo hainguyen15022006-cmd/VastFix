@@ -9,6 +9,7 @@ WORKDIR /app
 COPY --chown=node:node package.json package-lock.json ./
 RUN npm ci
 COPY --chown=node:node . .
+RUN mkdir -p /app/data/private/photos && chmod 700 /app/data/private/photos
 # prisma generate chỉ cần cấu hình đọc được URL, không kết nối DB.
 RUN DATABASE_URL=postgresql://build:build@localhost:5432/build npm run db:generate
 ENV NEXT_TELEMETRY_DISABLED=1
